@@ -1,5 +1,7 @@
-/* Tables */
+/* Crea Database */
 ``
+CREATE DATABASE IF NOT EXISTS `blogisw` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
+USE `blogisw`;
 
 CREATE TABLE `EMPLOYEE` (
     `Badge_Number` int NOT NULL AUTO_INCREMENT,
@@ -58,3 +60,6 @@ CREATE TABLE `PERFORMS` (
     ON DELETE NO ACTION
     ON UPDATE NO ACTION
 );
+
+/* Dump Dati*/
+/* DA CREARE*/
