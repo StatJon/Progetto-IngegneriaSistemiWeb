@@ -15,7 +15,7 @@ CREATE TABLE `CUSTOMER` (
     `First_Name` varchar(100) NOT NULL,
     `Last_Name` varchar(100) NOT NULL,
     `Password` varchar(255) NOT NULL,
-    `Phone` int(15) NOT NULL,
+    `Phone` int(10) NOT NULL,
     PRIMARY KEY (`Email`)
 );
 CREATE TABLE `JOB` (
