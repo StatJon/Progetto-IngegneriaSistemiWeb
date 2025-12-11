@@ -18,24 +18,24 @@ CREATE TABLE `CUSTOMER` (
     `Phone` int(10) NOT NULL,
     PRIMARY KEY (`Email`)
 );
-CREATE TABLE `JOB` (
-    `Job_ID` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `SERVICE` (
+    `Service_ID` int(11) NOT NULL AUTO_INCREMENT,
     `Estimated_Duration` int(11) NOT NULL,
     `Title` varchar(255) NOT NULL,
     `Description` varchar(1000) NOT NULL,
     `Price` int(11) NOT NULL,
     `Vehicle_Type` varchar(50) NOT NULL, 
     CHECK (`Vehicle_Type` IN (`car`, `motorcycle`)),
-    PRIMARY KEY (`Job_ID`)
+    PRIMARY KEY (`Service_ID`)
 );
-CREATE TABLE `APPOINTMENT` (
-    `Appointment_ID` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `JOB` (
+    `Job_ID` int(11) NOT NULL AUTO_INCREMENT,
     `Model` varchar(100) NOT NULL,
     `Vehicle_Type` varchar(50) NOT NULL,
     `License_Plate` varchar(7) NOT NULL,    
     `Date_Time` DATETIME NOT NULL,
     `CUSTOMER_Email` varchar(255) NOT NULL,
-    PRIMARY KEY (`Appointment_ID`),
+    PRIMARY KEY (`Job_ID`),
     FOREIGN KEY (`CUSTOMER_Email`) REFERENCES `CUSTOMER` (`Email`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION

@@ -1,9 +1,7 @@
-/*Jobs
-Query per trovare lavori da svolgere
-Tutti
-Di Employee
-Di Customer
-Di Vechicle_Plate
+/*Customer
+Query per trovare tutti i dati relativi ad un customer
+Tutti i veicoli
+Tutti i Job
 */
 
 import { Request, Response } from "express";

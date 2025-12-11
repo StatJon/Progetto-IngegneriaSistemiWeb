@@ -1,9 +1,9 @@
-/*Jobs
-Query per trovare lavori da svolgere
-Tutti
-Di Employee
-Di Customer
-Di Vechicle_Plate
+/*Ambito Query
+Descrizione Query
+scriptQuery1
+scriptQuery2
+...
+scriptQueryX
 */
 
 import { Request, Response } from "express";
