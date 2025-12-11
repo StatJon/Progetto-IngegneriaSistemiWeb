@@ -45,7 +45,7 @@ export async function allServicesMotorcycle(req: Request, res: Response) {
     )    
 }
 
-export async function serviceJobs(req: Request, res: Response) {
+export async function servicesJob(req: Request, res: Response) {
     connection.execute(
         `SELECT
         FROM

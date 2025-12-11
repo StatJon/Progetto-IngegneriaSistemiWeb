@@ -21,7 +21,7 @@ export async function allJobs(req: Request, res: Response) {
     )    
 }
 
-export async function employeeJobs(req: Request, res: Response) {
+export async function employeeIdJobs(req: Request, res: Response) {
     connection.execute(
         `SELECT
         FROM
