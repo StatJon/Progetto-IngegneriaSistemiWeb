@@ -7,8 +7,7 @@ Tutti i Job
 import { Request, Response } from "express";
 import { connection } from "../utils/db";
 
-/* Template
-export async function nomeFunzione(req: Request, res: Response) {
+export async function customerAllVehicles(req: Request, res: Response) {
     connection.execute(
         `SELECT
         FROM
@@ -19,4 +18,4 @@ export async function nomeFunzione(req: Request, res: Response) {
         }
     )    
 }
-*/
+

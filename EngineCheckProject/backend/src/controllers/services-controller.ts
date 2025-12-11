@@ -1,8 +1,8 @@
 /*Services
 Query per trovare i servizi di manutenzione
 Tutti
-Di Auto
-Di Moto
+Tutti Auto
+Tutti Moto
 Di Job
 */
 
@@ -36,6 +36,18 @@ export async function allServicesCar(req: Request, res: Response) {
 export async function allServicesMotorcycle(req: Request, res: Response) {
     connection.execute(
         `SELECT 
+        FROM
+        WHERE`,
+        [],
+        function (err, results, fields) {
+            res.json(results)
+        }
+    )    
+}
+
+export async function serviceJobs(req: Request, res: Response) {
+    connection.execute(
+        `SELECT
         FROM
         WHERE`,
         [],
