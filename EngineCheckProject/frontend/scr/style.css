@@ -1,0 +1,270 @@
+/* --- RESET E IMPOSTAZIONI DI BASE --- */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Roboto', sans-serif;
+    background-color: #f0f5f9; /* Colore di sfondo pagina (grigio-azzurro chiaro) */
+    color: #333;
+    line-height: 1.6;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+ul {
+    list-style: none;
+}
+
+/* --- HEADER --- */
+header {
+    background-color: #ffffff;
+    padding: 15px 0;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.header-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 20px;
+}
+
+/* Logo Stile */
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.logo-icon {
+    font-size: 2rem;
+    position: relative;
+    color: #f39c12; /* Colore arancione motore */
+}
+
+.logo-check {
+    position: absolute;
+    top: -5px;
+    right: -10px;
+    color: #2ecc71; /* Colore verde spunta */
+    font-size: 1.5rem;
+    font-weight: 900;
+    background: white;
+    border-radius: 50%;
+}
+
+.logo-text {
+    font-size: 1.2rem;
+    font-weight: 900;
+    line-height: 1;
+    text-transform: lowercase;
+    color: #333;
+}
+
+/* Navigazione Header */
+nav ul {
+    display: flex;
+    gap: 25px;
+}
+
+nav ul li a {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: #555;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: color 0.3s;
+}
+
+nav ul li a:hover {
+    color: #007bff;
+}
+
+/* --- LAYOUT GENERALE DELLE SCHEDE (MAIN) --- */
+main {
+    max-width: 1100px;
+    margin: 40px auto;
+    padding: 0 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 30px; /* Spazio tra le schede bianche */
+}
+
+/* Stile "Card" per ogni sezione */
+section {
+    background-color: #ffffff;
+    border-radius: 20px;
+    padding: 50px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.03);
+    text-align: center;
+    display: flex;             /* Attiva Flexbox */
+    flex-direction: column;    /* Mette gli elementi uno sotto l'altro */
+    align-items: center;
+    
+}
+button {
+    background-color: #007bff;
+    color: white;
+    border-radius: 5px;
+    padding: 5px;
+    
+  
+}
+
+/* Titoli delle sezioni */
+section h2, section h3 {
+    font-style: italic;
+    font-size: 1.8rem;
+    margin-bottom: 20px;
+    color: #000;
+}
+
+/* section p {
+    color:#000000;
+    margin-bottom: 30px;
+} */
+
+
+/* --- SEZIONE HERO / PRENOTAZIONE --- */
+.cta-buttons {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    gap: 15px;
+    max-width: 300px;
+    margin: 0 auto 40px auto;
+}
+
+.btn {
+    display: block;
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-weight: 500;
+    color: rgb(255, 255, 255);
+    text-align: center;
+    transition: background 0.3s, transform 0.2s;
+}
+
+.btn.primary, .btn.secondary {
+    background-color: #007bff; /* Blu brillante */
+    box-shadow: 0 4px 6px rgba(0, 123, 255, 0.2);
+}
+
+.btn:hover {
+    background-color: #0056b3;
+    transform: translateY(-2px);
+}
+
+/* Griglia dei servizi/promesse */
+.services-container {
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    margin-top: 40px;
+    border-top: 1px solid #eee;
+    padding-top: 40px;
+}
+
+.service-card {
+    flex: 1;
+    min-width: 200px;
+    padding: 10px;
+    text-align: center;
+}
+
+.service-card i.icon-large {
+    background-color: #e3f2fd; /* Sfondo icona azzurro chiaro */
+    color: #007bff;
+    width: 60px;
+    height: 60px;
+    line-height: 60px;
+    border-radius: 50%;
+    font-size: 1.5rem;
+    margin-bottom: 15px;
+    display: inline-block;
+}
+
+.service-card h4 {
+    font-size: 0.9rem;
+    font-weight: 700;
+    margin-bottom: 10px;
+}
+
+.service-card p {
+    font-size: 0.8rem;
+    line-height: 1.4;
+}
+
+/* --- SEZIONE DOVE SIAMO E CONTATTI --- */
+/* Per replicare l'immagine, rendiamo l'address più carino */
+address {
+    font-style: normal;
+    text-align: left;
+    display: inline-block;
+    background: #f9f9f9;
+    padding: 20px;
+    border-radius: 10px;
+    border-left: 5px solid #007bff;
+}
+
+address p {
+    margin-bottom: 10px;
+    font-size: 1rem;
+    color: #333;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+address i {
+    color: #000;
+    font-size: 1.2rem;
+    width: 25px;
+    text-align: center;
+}
+
+/* --- FOOTER --- */
+footer {
+    text-align: center;
+    padding: 20px;
+    color: #666;
+    font-size: 0.9rem;
+    margin-top: 20px;
+    border-top: 1px solid #ddd;
+    background-color: #f0f5f9; /* Stesso colore dello sfondo */
+}
+
+footer p {
+    margin: 5px 0;
+}
+
+/* --- RESPONSIVE (PER CELLULARI) --- */
+@media (max-width: 768px) {
+    .header-container {
+        flex-direction: column;
+        gap: 15px;
+    }
+    
+    nav ul {
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 15px;
+    }
+
+    .services-container {
+        flex-direction: column;
+        gap: 30px;
+    }
+}
