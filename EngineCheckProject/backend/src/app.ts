@@ -9,6 +9,9 @@ import historyApiFallback from "connect-history-api-fallback"
 const app: Express = express()
 const port: number = 3000
 
+//middlewares
+
+app.use(express.json())
 app.use(historyApiFallback())
 app.use(express.static("public")) //per risorse in public
 
