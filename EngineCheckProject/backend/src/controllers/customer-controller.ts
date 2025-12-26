@@ -8,35 +8,19 @@ import { Request, Response } from "express";
 import { connection } from "../utils/db";
 
 
-export async function customerAllVehicles(req: Request, res: Response) {
-    connection.execute(
-        `SELECT
-        FROM
-        WHERE`,
-        [],
-        function (err, results, fields) {
-            res.json(results);
-        }
-    );
-}
-
 export async function customerAddNewCustomer(req: Request, res: Response) {
-
     //Recupera dati
     const { Email, First_Name, Last_Name, Password, Phone } = req.body;
-
     //400: Errore campi mancanti
     if (!Email || !First_Name || !Last_Name || !Password || !Phone) {
         res.status(400).send("Compilare tutti i campi obbligatori");
         return; 
     }
-
     //Query SQL
     const sql = `
         INSERT INTO CUSTOMER (Email, First_Name, Last_Name, Password, Phone) 
         VALUES (?, ?, ?, ?, ?)
     `;
-
     //Esecuzione e risposta
     connection.execute(sql,
         [Email, First_Name, Last_Name, Password, Phone],
@@ -53,11 +37,22 @@ export async function customerAddNewCustomer(req: Request, res: Response) {
                                         error: err})
                 return;
             }
-
             //Successo
             res.status(201).send({  message: "Nuovo cliente registrato correttamente",
-                                    email: Email
-            })
+                                    email: Email})
         }
     );
 }
+
+export async function customerAllVehicles(req: Request, res: Response) {
+    connection.execute(
+        `SELECT
+        FROM
+        WHERE`,
+        [],
+        function (err, results, fields) {
+            res.json(results);
+        }
+    );
+}
+

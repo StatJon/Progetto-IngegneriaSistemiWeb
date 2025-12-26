@@ -3,6 +3,7 @@ import * as customerController from "../controllers/customer-controller"
 
 const router: Router = Router()
 
+router.post("/api/customer/addNew", customerController.customerAddNewCustomer)
 router.get("/api/customer/allVehicles", customerController.customerAllVehicles)
 
 export default router
