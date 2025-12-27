@@ -15,7 +15,7 @@ CREATE TABLE `CUSTOMER` (
     `First_Name` varchar(100) NOT NULL,
     `Last_Name` varchar(100) NOT NULL,
     `Password` varchar(255) NOT NULL,
-    `Phone` int(10) NOT NULL,
+    `Phone` varchar(13) NOT NULL,
     PRIMARY KEY (`Email`)
 );
 CREATE TABLE `SERVICE` (
@@ -35,6 +35,7 @@ CREATE TABLE `JOB` (
     `License_Plate` varchar(7) NOT NULL,    
     `Date_Time` DATETIME NOT NULL,
     `CUSTOMER_Email` varchar(255) NOT NULL,
+    `isCompleted` BOOLEAN NOT NULL DEFAULT FALSE,
     PRIMARY KEY (`Job_ID`),
     FOREIGN KEY (`CUSTOMER_Email`) REFERENCES `CUSTOMER` (`Email`)
     ON DELETE NO ACTION

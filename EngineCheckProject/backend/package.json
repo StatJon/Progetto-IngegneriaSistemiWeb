@@ -4,6 +4,7 @@
   "description": "",
   "main": "app.js",
   "dependencies": {
+    "awesome-phonenumber": "^7.6.0",
     "axios": "^1.13.2",
     "connect-history-api-fallback": "^2.0.0",
     "express": "^5.2.1",
