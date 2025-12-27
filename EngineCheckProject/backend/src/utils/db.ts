@@ -5,5 +5,5 @@ export const connection: Connection = mysql.createConnection({
     host: 'localhost',
     user: 'root',
     password: '',
-    database: 'EngineCheck_t'
+    database: 'EngineCheck'
 })
