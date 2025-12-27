@@ -25,7 +25,7 @@ export async function customerAddNewCustomer(req: Request, res: Response) {
         res.status(400).send({  message: "Numero di telefono non valido"
                                 })
     }
-    const PhoneFormatted = phoneParser.number?.e164;
+    const PhoneFormatted = phoneParser.number?.e164; //usare PhoneFormatted da qui in poi
 
 
     //Query SQL

@@ -1,7 +1,7 @@
 /* Crea Database */
-``
-CREATE DATABASE IF NOT EXISTS `blogisw` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
-USE `blogisw`;
+
+CREATE DATABASE IF NOT EXISTS `engineCheck` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
+USE `engineCheck`;
 
 CREATE TABLE `EMPLOYEE` (
     `Badge_Number` int(12) NOT NULL AUTO_INCREMENT,
@@ -18,16 +18,18 @@ CREATE TABLE `CUSTOMER` (
     `Phone` varchar(13) NOT NULL,
     PRIMARY KEY (`Email`)
 );
+/*Il singolo servizio standard da effettuare/offrire*/
 CREATE TABLE `SERVICE` (
     `Service_ID` int(11) NOT NULL AUTO_INCREMENT,
     `Estimated_Duration` int(11) NOT NULL,
     `Title` varchar(255) NOT NULL,
     `Description` varchar(1000) NOT NULL,
-    `Price` int(11) NOT NULL,
+    `Price` decimal(10, 2) NOT NULL,
     `Vehicle_Type` varchar(50) NOT NULL, 
-    CHECK (`Vehicle_Type` IN (`car`, `motorcycle`)),
+    CHECK (`Vehicle_Type` IN ('car', 'motorcycle')),
     PRIMARY KEY (`Service_ID`)
 );
+/*L'appuntamento con tutti i dati relativi*/
 CREATE TABLE `JOB` (
     `Job_ID` int(11) NOT NULL AUTO_INCREMENT,
     `Model` varchar(100) NOT NULL,
@@ -37,31 +39,33 @@ CREATE TABLE `JOB` (
     `CUSTOMER_Email` varchar(255) NOT NULL,
     `isCompleted` BOOLEAN NOT NULL DEFAULT FALSE,
     PRIMARY KEY (`Job_ID`),
-    FOREIGN KEY (`CUSTOMER_Email`) REFERENCES `CUSTOMER` (`Email`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION
-);
-CREATE TABLE `COMPOSED_OF` (
-    `APPOINTMENT_Appointment_ID` int(11) NOT NULL ,
-    `JOB_Job_ID` int(11) NOT NULL ,
-    PRIMARY KEY (`APPOINTMENT_Appointment_ID`, `JOB_Job_ID`),
-    FOREIGN KEY (`APPOINTMENT_Appointment_ID`) REFERENCES `APPOINTMENT` (`Appointment_ID`)
-    ON DELETE NO ACTION
+    FOREIGN KEY (`CUSTOMER_Email`) REFERENCES `CUSTOMER` (`Email`),
+    ON DELETE NO ACTION,
     ON UPDATE NO ACTION,
-    FOREIGN KEY (`JOB_Job_ID`) REFERENCES `JOB` (`Job_ID`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION
 );
+/*Lega un JOB con tutti i SERVICE relativi*/
+CREATE TABLE `COMPOSED_OF` (
+    `JOB_Job_ID` int(11) NOT NULL ,
+    `SERVICE_Service_ID` int(11) NOT NULL ,
+    PRIMARY KEY (`JOB_Job_ID`, `SERVICE_Service_ID`),
+    FOREIGN KEY (`JOB_Job_ID`) REFERENCES `JOB` (`Job_ID`)
+    ON DELETE NO ACTION,
+    ON UPDATE CASCADE,
+    FOREIGN KEY (`SERVICE_Service_ID`) REFERENCES `SERVICE` (`Service_ID`),
+    ON DELETE NO ACTION,
+    ON UPDATE CASCADE
+);
+/*Lega un EMPLOYEE ad un JOB*/
 CREATE TABLE `PERFORMS` (
     `EMPLOYEE_Badge_Number` int(12) NOT NULL ,
     `JOB_Job_ID` int(11) NOT NULL ,
     PRIMARY KEY (`EMPLOYEE_Badge_Number`, `JOB_Job_ID`),
     FOREIGN KEY (`EMPLOYEE_Badge_Number`) REFERENCES `EMPLOYEE` (`Badge_Number`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
-    FOREIGN KEY (`JOB_Job_ID`) REFERENCES `JOB` (`Job_ID`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION
+    ON DELETE NO ACTION,
+    ON UPDATE CASCADE,
+    FOREIGN KEY (`JOB_Job_ID`) REFERENCES `JOB` (`Job_ID`),
+    ON DELETE NO ACTION,
+    ON UPDATE CASCADE,
 );
 
 /* Dump Dati*/
