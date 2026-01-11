@@ -1,18 +1,19 @@
 import express, { Express } from "express"
+import bodyParser from "body-parser"
+import cookieParser from "cookie-parser"
+import historyApiFallback from "connect-history-api-fallback"
+
 import customerRouter from "./routes/customer-router"
 import employeeRouter from "./routes/employee-router"
 import jobRouter from "./routes/job-router"
 import serviceRouter from "./routes/service-router"
 
-import historyApiFallback from "connect-history-api-fallback"
-
 const app: Express = express()
 const port: number = 3000
 
 //middlewares
-
+app.use(cookieParser())
 app.use(express.json())
-app.use(historyApiFallback())
 app.use(express.static("public")) //per risorse in public
 
 //routing api
@@ -21,7 +22,10 @@ app.use(employeeRouter)
 app.use(jobRouter)
 app.use(serviceRouter)
 
-//fallback 404
+//history fallback
+app.use(historyApiFallback())
+
+//404 fallback
 app.use(function(req, res, next) {
   res.setHeader("Content-Type", "text/plain")
   res.status(404).send("Ops... Pagina non trovata")
