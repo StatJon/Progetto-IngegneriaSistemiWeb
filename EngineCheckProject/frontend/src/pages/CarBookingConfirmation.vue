@@ -1,0 +1,393 @@
+<script setup lang="ts">
+import { ref, onMounted } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
+//import axios from 'axios';
+
+const route = useRoute();
+const router = useRouter();
+
+// --- 1. RECUPERO DATI SERVIZI (Copia statica per visualizzazione) ---
+// In un'app reale, questi dati potrebbero venire da uno Store (Pinia) o ricaricati dal Backend
+const allServices = [
+  { id: 1, title: 'Tagliando completo', description: 'Controllo filtri, olio, freni...', priceRange: '100 - 200 €', duration: '1,5 - 3 ore' },
+  { id: 2, title: 'Sostituzione pastiglie freni', description: 'Sostituzione anteriore/posteriore.', priceRange: '80 - 150 €', duration: '1 - 2 ore' },
+  { id: 3, title: 'Revisione e manutenzione', description: 'Controllo scarico e catalizzatore.', priceRange: '150 - 400 €', duration: '1 - 3 ore' },
+  { id: 4, title: 'Pneumatici', description: 'Montaggio ed equilibratura.', priceRange: '20 - 50 €/p', duration: '30 - 60 min' },
+  { id: 5, title: 'Diagnosi elettronica (OBD)', description: 'Check centralina errori.', priceRange: '300 - 600 €', duration: '3 - 6 ore' },
+  { id: 6, title: 'Cinghia di distribuzione', description: 'Sostituzione cinghia.', priceRange: '60 - 120 €', duration: '30 - 60 min' },
+  { id: 7, title: 'Manutenzione clima', description: 'Ricarica gas e pulizia.', priceRange: '80 - 150 €', duration: '1 - 2 ore' },
+  { id: 8, title: 'Riparazione freni', description: 'Dischi o tubi freno.', priceRange: '100 - 300 €', duration: '2 - 4 ore' },
+  { id: 9, title: 'Sostituzione batteria', description: 'Nuova batteria e check.', priceRange: '80 - 150 €', duration: '15 - 30 min' },
+];
+
+const selectedServices = ref<any[]>([]);
+const serviceIds = ref<number[]>([]);
+
+// --- 2. STATO DEL FORM ---
+const vehicleType = ref('');
+const vehiclePlate = ref('');
+const additionalNote = ref('');
+const selectedDay = ref<number | null>(null);
+const selectedHour = ref('09');
+const selectedMinute = ref('00');
+const isLoading = ref(false);
+
+// --- 3. LOGICA CALENDARIO (Semplificata per il mese corrente) ---
+const currentMonthName = "Settembre";
+const currentYear = 2025;
+const daysInMonth = 30; // Settembre ha 30 giorni
+const startDayOffset = 1; // Supponiamo inizi di Lunedì (0=Dom, 1=Lun...)
+const days = Array.from({ length: daysInMonth }, (_, i) => i + 1);
+
+const selectDay = (day: number) => {
+  selectedDay.value = day;
+};
+
+// --- 4. INIZIALIZZAZIONE ---
+onMounted(() => {
+  // Leggi query params dalla URL (es: ?services=1,4,7)
+  const queryServices = route.query.services as string;
+  
+  if (queryServices) {
+    const ids = queryServices.split(',').map(Number);
+    serviceIds.value = ids;
+    // Filtra i servizi completi basandosi sugli ID
+    selectedServices.value = allServices.filter(s => ids.includes(s.id));
+  } else {
+    // Se non ci sono servizi, torna indietro
+    router.push('/services-selection');
+  }
+});
+
+const goBack = () => {
+  router.back();
+};
+
+// --- 5. INVIO PRENOTAZIONE ---
+const confirmBooking = async () => {
+  if (!selectedDay.value || !vehiclePlate.value || !vehicleType.value) {
+    alert("Per favore compila tutti i campi obbligatori (Veicolo, Targa, Data).");
+    return;
+  }
+
+  // isLoading.value = true;
+  
+  // // Costruisci data stringa YYYY-MM-DD
+  // const dayStr = selectedDay.value < 10 ? `0${selectedDay.value}` : selectedDay.value;
+  // const fullDate = `${currentYear}-09-${dayStr}`;
+  // const fullTime = `${selectedHour.value}:${selectedMinute.value}`;
+
+  // // Recupera utente
+  // const storedUser = localStorage.getItem('user');
+  // const userId = storedUser ? JSON.parse(storedUser).id : null;
+
+  // try {
+  //   // Chiamata al Backend
+  //   await axios.post('http://localhost:3000/api/bookings', {
+  //     userId: userId || 1, // Fallback ID 1 se test senza login
+  //     vehicleType: vehicleType.value,
+  //     vehiclePlate: vehiclePlate.value,
+  //     additionalNote: additionalNote.value,
+  //     date: fullDate,
+  //     time: fullTime,
+  //     serviceIds: serviceIds.value
+  //   });
+
+    alert("Prenotazione confermata con successo!");
+    router.push('/booking-final-confirmation'); // Torna alla dashboard utente
+
+//   } catch (error) {
+//     console.error(error);
+//     alert("Errore durante la prenotazione.");
+//   } finally {
+//     isLoading.value = false;
+//   }
+ };
+</script>
+
+<template>
+  <div class="page-container">
+    <h1 class="page-title">Selezionare la data dell’appuntamento</h1>
+
+    <div class="layout-grid">
+      
+      <div class="left-column">
+        <h2 class="section-title">Riepilogo servizi prenotati</h2>
+        
+        <div class="services-list">
+          <div v-for="service in selectedServices" :key="service.id" class="summary-card">
+            <div class="card-check">✔</div>
+            <div class="card-content">
+              <h3 class="s-title">{{ service.title }}</h3>
+              <p class="s-desc">{{ service.description }}</p>
+              <div class="s-footer">
+                <span class="s-time">⏱ {{ service.duration }}</span>
+                <span class="s-price">{{ service.priceRange }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <button class="btn-back" @click="goBack">
+          ← Rivedi scelte
+        </button>
+      </div>
+
+      <div class="right-column">
+        <h2 class="section-title">Prenota l’appuntamento</h2>
+
+        <div class="booking-form-card">
+          
+          <div class="form-group">
+            <label>Tipo Veicolo</label>
+            <input type="text" v-model="vehicleType" placeholder="Es. Moto, Auto, SUV" />
+          </div>
+
+          <div class="form-group">
+            <label>Targa veicolo</label>
+            <input type="text" v-model="vehiclePlate" placeholder="Inserisci targa" />
+          </div>
+
+          <div class="form-group">
+            <label>Messaggio aggiuntivo</label>
+            <textarea v-model="additionalNote" placeholder="Dettagli extra..."></textarea>
+          </div>
+
+          <hr class="divider" />
+
+          <div class="calendar-wrapper">
+            <div class="calendar-header">
+              <button>&lt;</button>
+              <span class="month-label">{{ currentMonthName }} {{ currentYear }}</span>
+              <button>&gt;</button>
+            </div>
+            
+            <div class="calendar-grid">
+              <div class="day-name">Su</div>
+              <div class="day-name">Mo</div>
+              <div class="day-name">Tu</div>
+              <div class="day-name">We</div>
+              <div class="day-name">Th</div>
+              <div class="day-name">Fr</div>
+              <div class="day-name">Sa</div>
+
+              <div v-for="n in startDayOffset" :key="'empty-'+n" class="day-empty"></div>
+
+              <div 
+                v-for="day in days" 
+                :key="day" 
+                class="day-number" 
+                :class="{ 'selected': selectedDay === day }"
+                @click="selectDay(day)"
+              >
+                {{ day }}
+              </div>
+            </div>
+          </div>
+
+          <div class="time-selector">
+            <label>Select time</label>
+            <div class="time-inputs">
+              <select v-model="selectedHour">
+                <option v-for="h in 11" :key="h" :value="(h+7).toString().padStart(2,'0')">{{ (h+7).toString().padStart(2,'0') }}</option>
+              </select>
+              <span class="colon">:</span>
+              <select v-model="selectedMinute">
+                <option value="00">00</option>
+                <option value="15">15</option>
+                <option value="30">30</option>
+                <option value="45">45</option>
+              </select>
+            </div>
+          </div>
+
+          <button class="btn-submit" @click="confirmBooking" :disabled="isLoading">
+            {{ isLoading ? 'Invio in corso...' : '✓ Conferma ed invia' }}
+          </button>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+</template>
+
+<style scoped>
+.page-container {
+  background-color: #f0f6fc;
+  min-height: 100vh;
+  padding: 40px 20px;
+  font-family: 'Segoe UI', sans-serif;
+  color: #333;
+}
+
+.page-title {
+  text-align: center;
+  font-size: 28px;
+  font-weight: 800;
+  margin-bottom: 40px;
+}
+
+.layout-grid {
+  display: flex;
+  gap: 40px;
+  max-width: 1200px;
+  margin: 0 auto;
+  align-items: flex-start;
+}
+
+/* COLONNA SINISTRA */
+.left-column {
+  flex: 1;
+  max-width: 400px;
+}
+
+.section-title {
+  font-size: 22px;
+  font-weight: 500;
+  margin-bottom: 20px;
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 10px;
+}
+
+.summary-card {
+  background: white;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 15px;
+  margin-bottom: 15px;
+  display: flex;
+  gap: 15px;
+}
+
+.card-check {
+  background: #ccc;
+  color: white;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.s-title { font-size: 15px; font-weight: bold; margin: 0 0 5px 0; }
+.s-desc { font-size: 13px; color: #666; margin: 0 0 10px 0; line-height: 1.3; }
+.s-footer { display: flex; justify-content: space-between; font-size: 12px; font-weight: bold; color: #444; }
+
+.btn-back {
+  width: 100%;
+  padding: 12px;
+  background-color: #0084ff;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  margin-top: 20px;
+}
+.btn-back:hover { background-color: #006bcf; }
+
+
+/* COLONNA DESTRA */
+.right-column {
+  flex: 2;
+}
+
+.booking-form-card {
+  background: white;
+  border: 1px solid #eee;
+  border-radius: 12px;
+  padding: 30px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+}
+
+.form-group { margin-bottom: 15px; }
+.form-group label { display: block; font-weight: 600; margin-bottom: 5px; font-size: 14px; color: #555; }
+.form-group input, .form-group textarea {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 14px;
+}
+.form-group textarea { height: 80px; resize: vertical; }
+
+.divider { margin: 30px 0; border: 0; border-top: 1px solid #eee; }
+
+/* CALENDARIO */
+.calendar-wrapper {
+  max-width: 350px;
+  margin: 0 auto 30px auto;
+  border: 1px solid #eee;
+  border-radius: 12px;
+  padding: 20px;
+  background: #fff;
+}
+
+.calendar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; font-weight: bold; }
+.calendar-header button { background: none; border: none; font-size: 18px; cursor: pointer; }
+
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 5px;
+  text-align: center;
+}
+
+.day-name { font-size: 12px; color: #888; margin-bottom: 5px; }
+.day-number {
+  height: 35px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border-radius: 50%;
+  font-size: 14px;
+}
+.day-number:hover { background-color: #f0f0f0; }
+.day-number.selected { background-color: #333; color: white; }
+
+/* TIME SELECTOR */
+.time-selector { text-align: center; margin-bottom: 30px; }
+.time-inputs {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  background: #e0dcf5; /* Colore viola chiaro tipo immagine */
+  padding: 10px;
+  border-radius: 12px;
+  width: fit-content;
+  margin: 10px auto;
+}
+.time-inputs select {
+  background: transparent;
+  border: none;
+  font-size: 32px;
+  font-weight: bold;
+  appearance: none;
+  cursor: pointer;
+  outline: none;
+}
+
+.btn-submit {
+  width: 100%;
+  padding: 15px;
+  background-color: #0084ff;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+}
+.btn-submit:hover { background-color: #006bcf; }
+
+/* Responsive */
+@media (max-width: 800px) {
+  .layout-grid { flex-direction: column; }
+  .left-column, .right-column { width: 100%; max-width: none; }
+}
+</style>
