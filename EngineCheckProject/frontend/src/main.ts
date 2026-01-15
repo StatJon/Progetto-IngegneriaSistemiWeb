@@ -4,6 +4,7 @@ import './style.css'
 import App from './App.vue'
 
 // Importazione pagine
+import TestBackend from './pages/TestBackend.vue'
 import HomePage from './pages/HomePage.vue'
 import UserLogin from './pages/UserLogin.vue'
 import EmployeeLogin from './pages/EmployeeLogin.vue'
@@ -22,6 +23,7 @@ import NotFound from './pages/NotFound.vue'
 
 // Definizione Rotte
 const routes: Array<RouteRecordRaw> = [
+  { path: '/test', component: TestBackend, name: 'TestBackend'},
   { path: '/', component: HomePage, name: 'Home' },
   { path: '/login-user', component: UserLogin, name: 'UserLogin' },
   { path: '/login-employee', component: EmployeeLogin, name: 'EmployeeLogin' },
