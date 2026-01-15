@@ -1,0 +1,254 @@
+/* --- src/style.css --- */
+
+/* 1. Variabili Colori */
+:root {
+  --primary-color: #007bff;
+  --primary-hover: #0056b3;
+  --bg-color: #f0f4f8;
+  --card-bg: #ffffff;
+  --text-dark: #333333;
+  --text-gray: #666666;
+  --nav-text: #555555;
+}
+
+/* 2. Reset e Base */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: var(--bg-color);
+  color: var(--text-dark);
+  line-height: 1.6;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+ul {
+  list-style: none;
+}
+
+/* --- FIX ICONE DEFORMI --- */
+svg {
+  flex-shrink: 0; /* Impedisce alle icone di schiacciarsi */
+}
+
+/* 3. Layout Generali */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.main-content {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  padding-bottom: 40px;
+}
+
+/* 4. Stile "Card" */
+.card-section {
+  background-color: var(--card-bg);
+  border-radius: 20px;
+  padding: 40px;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+  text-align: center;
+  width: 100%;
+}
+
+/* 5. Header / Navbar */
+.site-header {
+  background-color: var(--card-bg);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  padding: 15px 0;
+}
+
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo {
+  font-size: 24px;
+  font-weight: bold;
+  color: var(--text-dark);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.logo span { color: var(--primary-color); }
+
+.nav-links {
+  display: flex;
+  gap: 25px;
+  align-items: center;
+}
+
+.nav-item {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--nav-text);
+  display: flex;
+  align-items: center;
+  gap: 8px; /* Spazio tra icona e testo */
+  transition: color 0.3s;
+}
+
+.nav-item:hover { color: var(--primary-color); }
+
+/* 6. Bottoni */
+.btn {
+  display: inline-flex; /* Meglio di inline-block per centrare icone */
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 10px 25px;
+  border-radius: 5px;
+  font-weight: bold;
+  cursor: pointer;
+  border: none;
+  transition: background 0.3s;
+  font-size: 14px;
+}
+
+.btn-primary {
+  background-color: var(--primary-color);
+  color: white;
+  width: 280px; /* Leggermente più largo per ospitare icone e testo comodi */
+  margin: 5px 0;
+}
+
+.btn-primary:hover {
+  background-color: var(--primary-hover);
+}
+
+/* 7. Typography */
+h1 { font-size: 28px; margin-bottom: 15px; }
+h2 { font-size: 24px; margin-bottom: 20px; color: var(--text-dark); }
+p { color: var(--text-gray); font-size: 15px; }
+
+/* 8. Icone e Features */
+.features-grid {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 40px;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.feature-item {
+  flex: 1;
+  min-width: 200px;
+  max-width: 300px;
+}
+
+.icon-circle {
+  width: 60px;
+  height: 60px;
+  background-color: #e6f0ff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 15px;
+  color: var(--primary-color);
+}
+
+/* 9. Contatti e Footer */
+.contact-info {
+  text-align: left;
+  display: inline-block;
+  margin-top: 20px;
+  font-size: 14px;
+}
+
+.contact-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.map-placeholder {
+  width: 100%;
+  height: 300px;
+  background-color: #ddd;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #666;
+}
+
+.site-footer {
+  text-align: center;
+  padding: 20px;
+  font-size: 12px;
+  color: #999;
+  border-top: 1px solid #ddd;
+  margin-top: 20px;
+  background-color: #fff;
+}
+/* --- STILE ICONE LOGIN (src/style.css) --- */
+
+/* 1. Il cerchio grande con l'omino sopra il form */
+.user-avatar-large {
+  width: 100px;             /* Larghezza del cerchio */
+  height: 100px;            /* Altezza del cerchio */
+  background-color: white;  /* Sfondo bianco */
+  border-radius: 50%;       /* Lo rende perfettamente tondo */
+  display: flex;            /* Per centrare l'icona dentro */
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 30px;      /* Centra il blocco orizzontalmente e dà spazio sotto */
+  box-shadow: 0 4px 10px rgba(0,0,0,0.08); /* Ombra leggera */
+  color: #333;              /* Colore dell'icona scura */
+}
+
+/* Regola specifica per ingrandire l'icona FontAwesome dentro il cerchio */
+.user-avatar-large i {
+  font-size: 50px;          /* Dimensione dell'icona dell'omino */
+}
+
+/* 2. Il bottone "pillola" bianca per il dipendente */
+.btn-white-pill {
+  background-color: white;
+  color: #333;
+  padding: 10px 25px;
+  border-radius: 50px;      /* Bordi molto arrotondati (a pillola) */
+  font-weight: 600;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  display: inline-flex;     /* Allinea icona e testo */
+  align-items: center;
+  gap: 10px;                /* Spazio tra la valigetta e la scritta */
+  font-size: 14px;
+  text-decoration: none;    /* Toglie la sottolineatura del link */
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.btn-white-pill:hover {
+  background-color: #f8f9fa;
+  transform: translateY(-2px); /* Leggero effetto sollevamento */
+  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+/* Assicura che l'icona della valigetta sia della misura giusta */
+.btn-white-pill i {
+  font-size: 16px;
+}
