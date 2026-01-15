@@ -3,9 +3,8 @@ import jwt from "jsonwebtoken"
 
 //Definizione struttura JWT
 export interface User {
-  id: number
-  username: string
-  role: "admin" | "employee" | "customer"
+  id: number | string //NOTA: number per badge admin/worker; string per email customer
+  role: "admin" | "worker" | "customer"
 }
 
 //Recupero e check JWT_SECRET da .env

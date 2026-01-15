@@ -4,8 +4,7 @@ import { Request, Response } from "express";
 import { getUser, setUser, unsetUser, User } from "../utils/auth";
 import { connection } from "../utils/db";
 
-//REGISTER
-
+///REGISTER///
 export const registerCustomer = async (req: Request, res: Response) => {
   //controllo login gia eseguito, !: verificare se mantenere a controller ultimato
   const user = getUser(req, res);
@@ -21,22 +20,61 @@ export const registerCustomer = async (req: Request, res: Response) => {
     return;
   }
   //Controlla email già esistente
-  const [emails] = await connection.execute("SELECT Email FROM CUSTOMER WHERE Email=?", [
-    Email,
-  ])
-    if (Array.isArray(emails) && emails.length > 0) {
-    res.status(400).send("Username già in uso.")
-    return
-  }
+  connection.execute(
+    "SELECT Email FROM CUSTOMER WHERE Email=?",
+    [Email],
+    async (err, results) => {
+      if (err) {
+        res.status(500).send("Errore Server: " + err);
+        return;
+      }
+      if (Array.isArray(results) && results.length > 0) {
+        res.status(400).send("Account già esistente con questa email");
+        return;
+      }
 
-  //Validazione campo "Phone" tramite libreria "awesome-phonenumber"
-  const phoneParser = parsePhoneNumber(Phone, { regionCode: "IT" });
-  if (!phoneParser.valid) {
-    res.status(400).send({ message: "Numero di telefono non valido" });
-  }
-  const PhoneFormatted = phoneParser.number?.e164; //usare PhoneFormatted da qui in poi
-};
+      //Validazione campo "Phone" tramite libreria "awesome-phonenumber"
+      const phoneParser = parsePhoneNumber(Phone, { regionCode: "IT" });
+      if (!phoneParser.valid) {
+        res.status(400).send({ message: "Numero di telefono non valido" });
+        return;
+      }
+      const phoneFormatted = phoneParser.number?.e164; //usare PhoneFormatted da qui in poi
+
+      //Hashing password
+      const passwordHash = await bcrypt.hash(Password, 10);
+
+      //Inserimento dati validati
+      connection.execute(
+        "INSERT INTO CUSTOMER (Email, First_Name, Last_Name, Password, Phone) VALUES (?, ?, ?, ?, ?)",
+        [Email, First_Name, Last_Name, passwordHash, phoneFormatted],
+        (errInsert, resInsert) => {
+          if (errInsert) {
+            res.status(500).send("Errore Server: " + errInsert);
+            return;
+          }
+          //Preparazione interfaccia JWT
+          const userJwtPayload: User = {
+            id: Email,
+            role: "customer"
+          };
+          //Creazione JWT cookie
+          setUser(req, res, userJwtPayload);
+          //201
+          res.status(201).send("Registrazione effettuata!")
+        }
+      );
+    }
+  );
+}; 
+///FINE REGISTER///
+
+
 //LOGIN
+export const loginCustomer = async (req: Request, res: Response) => {
+    
+}
+
 
 //PROFILE
 

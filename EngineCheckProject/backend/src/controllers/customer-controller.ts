@@ -9,6 +9,7 @@ import { parsePhoneNumber } from "awesome-phonenumber";
 
 // NOTA: i .send inviano sempre dei JSON per coerenza tra messaggi semplici e con più argomenti
 
+/*
 export async function customerAddNewCustomer(req: Request, res: Response) {
     //Recupera dati
     const { Email, First_Name, Last_Name, Password, Phone } = req.body;
@@ -59,6 +60,9 @@ export async function customerAddNewCustomer(req: Request, res: Response) {
         }
     );
 }
+*/
+
+
 
 /*Email -> JOBs -for_each-> SERVICES_OF_JOBs -for_each-> SERVICE_Service_ID */
 export async function customerAllJobs(req: Request, res: Response) {
