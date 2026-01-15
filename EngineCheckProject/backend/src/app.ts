@@ -7,6 +7,7 @@ import customerRouter from "./routes/customer-router"
 import employeeRouter from "./routes/employee-router"
 import jobRouter from "./routes/job-router"
 import serviceRouter from "./routes/service-router"
+import testingRouter from "./routes/testing-router"
 
 const app: Express = express()
 const port: number = 3000
@@ -17,10 +18,12 @@ app.use(express.json())
 app.use(express.static("public")) //per risorse in public
 
 //routing api
+app.use()
 app.use(customerRouter)
 app.use(employeeRouter)
 app.use(jobRouter)
 app.use(serviceRouter)
+app.use(testingRouter)
 
 //history fallback
 app.use(historyApiFallback())

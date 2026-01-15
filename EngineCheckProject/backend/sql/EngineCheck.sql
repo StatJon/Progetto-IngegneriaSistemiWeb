@@ -28,6 +28,7 @@ CREATE TABLE IF NOT EXISTS `SERVICE` (
     `Description` varchar(1000) NOT NULL,
     `Price` decimal(10, 2) NOT NULL,
     `Vehicle_Type` varchar(50) NOT NULL, 
+    `Category` varchar(32) NOT NULL,
     CHECK (`Vehicle_Type` IN ('car', 'motorcycle')),
     PRIMARY KEY (`Service_ID`)
 );
