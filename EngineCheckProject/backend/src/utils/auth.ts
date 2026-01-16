@@ -46,6 +46,8 @@ export const unsetUser = (req: Request, res: Response) => {
   res.clearCookie(COOKIE_NAME);
 };
 
+
+//DA TRASFORMARE IN WRAPPER COME onServerErrorHandled
 export const blockIfLoggedIn = (req: Request, res: Response) => {
   const user = getUser(req, res);
   if (user) {

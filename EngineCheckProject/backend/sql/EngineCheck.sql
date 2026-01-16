@@ -3,57 +3,68 @@
 CREATE DATABASE IF NOT EXISTS `engineCheck` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
 USE `engineCheck`;
 
+/*Nota per continuità dei campi:
+varchar senza CHECK : varchar(100)
+varchar con CHECK : varchar(32)
+password/email : varchar(255)
+int : int(12)
+decimal : (10,2)
+*/
+
 CREATE TABLE IF NOT EXISTS `EMPLOYEE` (
-    `Badge_Number` int(12) NOT NULL AUTO_INCREMENT,
+    `ID_Badge_Number` int(12) NOT NULL AUTO_INCREMENT,
     `First_Name` varchar(100) NOT NULL,
     `Last_Name` varchar(100) NOT NULL,
     `Password` varchar(255) NOT NULL,
-    `Role` varchar(10) NOT NULL,
-    CHECK (`Role` IN (`worker`, `admin`))
-    PRIMARY KEY (`Badge_Number`)
+    `Role` varchar(32) NOT NULL,
+    CHECK (`Role` IN ('Worker', 'Admin')),
+    PRIMARY KEY (`ID_Badge_Number`)
 );
 CREATE TABLE IF NOT EXISTS `CUSTOMER` (
-    `Email` varchar(255) NOT NULL,
+    `ID_Customer` int(12) NOT NULL AUTO_INCREMENT,
+    `Email` varchar(255) NOT NULL UNIQUE,
     `First_Name` varchar(100) NOT NULL,
     `Last_Name` varchar(100) NOT NULL,
     `Password` varchar(255) NOT NULL,
-    `Phone` varchar(13) NOT NULL,
-    PRIMARY KEY (`Email`)
+    `Phone` varchar(13) NOT NULL, /*Nota: viene validato dal controller*/
+    PRIMARY KEY (`ID_Customer`)
 );
 /*Il singolo servizio standard da effettuare/offrire*/
 CREATE TABLE IF NOT EXISTS `SERVICE` (
-    `Service_ID` int(11) NOT NULL AUTO_INCREMENT,
-    `Estimated_Duration` int(11) NOT NULL,
-    `Title` varchar(255) NOT NULL,
+    `Service_ID` int(12) NOT NULL AUTO_INCREMENT,
+    `Estimated_Duration_Minutes` int(12) NOT NULL,
+    `Title` varchar(100) NOT NULL,
     `Description` varchar(1000) NOT NULL,
     `Price` decimal(10, 2) NOT NULL,
-    `Vehicle_Type` varchar(50) NOT NULL, 
+    `Vehicle_Type` varchar(32) NOT NULL, 
     `Category` varchar(32) NOT NULL,
+    CHECK (`Category` IN ('maintenance', 'repair', 'tyres')),
     CHECK (`Vehicle_Type` IN ('car', 'motorcycle')),
     PRIMARY KEY (`Service_ID`)
 );
 /*L'appuntamento con tutti i dati relativi*/
 CREATE TABLE IF NOT EXISTS `JOB` (
-    `Job_ID` int(11) NOT NULL AUTO_INCREMENT,
+    `Job_ID` int(12) NOT NULL AUTO_INCREMENT,
     `Model` varchar(100) NOT NULL,
-    `Vehicle_Type` varchar(50) NOT NULL,
-    `License_Plate` varchar(7) NOT NULL,    
+    `Vehicle_Type` varchar(32) NOT NULL,
+    `License_Plate` varchar(15) NOT NULL, /*NOTA: ITA è 7, 15 per sicurezza in caso di targhe non ITA Standard*/ 
     `Date_Time` DATETIME NOT NULL,
-    `CUSTOMER_Email` varchar(255) NOT NULL,
-    `isCompleted` BOOLEAN NOT NULL DEFAULT FALSE,
-    `isInProgress` BOOLEAN NOT NULL DEFAULT FALSE,
+    `CUSTOMER_ID` int(12) NOT NULL,
+    `Job_Status` varchar(32) NOT NULL,
+    CHECK (`Job_Status` IN ('Pending', 'Assigned', 'Working', 'Completed', 'Cancelled')),
     PRIMARY KEY (`Job_ID`),
-    FOREIGN KEY (`CUSTOMER_Email`) REFERENCES `CUSTOMER` (`Email`)
+    FOREIGN KEY (`CUSTOMER_ID`) REFERENCES `CUSTOMER` (`ID_Customer`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION
 );
 /*Lega un JOB con tutti i SERVICE relativi*/
 CREATE TABLE IF NOT EXISTS `SERVICES_OF_JOB` (
-    `JOB_Job_ID` int(11) NOT NULL ,
-    `SERVICE_Service_ID` int(11) NOT NULL ,
+    `JOB_Job_ID` int(12) NOT NULL ,
+    `SERVICE_Service_ID` int(12) NOT NULL ,
+    `Quantity` int(12) NOT NULL DEFAULT 1 ,
     PRIMARY KEY (`JOB_Job_ID`, `SERVICE_Service_ID`),
     FOREIGN KEY (`JOB_Job_ID`) REFERENCES `JOB` (`Job_ID`)
-    ON DELETE NO ACTION
+    ON DELETE CASCADE
     ON UPDATE CASCADE,
     FOREIGN KEY (`SERVICE_Service_ID`) REFERENCES `SERVICE` (`Service_ID`)
     ON DELETE NO ACTION
@@ -62,13 +73,13 @@ CREATE TABLE IF NOT EXISTS `SERVICES_OF_JOB` (
 /*Lega un EMPLOYEE ad un JOB*/
 CREATE TABLE IF NOT EXISTS `EMPLOYEE_OF_JOB` (
     `EMPLOYEE_Badge_Number` int(12) NOT NULL ,
-    `JOB_Job_ID` int(11) NOT NULL ,
+    `JOB_Job_ID` int(12) NOT NULL ,
     PRIMARY KEY (`EMPLOYEE_Badge_Number`, `JOB_Job_ID`),
-    FOREIGN KEY (`EMPLOYEE_Badge_Number`) REFERENCES `EMPLOYEE` (`Badge_Number`)
+    FOREIGN KEY (`EMPLOYEE_Badge_Number`) REFERENCES `EMPLOYEE` (`ID_Badge_Number`)
     ON DELETE NO ACTION
     ON UPDATE CASCADE,
     FOREIGN KEY (`JOB_Job_ID`) REFERENCES `JOB` (`Job_ID`)
-    ON DELETE NO ACTION
+    ON DELETE CASCADE
     ON UPDATE CASCADE
 );
 
