@@ -19,7 +19,7 @@ export const connection: Connection = mysql.createConnection({
 //  return false;
 //};
 
-//funzione di check serverError preliminare, inserire il resto del codice come arrowFunction id async (results)
+//Metodo wrapper di gestione degli errori server
 export const onServerErrorHandled = (
   res: Response,
   action: (results: any) => void

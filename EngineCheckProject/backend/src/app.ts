@@ -18,7 +18,7 @@ app.use(express.json())
 app.use(express.static("public")) //per risorse in public
 
 //routing api
-app.use()
+//app.use()
 app.use(customerRouter)
 app.use(employeeRouter)
 app.use(jobRouter)
