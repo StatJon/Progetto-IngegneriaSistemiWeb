@@ -1,14 +1,16 @@
 import bcrypt from "bcrypt";
 import { parsePhoneNumber } from "awesome-phonenumber";
 import { Request, Response } from "express";
-import { blockIfLoggedIn, getUser, setUser, unsetUser, User } from "../utils/auth";
+import { getUser, onUserLoggedInBlock, setUser, unsetUser, User } from "../utils/auth";
 import { onServerErrorHandled, connection } from "../utils/db";
 
 ///REGISTER///
 export const registerCustomer = async (req: Request, res: Response) => {
-  if (blockIfLoggedIn(req, res)){
-    return;
-  }
+  onUserLoggedInBlock (res, async (results) => {
+  //
+  //if (blockIfLoggedIn(req, res)){
+  //  return;
+  //}
   //Recupera dati
   const { Email, First_Name, Last_Name, Password, Phone } = req.body;
   //400: Errore campi mancanti
@@ -18,19 +20,19 @@ export const registerCustomer = async (req: Request, res: Response) => {
   }
   //Controlla email già esistente
   connection.execute(
-    "SELECT Email FROM CUSTOMER WHERE Email=?",
+    "SELECT Email FROM CUSTOMER WHERE Email=?",//da cambiare
     [Email],
     onServerErrorHandled (res, async (results) => {
 
       if (Array.isArray(results) && results.length > 0) {
-        res.status(400).send("Account già esistente con questa email");
+        res.status(400).json({ message : "Account già esistente con questa email" });
         return;
       }
 
       //Validazione campo "Phone" tramite libreria "awesome-phonenumber"
       const phoneParser = parsePhoneNumber(Phone, { regionCode: "IT" });
       if (!phoneParser.valid) {
-        res.status(400).send({ message: "Numero di telefono non valido" });
+        res.status(400).json({ message: "Numero di telefono non valido" });
         return;
       }
       const phoneFormatted = phoneParser.number?.e164; //usare PhoneFormatted da qui in poi
@@ -42,25 +44,31 @@ export const registerCustomer = async (req: Request, res: Response) => {
       connection.execute(
         "INSERT INTO CUSTOMER (Email, First_Name, Last_Name, Password, Phone) VALUES (?, ?, ?, ?, ?)",
         [Email, First_Name, Last_Name, passwordHash, phoneFormatted],
-        (errInsert, resInsert) => {
-          if (errInsert) {
-            res.status(500).send("Errore Server: " + errInsert);
-            return;
-          }
-          //Preparazione interfaccia JWT
+        onServerErrorHandled (res, async(results) => {
           const userJwtPayload: User = {
-            id: Email,
+            id: Email,//controllare con sql
             role: "customer"
           };
           //Creazione JWT cookie
           setUser(req, res, userJwtPayload);
           //201
-          res.status(201).send("Registrazione effettuata!")
+          res.status(201).json({ message: "Registrazione effettuata!"})
+         }))
+        //(errInsert, resInsert) => {
+        //  if (errInsert) {
+        //    res.status(500).json({ message: "Errore Server: ",
+        //      error : errInsert});
+        //    return;
+        //  }
+          //Preparazione interfaccia JWT
+          
         }
-      );
-    })
-  );
-}; 
+      )
+    )
+    
+  } )
+
+}
 ///FINE REGISTER///
 
 
