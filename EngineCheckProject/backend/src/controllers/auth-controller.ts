@@ -1,5 +1,5 @@
-import bcrypt from "bcrypt";
-import { parsePhoneNumber } from "awesome-phonenumber";
+import bcrypt from "bcrypt"; //Libreria Hashing Password
+import { parsePhoneNumber } from "awesome-phonenumber"; //Libreria Validazione numeri telefono
 import { Request, Response } from "express";
 import { getUser, setUser, unsetUser, User } from "../utils/auth";
 import { connection } from "../utils/db";
@@ -219,6 +219,14 @@ export const logout = async (req: Request, res: Response) => {
   }
 };
 
+export const verifyUserLoggedIn = async (req: Request, res: Response) => {
+    const user = getUser(req, res);
+    if (!user) {
+      res.status(401).json({ message : "Attenzione: autenticazione richiesta"})
+      return null;
+    }
+  return user;
+  };
 
 
 ///---GENERAL AUTH---///
