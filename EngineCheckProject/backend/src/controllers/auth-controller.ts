@@ -4,71 +4,159 @@ import { Request, Response } from "express";
 import { getUser, setUser, unsetUser, User } from "../utils/auth";
 import { connection } from "../utils/db";
 
+
+///---CUSTOMER AUTH---///
+
 export const registerCustomer = async (req: Request, res: Response) => {
-  //Controllo Login
-  const userLogged = getUser(req, res);
-  if (userLogged) {
-    res
-      .status(401)
-      .json({ message: "Attenzione: Logout richiesto per l'operazione" });
-    return;
-  }
-
-  //Recupera dati
-  const { Email, First_Name, Last_Name, Password, Phone } = req.body;
-
-  //Controllo Campi mancanti
-  if (!Email || !First_Name || !Last_Name || !Password || !Phone) {
-    res.status(400).json({ message: "Compilare tutti i campi obbligatori" });
-    return;
-  }
-
   try {
+    //Controllo Login
+    const userLogged = getUser(req, res);
+    if (userLogged) {
+      res
+        .status(401)
+        .json({ message: "Attenzione: Logout richiesto per l'operazione" });
+      return;
+    }
+
+    //Recupera dati
+    const { Email, First_Name, Last_Name, Password, Phone } = req.body;
+
+    //Controllo Campi mancanti
+    if (!Email || !First_Name || !Last_Name || !Password || !Phone) {
+      res.status(400).json({ message: "Compilare tutti i campi obbligatori" });
+      return;
+    }
+
     //Controllo email già esistente
     const [emails] = await connection.execute(
       "SELECT Email FROM CUSTOMER WHERE Email=?",
       [Email]
     );
     if (Array.isArray(emails) && emails.length > 0) {
-      res
-        .status(400)
-        .json({
-          message: "Attenzione: Account già registrato con questa email",
-        });
+      res.status(400).json({
+        message: "Attenzione: Account già registrato con questa email",
+      });
       return;
     }
 
-    //validazione numero di telefono
+    //Validazione numero di telefono
     const phoneParser = parsePhoneNumber(Phone, { regionCode: "IT" });
     if (!phoneParser.valid) {
-      res.status(400).json({ message: "Attenzione: Numero di telefono non valido" });
+      res
+        .status(400)
+        .json({ message: "Attenzione: Numero di telefono non valido" });
       return;
     }
     const phoneFormatted = phoneParser.number?.e164;
 
-    //hashing password
+    //Hashing password
     const passwordHash = await bcrypt.hash(Password, 10);
 
     //INSERT
     //Nota: const [result] serve per estrarre l'ID creato da DB AUTO_INCREMENT
-    const [insertResult] = await connection.execute(
-        "INSERT INTO CUSTOMER (Email, First_Name, Last_Name, Password, Phone) VALUES (?, ?, ?, ?, ?)",
+    const [insertResult] = (await connection.execute(
+      "INSERT INTO CUSTOMER (Email, First_Name, Last_Name, Password, Phone) VALUES (?, ?, ?, ?, ?)",
       [Email, First_Name, Last_Name, passwordHash, phoneFormatted]
-    ) as any; //<-- Nota: "as any" per sopprimere TS e restituire .insertID sotto
+    )) as any; //<-- Nota: "as any" workaround per sopprimere TS e restituire .insertID sotto
     const newUserId = insertResult.insertId;
 
     //LOGIN, creazione JWT
     //Nota: metodo .toString() per necessità JWT
     const userJwtPayload: User = {
-        id: newUserId.toString(),
-        role: "customer"
-    }
-    setUser (req, res, userJwtPayload);
-    res.status(201).json({ message : "Successo: Registrazione effettuata con successo"})
-
+      id: newUserId.toString(),
+      role: "customer",
+    };
+    setUser(req, res, userJwtPayload);
+    res
+      .status(201)
+      .json({ message: "Successo: Registrazione effettuata con successo" });
   } catch (error) {
     console.error("Errore registerCustomer: ", error);
-    res.status(500).json({ message : "Errore del Server/DB", error : error});
+    res.status(500).json({ message: "Errore del Server/DB", error: error });
   }
 };
 
+
+export const loginCustomer = async (req: Request, res: Response) => {
+  try {
+    const userLogged = getUser(req, res);
+    if (userLogged) {
+      res
+        .status(401)
+        .json({ message: "Attenzione: Logout richiesto per l'operazione" });
+      return;
+    }
+
+    //Recupera dati
+    const { Email, Password } = req.body;
+
+    //Controllo campi mancanti
+    if (!Email || !Password) {
+      res.status(400).json({ message: "Email e Password sono obbligatori" });
+      return;
+    }
+
+    //Ricerca email
+    const [results] = await connection.execute(
+      "SELECT ID_Customer, Email, Password FROM CUSTOMER WHERE Email=?",
+      [Email]
+    );
+
+    //Errore, email inesistente
+    if (!Array.isArray(results) || results.length == 0) {
+      res.status(400).json({ message : "Credenziali errate."});
+      return;
+    }
+
+    const userData = results[0] as any;
+
+    //Controlla password
+    const correctPassword = await bcrypt.compare(Password, userData.Password);
+
+    //Errore, password errata
+    if (!correctPassword) {
+      res.status(400).json({ message : "Credenziali errate."});
+      return;
+    }
+
+    // Delete per sicurezza
+    delete userData.Password;
+
+    //Creazione esplicita del JWT
+    const userJwtPayload: User = {
+      id: userData.ID_Customer.toString(),
+      role: "customer",
+    };
+    setUser(req, res, userJwtPayload);
+
+    res.json({ message: "Login effettuato con successo" });
+  } catch (error) {
+    console.error("Errore registerCustomer: ", error);
+    res.status(500).json({ message: "Errore del Server/DB", error: error });
+  }
+};
+
+///---CUSTOMER AUTH---///
+///---------------------///
+///---EMPLOYEE AUTH---///
+
+
+
+///---EMPLOYEE AUTH---///
+///---------------------///
+///---GENERAL AUTH---///
+
+
+
+///---EMPLOYEE AUTH---///
+///---------------------///
+///---TEMPLATE AUTH---///
+
+export const templateAuth = async (req: Request, res: Response) => {
+  try {
+    
+  }catch (error){
+    console.error("Errore registerCustomer: ", error);
+    res.status(500).json({ message: "Errore del Server/DB", error: error });
+  }
+}

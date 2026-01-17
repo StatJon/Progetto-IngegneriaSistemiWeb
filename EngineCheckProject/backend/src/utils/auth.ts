@@ -1,6 +1,8 @@
 import { Request, Response } from "express";
 import jwt from "jsonwebtoken";
 
+///FUNZIONI PRINCIPALI AUTH///
+
 //Definizione struttura JWT
 export interface User {
   id: number | string; //NOTA: number per badge admin/worker; string per email customer
@@ -46,29 +48,3 @@ export const unsetUser = (req: Request, res: Response) => {
   res.clearCookie(COOKIE_NAME);
 };
 
-//DA TRASFORMARE IN WRAPPER COME onServerErrorHandled
-
-//Metodo wrapper di gestione degli errori server
-//export const onUserLoggedInBlock = (
-//  res: Response,
-//  action: (results: any) => void
-//) => {
-//  return (user: User, results: any) => {
-//    if (user) {
-//      res
-//        .status(401)
-//        .json({ message: "Questa operazione richiede il logout." });
-//      return;
-//    }
-//    action(results);
-//  };
-//};
-//
-//export const blockIfLoggedIn = (req: Request, res: Response) => {
-//  const user = getUser(req, res);
-//  if (user) {
-//    res.status(401).json({ message: "Questa operazione richiede il logout." });
-//    return true;
-//  }
-//  return false;
-//};
