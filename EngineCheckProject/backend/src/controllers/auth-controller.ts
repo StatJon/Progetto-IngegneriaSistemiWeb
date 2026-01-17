@@ -4,7 +4,6 @@ import { Request, Response } from "express";
 import { getUser, setUser, unsetUser, User } from "../utils/auth";
 import { connection } from "../utils/db";
 
-
 ///---CUSTOMER AUTH---///
 
 export const registerCustomer = async (req: Request, res: Response) => {
@@ -76,7 +75,6 @@ export const registerCustomer = async (req: Request, res: Response) => {
   }
 };
 
-
 export const loginCustomer = async (req: Request, res: Response) => {
   try {
     const userLogged = getUser(req, res);
@@ -104,7 +102,7 @@ export const loginCustomer = async (req: Request, res: Response) => {
 
     //Errore, email inesistente
     if (!Array.isArray(results) || results.length == 0) {
-      res.status(400).json({ message : "Credenziali errate."});
+      res.status(400).json({ message: "Credenziali errate." });
       return;
     }
 
@@ -115,7 +113,7 @@ export const loginCustomer = async (req: Request, res: Response) => {
 
     //Errore, password errata
     if (!correctPassword) {
-      res.status(400).json({ message : "Credenziali errate."});
+      res.status(400).json({ message: "Credenziali errate." });
       return;
     }
 
@@ -129,7 +127,7 @@ export const loginCustomer = async (req: Request, res: Response) => {
     };
     setUser(req, res, userJwtPayload);
 
-    res.json({ message: "Login effettuato con successo" });
+    res.json({ message: "Successo: Login effettuato correttamente" });
   } catch (error) {
     console.error("Errore: ", error);
     res.status(500).json({ message: "Errore del Server/DB", error: error });
@@ -140,11 +138,26 @@ export const loginCustomer = async (req: Request, res: Response) => {
 ///---------------------///
 ///---EMPLOYEE AUTH---///
 
-
-
 ///---EMPLOYEE AUTH---///
 ///---------------------///
 ///---GENERAL AUTH---///
+
+export const logout = async (req: Request, res: Response) => {
+  try {
+    const user = getUser(req, res);
+    if (!user) {
+      res.status(401).json({ message : "Attenzione: autenticazione richiesta."});
+      return;
+    };
+    unsetUser(req, res);
+
+  res.json({ message: "Successo, Logout effettuato correttamente" });
+
+  } catch (error) {
+    console.error("Errore: ", error);
+    res.status(500).json({ message: "Errore del Server/DB", error: error });
+  }
+};
 
 
 
@@ -154,9 +167,8 @@ export const loginCustomer = async (req: Request, res: Response) => {
 
 export const templateAuth = async (req: Request, res: Response) => {
   try {
-    
-  }catch (error){
+  } catch (error) {
     console.error("Errore: ", error);
     res.status(500).json({ message: "Errore del Server/DB", error: error });
   }
-}
+};
