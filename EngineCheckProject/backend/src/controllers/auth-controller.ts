@@ -71,7 +71,7 @@ export const registerCustomer = async (req: Request, res: Response) => {
       .status(201)
       .json({ message: "Successo: Registrazione effettuata con successo" });
   } catch (error) {
-    console.error("Errore registerCustomer: ", error);
+    console.error("Errore: ", error);
     res.status(500).json({ message: "Errore del Server/DB", error: error });
   }
 };
@@ -131,7 +131,7 @@ export const loginCustomer = async (req: Request, res: Response) => {
 
     res.json({ message: "Login effettuato con successo" });
   } catch (error) {
-    console.error("Errore registerCustomer: ", error);
+    console.error("Errore: ", error);
     res.status(500).json({ message: "Errore del Server/DB", error: error });
   }
 };
@@ -148,7 +148,7 @@ export const loginCustomer = async (req: Request, res: Response) => {
 
 
 
-///---EMPLOYEE AUTH---///
+///---GENERAL AUTH---///
 ///---------------------///
 ///---TEMPLATE AUTH---///
 
@@ -156,7 +156,7 @@ export const templateAuth = async (req: Request, res: Response) => {
   try {
     
   }catch (error){
-    console.error("Errore registerCustomer: ", error);
+    console.error("Errore: ", error);
     res.status(500).json({ message: "Errore del Server/DB", error: error });
   }
 }
