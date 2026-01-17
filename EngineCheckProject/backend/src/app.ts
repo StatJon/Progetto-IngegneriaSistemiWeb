@@ -17,10 +17,9 @@ const port: number = 3000
 //middlewares
 app.use(cookieParser())
 app.use(express.json())
-app.use(express.static("public")) //per risorse in public
+app.use(express.static("public")) //per eventuali risorse in public
 
 //routing api
-//app.use()
 app.use(authController)
 app.use(customerRouter)
 app.use(employeeRouter)
