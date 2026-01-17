@@ -4,24 +4,24 @@ USE `engineCheck`;
 
 -- =============================================
 -- 1. POPOLAMENTO EMPLOYEE
--- ID 1: Admin, ID 2-4: Worker
+-- ID 1: Admin, ID 2-4: Worker, Password per tutti: pass123
 -- =============================================
 INSERT INTO `EMPLOYEE` (`First_Name`, `Last_Name`, `Password`, `Role`) VALUES
-('Mario', 'Rossi', '$2y$10$vI8aWBnW3fID.ZQ4/zo1G.q1lRps.9cGLcZEiGDMVr5yUP1KUOYTa', 'Admin'),
-('Luigi', 'Verdi', '$2y$10$vI8aWBnW3fID.ZQ4/zo1G.q1lRps.9cGLcZEiGDMVr5yUP1KUOYTa', 'Worker'),
-('Anna', 'Bianchi', '$2y$10$vI8aWBnW3fID.ZQ4/zo1G.q1lRps.9cGLcZEiGDMVr5yUP1KUOYTa', 'Worker'),
-('Paolo', 'Neri', '$2y$10$vI8aWBnW3fID.ZQ4/zo1G.q1lRps.9cGLcZEiGDMVr5yUP1KUOYTa', 'Worker');
+('Mario', 'Rossi', '$2a$12$FAonyfruDFZy4o16m3Kewe.1iKzt4xF/cQeadJj9ogNvpgRwwstoq', 'Admin'),
+('Luigi', 'Verdi', '$2a$12$FAonyfruDFZy4o16m3Kewe.1iKzt4xF/cQeadJj9ogNvpgRwwstoq', 'Worker'),
+('Anna', 'Bianchi', '$2a$12$FAonyfruDFZy4o16m3Kewe.1iKzt4xF/cQeadJj9ogNvpgRwwstoq', 'Worker'),
+('Paolo', 'Neri', '$2a$12$FAonyfruDFZy4o16m3Kewe.1iKzt4xF/cQeadJj9ogNvpgRwwstoq', 'Worker');
 
 -- =============================================
 -- 2. POPOLAMENTO CUSTOMER
--- Email uniche, Nomi italiani, Tel E.164
+-- Email uniche, Nomi italiani, Tel E.164, Password per tutti: pass123
 -- =============================================
 INSERT INTO `CUSTOMER` (`Email`, `First_Name`, `Last_Name`, `Password`, `Phone`) VALUES
-('giulia.romani@email.it', 'Giulia', 'Romani', '$2y$10$vI8aWBnW3fID.ZQ4/zo1G.q1lRps.9cGLcZEiGDMVr5yUP1KUOYTa', '+393331234567'),
-('marco.ferri@gmail.com', 'Marco', 'Ferri', '$2y$10$vI8aWBnW3fID.ZQ4/zo1G.q1lRps.9cGLcZEiGDMVr5yUP1KUOYTa', '+393479876543'),
-('sofia.gallo@hotmail.it', 'Sofia', 'Gallo', '$2y$10$vI8aWBnW3fID.ZQ4/zo1G.q1lRps.9cGLcZEiGDMVr5yUP1KUOYTa', '+393285551234'),
-('luca.costa@email.it', 'Luca', 'Costa', '$2y$10$vI8aWBnW3fID.ZQ4/zo1G.q1lRps.9cGLcZEiGDMVr5yUP1KUOYTa', '+393391122334'),
-('alessandro.rizzo@live.it', 'Alessandro', 'Rizzo', '$2y$10$vI8aWBnW3fID.ZQ4/zo1G.q1lRps.9cGLcZEiGDMVr5yUP1KUOYTa', '+393510001112');
+('giulia.romani@email.it', 'Giulia', 'Romani', '$2a$12$FAonyfruDFZy4o16m3Kewe.1iKzt4xF/cQeadJj9ogNvpgRwwstoq', '+393331234567'),
+('marco.ferri@gmail.com', 'Marco', 'Ferri', '$2a$12$FAonyfruDFZy4o16m3Kewe.1iKzt4xF/cQeadJj9ogNvpgRwwstoq', '+393479876543'),
+('sofia.gallo@hotmail.it', 'Sofia', 'Gallo', '$2a$12$FAonyfruDFZy4o16m3Kewe.1iKzt4xF/cQeadJj9ogNvpgRwwstoq', '+393285551234'),
+('luca.costa@email.it', 'Luca', 'Costa', '$2a$12$FAonyfruDFZy4o16m3Kewe.1iKzt4xF/cQeadJj9ogNvpgRwwstoq', '+393391122334'),
+('alessandro.rizzo@live.it', 'Alessandro', 'Rizzo', '$2a$12$FAonyfruDFZy4o16m3Kewe.1iKzt4xF/cQeadJj9ogNvpgRwwstoq', '+393510001112');
 
 -- =============================================
 -- 3. POPOLAMENTO SERVICE
