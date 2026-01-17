@@ -63,7 +63,7 @@ export const registerCustomer = async (req: Request, res: Response) => {
     //Nota: metodo .toString() per necessità JWT
     const userJwtPayload: User = {
       id: newUserId.toString(),
-      role: "customer",
+      role: "Customer",
     };
     setUser(req, res, userJwtPayload);
     res
@@ -123,7 +123,7 @@ export const loginCustomer = async (req: Request, res: Response) => {
     //Creazione esplicita del JWT
     const userJwtPayload: User = {
       id: userData.ID_Customer.toString(),
-      role: "customer",
+      role: "Customer",
     };
     setUser(req, res, userJwtPayload);
 
@@ -137,6 +137,66 @@ export const loginCustomer = async (req: Request, res: Response) => {
 ///---CUSTOMER AUTH---///
 ///---------------------///
 ///---EMPLOYEE AUTH---///
+
+
+
+export const loginEmployee = async (req: Request, res: Response) => {
+  try {
+    const userLogged = getUser(req, res);
+    if (userLogged) {
+      res
+        .status(401)
+        .json({ message: "Attenzione: Logout richiesto per l'operazione" });
+      return;
+    }
+
+    //Recupera dati
+    const { BadgeNumber, Password } = req.body;
+
+    //Controllo campi mancanti
+    if (!BadgeNumber || !Password) {
+      res.status(400).json({ message: "Numero di Badge e Password sono obbligatori" });
+      return;
+    }
+
+    //Ricerca BadgeNumber
+    const [results] = await connection.execute(
+      "SELECT ID_Badge_Number, Password, Role FROM EMPLOYEE WHERE ID_Badge_Number = ?",
+      [BadgeNumber]
+    );
+
+    //Errore, BadgeNumber inesistente
+    if (!Array.isArray(results) || results.length == 0) {
+      res.status(400).json({ message: "Credenziali errate." });
+      return;
+    }
+
+    const userData = results[0] as any;
+
+    //Controlla password
+    const correctPassword = await bcrypt.compare(Password, userData.Password);
+
+    //Errore, password errata
+    if (!correctPassword) {
+      res.status(400).json({ message: "Credenziali errate." });
+      return;
+    }
+    // Delete per sicurezza
+    delete userData.Password;
+
+    //Creazione esplicita del JWT
+    const userJwtPayload: User = {
+      id: userData.ID_Badge_Number.toString(),
+      role: userData.Role,
+    };
+    setUser(req, res, userJwtPayload);
+
+    res.json({ message: "Successo: Login effettuato correttamente" });
+  } catch (error) {
+    console.error("Errore: ", error);
+    res.status(500).json({ message: "Errore del Server/DB", error: error });
+  }
+};
 
 ///---EMPLOYEE AUTH---///
 ///---------------------///
