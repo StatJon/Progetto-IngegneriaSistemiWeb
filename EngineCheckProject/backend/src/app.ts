@@ -1,4 +1,4 @@
-import "dotenv/config" //Per leggere .env
+import "dotenv/config"
 import express, { Express } from "express"
 import bodyParser from "body-parser"
 import cookieParser from "cookie-parser"
