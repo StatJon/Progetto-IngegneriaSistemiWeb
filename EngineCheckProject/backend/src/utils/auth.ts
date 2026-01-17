@@ -24,7 +24,7 @@ export const setUser = (req: Request, res: Response, user: User) => {
   res.cookie(COOKIE_NAME, accessToken, {
     maxAge: 86400000,
     httpOnly: true,
-    sameSite: true, //nota: in caso di errori nella comunicazione tra frontend e backend cambiare on true con lax e riprovare
+    sameSite: true, //nota: in caso di errori nella comunicazione tra frontend e backend cambiare on true con lax o strict e riprovare
     // secure: true //commentato per uso tramite localhost
   });
 };
@@ -49,21 +49,21 @@ export const unsetUser = (req: Request, res: Response) => {
 //DA TRASFORMARE IN WRAPPER COME onServerErrorHandled
 
 //Metodo wrapper di gestione degli errori server
-export const onUserLoggedInBlock = (
-  res: Response,
-  action: (results: any) => void
-) => {
-  return (user: User, results: any) => {
-    if (user) {
-      res
-        .status(401)
-        .json({ message: "Questa operazione richiede il logout." });
-      return;
-    }
-    action(results);
-  };
-};
-
+//export const onUserLoggedInBlock = (
+//  res: Response,
+//  action: (results: any) => void
+//) => {
+//  return (user: User, results: any) => {
+//    if (user) {
+//      res
+//        .status(401)
+//        .json({ message: "Questa operazione richiede il logout." });
+//      return;
+//    }
+//    action(results);
+//  };
+//};
+//
 //export const blockIfLoggedIn = (req: Request, res: Response) => {
 //  const user = getUser(req, res);
 //  if (user) {

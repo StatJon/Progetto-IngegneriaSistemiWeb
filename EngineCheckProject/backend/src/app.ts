@@ -1,8 +1,10 @@
+import "dotenv/config" //Per leggere .env
 import express, { Express } from "express"
 import bodyParser from "body-parser"
 import cookieParser from "cookie-parser"
 import historyApiFallback from "connect-history-api-fallback"
 
+import authController from "./routes/auth-router"
 import customerRouter from "./routes/customer-router"
 import employeeRouter from "./routes/employee-router"
 import jobRouter from "./routes/job-router"
@@ -19,6 +21,7 @@ app.use(express.static("public")) //per risorse in public
 
 //routing api
 //app.use()
+app.use(authController)
 app.use(customerRouter)
 app.use(employeeRouter)
 app.use(jobRouter)
