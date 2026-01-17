@@ -1,35 +1,15 @@
-import mysql, { Connection } from "mysql2";
-import { Response } from "express";
+import mysql from "mysql2/promise"
 
-//Imposta connessione
-export const connection: Connection = mysql.createConnection({
+export const connection = await mysql.createConnection({
   host: "localhost",
   user: "root",
   password: "",
   database: "EngineCheck",
-});
+})
+//Nota: Cambiamenti in tsconfig.json per permettere await top-level
 
-// Metodi di utility vari:
-//export const blockIfServerError = (res: Response, err: any) => {
-//  if (err) {
-//    console.error("Server/DB Error: ", err);
-//    res.status(500).json({ message: "Errore Server: ", error: err });
-//    return true;
-//  }
-//  return false;
-//};
-
-//Metodo wrapper di gestione degli errori server
-export const onServerErrorHandled = (
-  res: Response,
-  action: (results: any) => void
-) => {
-  return (err: any, results: any) => {
-    if (err) {
-      console.error("Server/DB Error: ", err);
-      res.status(500).json({ message: "Errore Server: ", error: err });
-      return;
-    };
-    action(results);
-};
-}
+/*
+Reference:
+https://github.com/gtumedei/vue-express-auth
+https://sidorares.github.io/node-mysql2/docs
+*/
