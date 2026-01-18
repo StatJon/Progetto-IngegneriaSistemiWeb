@@ -52,7 +52,7 @@ export const registerCustomer = async (req: Request, res: Response) => {
     const passwordHash = await bcrypt.hash(Password, 10);
 
     //INSERT
-    //Nota: const [result] serve per estrarre l'ID creato da DB AUTO_INCREMENT
+    //Nota: const [insertResult] serve per estrarre l'ID creato da DB AUTO_INCREMENT
     const [insertResult] = (await connection.execute(
       "INSERT INTO CUSTOMER (Email, First_Name, Last_Name, Password, Phone) VALUES (?, ?, ?, ?, ?)",
       [Email, First_Name, Last_Name, passwordHash, phoneFormatted]
@@ -137,6 +137,46 @@ export const loginCustomer = async (req: Request, res: Response) => {
 
 
 ///---EMPLOYEE AUTH---///
+
+export const registerEmployee = async (req: Request, res: Response) => {
+  try {
+    //Controllo Login
+    const userLogged = getUser(req, res);
+    if (userLogged) {
+      res
+        .status(401)
+        .json({ message: "Attenzione: Logout richiesto per l'operazione" });
+      return;
+    }
+
+    //Recupera dati
+    const { First_Name, Last_Name, Password } = req.body;
+
+    //Controllo Campi mancanti
+    if (!First_Name || !Last_Name || !Password) {
+      res.status(400).json({ message: "Compilare tutti i campi obbligatori" });
+      return;
+    }
+
+    //Hashing password
+    const passwordHash = await bcrypt.hash(Password, 10);
+
+    //INSERT
+    //Nota: const [insertResult] serve per estrarre l'ID creato da DB AUTO_INCREMENT
+    await connection.execute(
+      "INSERT INTO EMPLOYEE (First_Name, Last_Name, Password) VALUES (?, ?, ?)",
+      [First_Name, Last_Name, passwordHash]
+    ) 
+
+    res
+      .status(201)
+      .json({ message: "Successo: Registrazione effettuata con successo" });
+  } catch (error) {
+    console.error("Errore: ", error);
+    res.status(500).json({ message: "Errore del Server/DB", error: error });
+  }
+};
+
 
 export const loginEmployee = async (req: Request, res: Response) => {
   try {
