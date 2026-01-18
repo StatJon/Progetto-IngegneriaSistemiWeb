@@ -23,7 +23,7 @@ import NotFound from './pages/NotFound.vue'
 
 // Definizione Rotte
 const routes: Array<RouteRecordRaw> = [
-  { path: '/test', component: TestBackend, name: 'TestBackend'},
+  { path: '/customer-test', component: TestBackend, name: 'TestBackend'},
   { path: '/', component: HomePage, name: 'Home' },
   { path: '/login-user', component: UserLogin, name: 'UserLogin' },
   { path: '/login-employee', component: EmployeeLogin, name: 'EmployeeLogin' },
