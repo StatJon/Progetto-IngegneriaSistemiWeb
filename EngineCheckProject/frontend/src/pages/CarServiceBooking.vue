@@ -1,120 +1,183 @@
-<script setup lang="ts">
-import { ref, computed } from 'vue';
-import { useRouter } from 'vue-router';
+<script  lang="ts">
+// import { ref, computed } from 'vue';
+// import { useRouter } from 'vue-router';
 
-// 1. DATI STATICI (Copiati esattamente dalla tua immagine)
-const servicesData = [
-  // COLONNA 1: Manutenzione Auto
-  {
-    id: 1,
-    category: 'Manutenzione Auto',
-    title: 'Tagliando completo',
-    description: 'Controllo e sostituzione di filtri (aria, olio, carburante), olio motore, controllo freni, luci e liquidi.',
-    priceRange: '100 - 200 €',
-    duration: '1,5 - 3 ore'
-  },
-  {
-    id: 2,
-    category: 'Manutenzione Auto',
-    title: 'Sostituzione pastiglie dei freni',
-    description: 'Smontaggio e sostituzione delle pastiglie dei freni anteriori o posteriori.',
-    priceRange: '80 - 150 €',
-    duration: '1 - 2 ore'
-  },
-  {
-    id: 3,
-    category: 'Manutenzione Auto',
-    title: 'Revisione e manutenzione',
-    description: 'Controllo e riparazione del sistema di scarico, inclusa la sostituzione del catalizzatore o del silenziatore.',
-    priceRange: '150 - 400 €',
-    duration: '1 - 3 ore'
-  },
-  // COLONNA 2: Pneumatici
-  {
-    id: 4,
-    category: 'Pneumatici',
-    title: 'Pneumatici',
-    description: 'Montaggio, equilibratura e, se necessario, sostituzione di pneumatici usurati.',
-    priceRange: '20 - 50 €/p',
-    duration: '30 - 60 minuti per pneumatico'
-  },
-  {
-    id: 5,
-    category: 'Pneumatici',
-    title: 'Diagnosi elettronica (OBD)',
-    description: 'Collegamento della centralina per individuare malfunzionamenti elettronici o guasti.',
-    priceRange: '300 - 600 €',
-    duration: '3 - 6 ore'
-  },
-  {
-    id: 6,
-    category: 'Pneumatici',
-    title: 'Cinghia di distribuzione',
-    description: 'Rimozione e sostituzione della cinghia di distribuzione, fondamentale per il sincronismo del motore.',
-    priceRange: '60 - 120 €',
-    duration: '30 - 60 minuti'
-  },
-  // COLONNA 3: Cura del veicolo
-  {
-    id: 7,
-    category: 'Cura del veicolo',
-    title: 'Manutenzione impianto di climatizzazione',
-    description: 'Ricarica gas refrigerante, controllo e pulizia del sistema aria condizionata.',
-    priceRange: '80 - 150 €',
-    duration: '1 - 2 ore'
-  },
-  {
-    id: 8,
-    category: 'Cura del veicolo',
-    title: 'Riparazione impianto frenante',
-    description: 'Sostituzione o riparazione di dischi, tubi freno o cambio del liquido freni.',
-    priceRange: '100 - 300 €',
-    duration: '2 - 4 ore'
-  },
-  {
-    id: 9,
-    category: 'Cura del veicolo',
-    title: 'Sostituzione batteria',
-    description: 'Rimozione e installazione di una nuova batteria fornita da noi, controllo del sistema di ricarica.',
-    priceRange: '80 - 150 €',
-    duration: '15 - 30 minuti'
-  }
-];
+// // 1. DATI STATICI (Copiati esattamente dalla tua immagine)
+// const servicesData = [
+//   // COLONNA 1: Manutenzione Auto
+//   {
+//     id: 1,
+//     category: 'Manutenzione Auto',
+//     title: 'Tagliando completo',
+//     description: 'Controllo e sostituzione di filtri (aria, olio, carburante), olio motore, controllo freni, luci e liquidi.',
+//     priceRange: '100 - 200 €',
+//     duration: '1,5 - 3 ore'
+//   },
+//   {
+//     id: 2,
+//     category: 'Manutenzione Auto',
+//     title: 'Sostituzione pastiglie dei freni',
+//     description: 'Smontaggio e sostituzione delle pastiglie dei freni anteriori o posteriori.',
+//     priceRange: '80 - 150 €',
+//     duration: '1 - 2 ore'
+//   },
+//   {
+//     id: 3,
+//     category: 'Manutenzione Auto',
+//     title: 'Revisione e manutenzione',
+//     description: 'Controllo e riparazione del sistema di scarico, inclusa la sostituzione del catalizzatore o del silenziatore.',
+//     priceRange: '150 - 400 €',
+//     duration: '1 - 3 ore'
+//   },
+//   // COLONNA 2: Pneumatici
+//   {
+//     id: 4,
+//     category: 'Pneumatici',
+//     title: 'Pneumatici',
+//     description: 'Montaggio, equilibratura e, se necessario, sostituzione di pneumatici usurati.',
+//     priceRange: '20 - 50 €/p',
+//     duration: '30 - 60 minuti per pneumatico'
+//   },
+//   {
+//     id: 5,
+//     category: 'Pneumatici',
+//     title: 'Diagnosi elettronica (OBD)',
+//     description: 'Collegamento della centralina per individuare malfunzionamenti elettronici o guasti.',
+//     priceRange: '300 - 600 €',
+//     duration: '3 - 6 ore'
+//   },
+//   {
+//     id: 6,
+//     category: 'Pneumatici',
+//     title: 'Cinghia di distribuzione',
+//     description: 'Rimozione e sostituzione della cinghia di distribuzione, fondamentale per il sincronismo del motore.',
+//     priceRange: '60 - 120 €',
+//     duration: '30 - 60 minuti'
+//   },
+//   // COLONNA 3: Cura del veicolo
+//   {
+//     id: 7,
+//     category: 'Cura del veicolo',
+//     title: 'Manutenzione impianto di climatizzazione',
+//     description: 'Ricarica gas refrigerante, controllo e pulizia del sistema aria condizionata.',
+//     priceRange: '80 - 150 €',
+//     duration: '1 - 2 ore'
+//   },
+//   {
+//     id: 8,
+//     category: 'Cura del veicolo',
+//     title: 'Riparazione impianto frenante',
+//     description: 'Sostituzione o riparazione di dischi, tubi freno o cambio del liquido freni.',
+//     priceRange: '100 - 300 €',
+//     duration: '2 - 4 ore'
+//   },
+//   {
+//     id: 9,
+//     category: 'Cura del veicolo',
+//     title: 'Sostituzione batteria',
+//     description: 'Rimozione e installazione di una nuova batteria fornita da noi, controllo del sistema di ricarica.',
+//     priceRange: '80 - 150 €',
+//     duration: '15 - 30 minuti'
+//   }
+// ];
 
-// Stato per tenere traccia degli ID selezionati
-const selectedServices = ref<number[]>([]); 
-const router = useRouter();
+// // Stato per tenere traccia degli ID selezionati
+// const selectedServices = ref<number[]>([]); 
+// const router = useRouter();
 
-// 2. FILTRI PER COLONNA (Computed properties)
-const maintenanceServices = computed(() => servicesData.filter(s => s.category === 'Manutenzione Auto'));
-const tireServices = computed(() => servicesData.filter(s => s.category === 'Pneumatici'));
-const careServices = computed(() => servicesData.filter(s => s.category === 'Cura del veicolo'));
+// // 2. FILTRI PER COLONNA (Computed properties)
+// const maintenanceServices = computed(() => servicesData.filter(s => s.category === 'Manutenzione Auto'));
+// const tireServices = computed(() => servicesData.filter(s => s.category === 'Pneumatici'));
+// const careServices = computed(() => servicesData.filter(s => s.category === 'Cura del veicolo'));
 
-// 3. LOGICA DI SELEZIONE (Toggle)
-const toggleService = (id: number) => {
-  if (selectedServices.value.includes(id)) {
-    // Rimuovi se già presente
-    selectedServices.value = selectedServices.value.filter(sId => sId !== id);
-  } else {
-    // Aggiungi se non presente
-    selectedServices.value.push(id);
-  }
-};
+// // 3. LOGICA DI SELEZIONE (Toggle)
+// const toggleService = (id: number) => {
+//   if (selectedServices.value.includes(id)) {
+//     // Rimuovi se già presente
+//     selectedServices.value = selectedServices.value.filter(sId => sId !== id);
+//   } else {
+//     // Aggiungi se non presente
+//     selectedServices.value.push(id);
+//   }
+// };
 
-// 4. NAVIGAZIONE ALLA PROSSIMA PAGINA
-const confirmSelection = () => {
-  if (selectedServices.value.length === 0) {
-    alert("Per favore, seleziona almeno un servizio per procedere.");
-    return;
-  }
+// // 4. NAVIGAZIONE ALLA PROSSIMA PAGINA
+// const confirmSelection = () => {
+//   if (selectedServices.value.length === 0) {
+//     alert("Per favore, seleziona almeno un servizio per procedere.");
+//     return;
+//   }
   
-  // Passiamo gli ID dei servizi scelti via URL (Query Params)
-  // Esempio URL finale: /booking-date?services=1,4,7
-  router.push({ 
-    path: '/booking-car-confirm', 
-    query: { services: selectedServices.value.join(',') } 
-  });
-};
+//   // Passiamo gli ID dei servizi scelti via URL (Query Params)
+//   // Esempio URL finale: /booking-date?services=1,4,7
+//   router.push({ 
+//     path: '/booking-car-confirm', 
+//     query: { services: selectedServices.value.join(',') } 
+//   });
+// };
+
+
+import { defineComponent } from "vue";
+import axios from "axios";
+import type {Pinco} from "../types";
+
+
+
+export default defineComponent({
+    data() {
+        return {
+          
+            servicesCar: []  as Pinco []
+        }
+    },
+    methods: {
+        getServicesCar() {
+           // axios.get("/api/booking-car")
+           
+        //         .then(response => {
+        //             // Salva i dati nella variabile
+        //             this.servicesCar = response.data;
+        //         })
+        //         .catch(error => {
+        //             console.error(error);
+        //         });
+        // }
+        const mockData: Pinco[] = [
+              {
+                Service_ID: 1,
+                Estimated_Duration_Minutes: 60,
+                Title: "Cambio Olio e Filtri",
+                Description: "Sostituzione completa dell'olio motore...",
+                Price: 120.00,
+                Vehicle_Type: "car",
+                Category: "maintenance"
+              },
+              // {
+              //   serviceId: 2,
+              //   estimatedDuration: 45,
+              //   title: "Sostituzione Pastiglie Freni",
+              //   description: "Controllo e sostituzione pastiglie...",
+              //   price: 95.50,
+              //   vehicleType: "car",
+              //   category: "repair"
+              // },
+              // {
+              //   serviceId: 3,
+              //   estimatedDuration: 30,
+              //   title: "Inversione Pneumatici",
+              //   description: "Inversione gomme anteriori/posteriori...",
+              //   price: 40.00,
+              //   vehicleType: "car",
+              //   category: "tyres"
+              // }
+            ];
+            this.servicesCar = mockData;
+    },
+    mounted() {
+        // CORRETTO: Devi chiamare la funzione con le parentesi
+        this.getServicesCar();
+    }
+}})
 </script>
 
 <template>
@@ -125,14 +188,16 @@ const confirmSelection = () => {
       
       <div class="service-column">
         <h2 class="column-title">Manutenzione Auto</h2>
+        <p>{{ servicesCar.length }}</p>
         <div 
-          v-for="service in maintenanceServices" 
-          :key="service.id" 
+          v-for="service in servicesCar" 
+          :key="service.Category" 
           class="service-card" 
-          :class="{ 'selected': selectedServices.includes(service.id) }"
-          @click="toggleService(service.id)"
+          :class="{ 'selected': false}"
+          @click="(service.Category)"
         >
-          <div class="card-header">
+        <h2>{{ service.Title }}</h2>
+          <!-- <div class="card-header">
             <div class="checkbox-custom">
               <span v-if="selectedServices.includes(service.id)">✔</span>
             </div>
@@ -198,17 +263,18 @@ const confirmSelection = () => {
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
             <span class="duration-text">{{ service.duration }}</span>
           </div>
-        </div>
+        </div> -->
       </div>
 
     </div>
+    </div>
 
-    <div class="action-bar">
+    <!-- <div class="action-bar">
       <button class="btn-confirm" @click="confirmSelection">
         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:8px"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
         Conferma servizi e scegli data
       </button>
-    </div>
+    </div> -->
 
   </div>
 </template>

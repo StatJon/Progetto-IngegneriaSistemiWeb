@@ -3,7 +3,15 @@ export interface Testing {
   phone:string;
 }
 
-
+export interface Pinco{
+  Service_ID: Number;
+  Estimated_Duration_Minutes: number;
+  Title: String;
+  Description: string;
+  Price : number;
+  Vehicle_Type : string;
+  Category : string;
+}
 
 export interface Employee {
   badgeNumber: number;
