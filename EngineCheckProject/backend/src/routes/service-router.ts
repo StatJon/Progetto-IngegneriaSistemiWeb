@@ -3,9 +3,7 @@ import * as serviceController from "../controllers/service-controller"
 
 const router: Router = Router()
 
-router.get("/api/service", serviceController.allServices)
-router.get("/api/service/car", serviceController.allServicesCar)
-router.get("/api/service/motorcycle", serviceController.allServicesMotorcycle)
-router.get("/api/service/:id", serviceController.servicesJob)
+router.get("/api/service/car", serviceController.servicesCarAll)
+
 
 export default router
