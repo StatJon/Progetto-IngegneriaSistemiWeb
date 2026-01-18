@@ -35,8 +35,10 @@ export default defineComponent({
 })
 </script>
 <template>
-  <div class="p-10 text-center">
-    <h1>{{ testBackend }}</h1>
+
+
+ <div class="p-10 text-center">
+    <h1>{{ testBackend.length }}</h1>
     <router-link to="/" class="text-blue-500 underline mt-4 block">Torna alla Home</router-link>
-  </div>
+  </div> 
 </template>
