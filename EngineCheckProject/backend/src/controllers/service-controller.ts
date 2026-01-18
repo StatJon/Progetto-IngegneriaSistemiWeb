@@ -13,7 +13,7 @@ export const servicesCarAll = async (req: Request, res: Response) => {
         .json({ message: "Servizi mancanti." });
       return;
     }
-    res.json(results);
+    res.status(200).json(results);
 
   } catch (error) {
     console.error("Errore: ", error);
@@ -33,7 +33,7 @@ export const servicesMotorcycleAll = async (req: Request, res: Response) => {
         .json({ message: "Servizi mancanti." });
       return;
     }
-    res.json(results);
+    res.status(200).json(results);
 
   } catch (error) {
     console.error("Errore: ", error);
