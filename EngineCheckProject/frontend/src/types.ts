@@ -1,3 +1,10 @@
+export interface Testing {
+  id:string;
+  phone:string;
+}
+
+
+
 export interface Employee {
   badgeNumber: number;
   firstName: string;

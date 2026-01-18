@@ -5,8 +5,10 @@ import { useRouter } from 'vue-router';
 
 // Stati del form
 const name = ref('');
+const Last_name = ref('');
 const email = ref('');
 const password = ref('');
+const Numero= ref('');
 const errorMessage = ref('');
 const isLoading = ref(false);
 
@@ -61,15 +63,37 @@ const handleRegister = async () => {
         </svg>
       </div>
 
-      <!-- <div class="form-group">
-        <label for="name">Nome</label>
+       <div class="form-group">
+        <label for="Name">Nome</label>
         <input 
-          id="name" 
+          id="Name" 
           type="text" 
           v-model="name" 
           placeholder="Il tuo nome" 
         />
-      </div> -->
+      </div> 
+
+      <div class="form-group">
+        <label for="Cognome">Cognome</label>
+        <input 
+          id="Last_Name" 
+          type="text" 
+          v-model="Last_name" 
+          placeholder="Il tuo Cognome" 
+        />
+      </div> 
+
+      <div class="form-group">
+        <label for="Numero">Numero</label>
+        <input 
+          id="Number" 
+          type="text" 
+          v-model="Numero" 
+          placeholder="Il tuo numero " 
+        />
+      </div> 
+
+
 
       <div class="form-group">
         <label for="email">Email</label>
@@ -82,7 +106,7 @@ const handleRegister = async () => {
       </div>
 
       <div class="form-group">
-        <label for="password">Password</label>
+        <label for="Password">Password</label>
         <input 
           id="password" 
           type="password" 

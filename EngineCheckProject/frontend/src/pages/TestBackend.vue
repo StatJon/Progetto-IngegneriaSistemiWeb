@@ -1,23 +1,24 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 import axios from "axios";
+import type { Testing } from "../types";
 
 // Definisci l'interfaccia qui fuori o importala
-interface TestBackend {
-    id: number;
-    // ...
-}
-
+// interface TestBackend {
+//     id: number;
+//     // ...
+// }
+ 
 export default defineComponent({
     data() {
         return {
-            // CORRETTO: rimuovi 'this.', usa solo il nome della variabile
-            testBackend: null as TestBackend | null
+          
+            testBackend: [] as Testing []
         }
     },
     methods: {
         getTestBackend() {
-            axios.get("/api/testing")
+            axios.get("/api/customer-test")
                 .then(response => {
                     // Salva i dati nella variabile
                     this.testBackend = response.data;
@@ -35,8 +36,7 @@ export default defineComponent({
 </script>
 <template>
   <div class="p-10 text-center">
-    <h1 class="text-3xl font-bold text-blue-600">Pagina in Costruzione</h1>
-    <p class="mt-4 text-gray-600">Questa è una pagina placeholder.</p>
+    <h1>{{ testBackend }}</h1>
     <router-link to="/" class="text-blue-500 underline mt-4 block">Torna alla Home</router-link>
   </div>
 </template>
