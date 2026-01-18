@@ -134,7 +134,7 @@ export const loginCustomer = async (req: Request, res: Response) => {
   }
 };
 
-///---CUSTOMER AUTH---///
+
 
 ///---EMPLOYEE AUTH---///
 
@@ -196,7 +196,7 @@ export const loginEmployee = async (req: Request, res: Response) => {
   }
 };
 
-///---EMPLOYEE AUTH---///
+
 
 ///---GENERAL AUTH---///
 
@@ -226,8 +226,7 @@ export const verifyUserLoggedIn = async (req: Request, res: Response) => {
   return user;
   };
 
-
-///---GENERAL AUTH---///
+  
 
 ///---TEMPLATE AUTH---///
 
