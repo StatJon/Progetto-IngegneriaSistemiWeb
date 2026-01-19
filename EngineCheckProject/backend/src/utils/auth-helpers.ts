@@ -29,8 +29,20 @@ export const validateAdmin = (req: Request, res: Response) => {
   if (user.role !== "Admin") {
     res
       .status(403)
-      .json({ message: "Attenzione: operazione non autorizzabile" });
+      .json({ message: "Attenzione: richiesto Admin" });
     throw new Error("User is not Admin");
+  }
+  return user;
+};
+
+
+export const validateEmployee = (req: Request, res: Response) => {
+  const user = validateUserLoggedIn(req,res);
+  if (!(user.role === "Worker" || user.role === "Admin")) {
+    res
+      .status(403)
+      .json({ message: "Attenzione: utente non autorizzato" });
+    throw new Error("User is not Employee");
   }
   return user;
 };

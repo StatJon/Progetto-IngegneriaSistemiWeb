@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { connection } from "../utils/db";
+import { errorHandler } from "../utils/auth-helpers";
 
 export const servicesCarAll = async (req: Request, res: Response) => {
   try {
@@ -15,10 +16,7 @@ export const servicesCarAll = async (req: Request, res: Response) => {
     }
     res.status(200).json(results);
 
-  } catch (error) {
-    console.error("Errore: ", error);
-    res.status(500).json({ message: "Errore del Server/DB", error: error });
-  }
+  } catch (error) {errorHandler(req,res,error)}
 };
 
 export const servicesMotorcycleAll = async (req: Request, res: Response) => {
@@ -35,8 +33,5 @@ export const servicesMotorcycleAll = async (req: Request, res: Response) => {
     }
     res.status(200).json(results);
 
-  } catch (error) {
-    console.error("Errore: ", error);
-    res.status(500).json({ message: "Errore del Server/DB", error: error });
-  }
+  } catch (error) {errorHandler(req,res,error)}
 };
