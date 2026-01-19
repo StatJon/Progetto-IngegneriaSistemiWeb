@@ -134,8 +134,6 @@ export const loginCustomer = async (req: Request, res: Response) => {
   }
 };
 
-
-
 ///---EMPLOYEE AUTH---///
 
 export const registerEmployee = async (req: Request, res: Response) => {
@@ -166,7 +164,7 @@ export const registerEmployee = async (req: Request, res: Response) => {
     await connection.execute(
       "INSERT INTO EMPLOYEE (First_Name, Last_Name, Password) VALUES (?, ?, ?)",
       [First_Name, Last_Name, passwordHash]
-    ) 
+    );
 
     res
       .status(201)
@@ -192,7 +190,9 @@ export const loginEmployee = async (req: Request, res: Response) => {
 
     //Controllo campi mancanti
     if (!BadgeNumber || !Password) {
-      res.status(400).json({ message: "Numero di Badge e Password sono obbligatori" });
+      res
+        .status(400)
+        .json({ message: "Numero di Badge e Password sono obbligatori" });
       return;
     }
 
@@ -235,37 +235,25 @@ export const loginEmployee = async (req: Request, res: Response) => {
   }
 };
 
-
-
 ///---GENERAL AUTH---///
 
 export const logout = async (req: Request, res: Response) => {
   try {
     const user = getUser(req, res);
     if (!user) {
-      res.status(401).json({ message : "Attenzione: autenticazione richiesta."});
+      res
+        .status(401)
+        .json({ message: "Attenzione: autenticazione richiesta." });
       return;
-    };
+    }
     unsetUser(req, res);
 
-  res.json({ message: "Successo, Logout effettuato correttamente" });
-
+    res.json({ message: "Successo, Logout effettuato correttamente" });
   } catch (error) {
     console.error("Errore: ", error);
     res.status(500).json({ message: "Errore del Server/DB", error: error });
   }
 };
-
-export const verifyUserLoggedIn = async (req: Request, res: Response) => {
-    const user = getUser(req, res);
-    if (!user) {
-      res.status(401).json({ message : "Attenzione: autenticazione richiesta"})
-      return null;
-    }
-  return user;
-  };
-
-  
 
 ///---TEMPLATE AUTH---///
 
