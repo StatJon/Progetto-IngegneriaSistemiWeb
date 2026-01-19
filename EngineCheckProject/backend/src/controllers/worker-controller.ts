@@ -16,11 +16,12 @@ export const listAllJobs = async (req: Request, res: Response) => {
       `
         SELECT 
         j.Job_ID,
+        s.Service_ID,
+        soj.JobService_Status,
         j.Model,
         j.Vehicle_Type,
         j.License_Plate,
         j.Date_Time,
-        j.Job_Status,
         s.Title,
         s.Description,
         s.Estimated_Duration_Minutes,
@@ -57,12 +58,26 @@ export const listEmployeeJobs = async (req: Request, res: Response) => {
     const [results] = await connection.execute(
       `
         SELECT 
+
+        j.Job_ID,
+        s.Service_ID,
+        soj.JobService_Status,
+        j.Model,
+        j.Vehicle_Type,
+        j.License_Plate,
+        j.Date_Time,
+        s.Title,
+        s.Description,
+        s.Estimated_Duration_Minutes,
+        c.Email,
+        c.Phone
+
         j.Job_ID,
         j.Model,
         j.Vehicle_Type,
         j.License_Plate,
         j.Date_Time,
-        j.Job_Status,
+        soj.JobService_Status,
         s.Title,
         s.Description,
         s.Estimated_Duration_Minutes,

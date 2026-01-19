@@ -50,8 +50,6 @@ CREATE TABLE IF NOT EXISTS `JOB` (
     `License_Plate` varchar(15) NOT NULL, /*NOTA: ITA è 7, 15 per sicurezza in caso di targhe non ITA Standard*/ 
     `Date_Time` DATETIME NOT NULL,
     `CUSTOMER_ID` int(12) NOT NULL,
-    `Job_Status` varchar(32) NOT NULL,
-    CHECK (`Job_Status` IN ('Pending', 'Assigned', 'Working', 'Completed', 'Cancelled')),
     PRIMARY KEY (`Job_ID`),
     FOREIGN KEY (`CUSTOMER_ID`) REFERENCES `CUSTOMER` (`ID_Customer`)
     ON DELETE NO ACTION
@@ -61,7 +59,8 @@ CREATE TABLE IF NOT EXISTS `JOB` (
 CREATE TABLE IF NOT EXISTS `SERVICES_OF_JOB` (
     `JOB_Job_ID` int(12) NOT NULL ,
     `SERVICE_Service_ID` int(12) NOT NULL ,
-    `Quantity` int(12) NOT NULL DEFAULT 1 ,
+    `JobService_Status` varchar(32) NOT NULL DEFAULT 'Pending',
+    CHECK (`JobService_Status` IN ('Pending', 'Assigned', 'Working', 'Completed', 'Cancelled')),
     PRIMARY KEY (`JOB_Job_ID`, `SERVICE_Service_ID`),
     FOREIGN KEY (`JOB_Job_ID`) REFERENCES `JOB` (`Job_ID`)
     ON DELETE CASCADE
