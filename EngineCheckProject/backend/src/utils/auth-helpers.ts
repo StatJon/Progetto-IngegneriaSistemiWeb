@@ -1,6 +1,10 @@
 import { Request, Response } from "express";
 import { getUser, setUser, unsetUser, User } from "../utils/auth";
 
+//METODI VALIDATE
+//Usare un solo metodo "validate..." per controller
+//Usare const user = metodoValidate(req,res) solo se serve salvare il JWT per essere usato dopo
+//Usare metodoValidate(req,res) se serve solo verificare lo stato del JWT
 
 export const validateUserLoggedIn = (req: Request, res: Response) => {
   const user = getUser(req, res);
@@ -11,8 +15,17 @@ export const validateUserLoggedIn = (req: Request, res: Response) => {
   return user;
 };
 
-//Usabile solo dopo un verifyUserLoggedIn
-export const validateAdmin = (req: Request, res: Response, user: User) => {
+export const validateUserNotLoggedIn = (req: Request, res: Response) => {
+  const user = getUser(req, res);
+  if (user) {
+    res.status(401).json({ message: "Attenzione: Logout richiesto per l'operazione" });
+    throw new Error("User should not be logged in");
+  }
+  return user;
+};
+
+export const validateAdmin = (req: Request, res: Response) => {
+  const user = validateUserLoggedIn(req,res);
   if (user.role !== "Admin") {
     res
       .status(403)
@@ -24,16 +37,19 @@ export const validateAdmin = (req: Request, res: Response, user: User) => {
 
 //Da usare come catch nei try-catch dei controller
 export const errorHandler = async (req: Request, res: Response, error:any) => {
-  if (res.headersSent) return;
-  console.error(`Errore in ${req.method} ${req.url}: `, error);
+  if (!res.headersSent){
+    console.error(`Server Error in ${req.method} ${req.url}: `, error);
     res.status(500).json({ message: "Errore del Server/DB", error: error });
+  }else{
+  console.warn(`Controller Error in ${req.method} ${req.url}: `, error);
+  }
 };
 
 //Metodo di testing, non usare
 export const adminTest = async (req: Request, res: Response) => {
   try {
     const user = validateUserLoggedIn(req, res);
-    validateAdmin(req, res, user);
+    validateAdmin(req, res);
     res.status(200).json(user);
   } catch (error) {errorHandler(req,res,error)}
 };

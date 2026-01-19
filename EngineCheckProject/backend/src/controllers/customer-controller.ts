@@ -1,21 +1,11 @@
-/*Customer
-Query per trovare tutti i dati relativi ad un customer
-Tutti i Job
-*/
-
 import { Request, Response } from "express";
 import { connection } from "../utils/db";
 import { getUser } from "../utils/auth";
+import { validateUserLoggedIn, validateAdmin, errorHandler} from "../utils/auth-helpers";
 
 export const testCustomer = async (req: Request, res: Response) => {
   try {
-    const user = getUser(req, res);
-    if (!user) {
-      res
-        .status(401)
-        .json({ message: "Attenzione: autenticazione richiesta." });
-      return;
-    }
+    const user = validateUserLoggedIn(req,res);
     const [results] = (await connection.execute(
       "SELECT Phone FROM CUSTOMER WHERE ID_Customer=?",
       [user.id]
@@ -29,10 +19,7 @@ export const testCustomer = async (req: Request, res: Response) => {
     const phone = results[0].Phone;
 
     res.json({ id: user.id, phone: phone });
-  } catch (error) {
-    console.error("Errore: ", error);
-    res.status(500).json({ message: "Errore del Server/DB", error: error });
-  }
+  } catch (error) {errorHandler(req,res,error)}
 };
 
 /*Email -> JOBs -for_each-> SERVICES_OF_JOBs -for_each-> SERVICE_Service_ID */

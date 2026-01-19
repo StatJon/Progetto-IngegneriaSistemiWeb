@@ -2,20 +2,19 @@ import bcrypt from "bcrypt"; //Libreria Hashing Password
 import { parsePhoneNumber } from "awesome-phonenumber"; //Libreria Validazione numeri telefono
 import { Request, Response } from "express";
 import { getUser, setUser, unsetUser, User } from "../utils/auth";
+import {
+  validateUserLoggedIn,
+  validateUserNotLoggedIn,
+  validateAdmin,
+  errorHandler,
+} from "../utils/auth-helpers";
 import { connection } from "../utils/db";
 
 ///---CUSTOMER AUTH---///
 
 export const registerCustomer = async (req: Request, res: Response) => {
   try {
-    //Controllo Login
-    const userLogged = getUser(req, res);
-    if (userLogged) {
-      res
-        .status(401)
-        .json({ message: "Attenzione: Logout richiesto per l'operazione" });
-      return;
-    }
+    validateUserNotLoggedIn(req, res);
 
     //Recupera dati
     const { Email, First_Name, Last_Name, Password, Phone } = req.body;
@@ -70,20 +69,13 @@ export const registerCustomer = async (req: Request, res: Response) => {
       .status(201)
       .json({ message: "Successo: Registrazione effettuata con successo" });
   } catch (error) {
-    console.error("Errore: ", error);
-    res.status(500).json({ message: "Errore del Server/DB", error: error });
+    errorHandler(req, res, error);
   }
 };
 
 export const loginCustomer = async (req: Request, res: Response) => {
   try {
-    const userLogged = getUser(req, res);
-    if (userLogged) {
-      res
-        .status(401)
-        .json({ message: "Attenzione: Logout richiesto per l'operazione" });
-      return;
-    }
+    validateUserNotLoggedIn(req, res);
 
     //Recupera dati
     const { Email, Password } = req.body;
@@ -129,61 +121,17 @@ export const loginCustomer = async (req: Request, res: Response) => {
 
     res.json({ message: "Successo: Login effettuato correttamente" });
   } catch (error) {
-    console.error("Errore: ", error);
-    res.status(500).json({ message: "Errore del Server/DB", error: error });
+    errorHandler(req, res, error);
   }
 };
 
 ///---EMPLOYEE AUTH---///
 
-export const registerEmployee = async (req: Request, res: Response) => {
-  try {
-    //Controllo Login
-    const userLogged = getUser(req, res);
-    if (userLogged) {
-      res
-        .status(401)
-        .json({ message: "Attenzione: Logout richiesto per l'operazione" });
-      return;
-    }
-
-    //Recupera dati
-    const { First_Name, Last_Name, Password } = req.body;
-
-    //Controllo Campi mancanti
-    if (!First_Name || !Last_Name || !Password) {
-      res.status(400).json({ message: "Compilare tutti i campi obbligatori" });
-      return;
-    }
-
-    //Hashing password
-    const passwordHash = await bcrypt.hash(Password, 10);
-
-    //INSERT
-    //Nota: const [insertResult] serve per estrarre l'ID creato da DB AUTO_INCREMENT
-    await connection.execute(
-      "INSERT INTO EMPLOYEE (First_Name, Last_Name, Password) VALUES (?, ?, ?)",
-      [First_Name, Last_Name, passwordHash]
-    );
-
-    res
-      .status(201)
-      .json({ message: "Successo: Registrazione effettuata con successo" });
-  } catch (error) {
-    console.error("Errore: ", error);
-    res.status(500).json({ message: "Errore del Server/DB", error: error });
-  }
-};
+//ATTENZIONE, rivedere con logica finale
 
 export const loginEmployee = async (req: Request, res: Response) => {
   try {
-    const userLogged = getUser(req, res);
-    if (userLogged) {
-      res
-        .status(401)
-        .json({ message: "Attenzione: Logout richiesto per l'operazione" });
-      return;
-    }
+    validateUserNotLoggedIn(req, res);
 
     //Recupera dati
     const { BadgeNumber, Password } = req.body;
@@ -239,19 +187,12 @@ export const loginEmployee = async (req: Request, res: Response) => {
 
 export const logout = async (req: Request, res: Response) => {
   try {
-    const user = getUser(req, res);
-    if (!user) {
-      res
-        .status(401)
-        .json({ message: "Attenzione: autenticazione richiesta." });
-      return;
-    }
+    //validateUserLoggedIn(req,res); //non necessario, se non c'era il JWT è comunque non loggato
     unsetUser(req, res);
 
     res.json({ message: "Successo, Logout effettuato correttamente" });
   } catch (error) {
-    console.error("Errore: ", error);
-    res.status(500).json({ message: "Errore del Server/DB", error: error });
+    errorHandler(req, res, error);
   }
 };
 
