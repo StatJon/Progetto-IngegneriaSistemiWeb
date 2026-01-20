@@ -9,20 +9,69 @@ import {
 } from "../utils/auth-helpers";
 import { connection } from "../utils/db";
 
-export const checkTimeDateAvailability = async (req: Request, res: Response) => {
+//flow booking:
+
+//all'apertura pagina:
+//--get checkDayAvailable per evidenziare i giorni non festivi
+//alla selezione giorno:
+//--get checkTimeAvailability per ritornare gli orari da visualizzare in menu a tendina
+//alla conferma:
+//--post saveBooking per INSERT in DB
+
+export const checkDayAvailable = async (req: Request, res: Response) => {
     
 }
 
+
+
+export const checkTimeAvailability = async (req: Request, res: Response) => {
+
+
+
+    /*
+  //importa ServicesArray
+  const {ServicesArray} = req.body;
+
+  //calcola tempo necessario
+  let timeTotal : number = 0;
+  for (const service of ServicesArray) {
+    const [resultService] = await connection.execute(
+      `SELECT Estimated_Duration_Minutes 
+        FROM SERVICE 
+        WHERE Service_ID = ?
+        `,
+      [service],
+    ) as any;
+    const timeService = resultService.Estimated_Duration_Minutes;
+    timeTotal += timeService;
+  }
+    */
+
+
+};
 
 //nota, i service da salvare vengono passati tramite url
 // json {1,5,21,23}
 export const saveBooking = async (req: Request, res: Response) => {
   try {
     const user = validateCustomer(req, res);
-    const { Model, Vehicle_Type, License_Plate, Date_Time, Customer_ID, ServicesArray,} = req.body;
+    const {
+      Model,
+      Vehicle_Type,
+      License_Plate,
+      Date_Time,
+      Customer_ID,
+      ServicesArray,
+    } = req.body;
 
     //Controllo campi
-    if ( !Model || !Vehicle_Type || !License_Plate || !Date_Time || !Customer_ID ) {
+    if (
+      !Model ||
+      !Vehicle_Type ||
+      !License_Plate ||
+      !Date_Time ||
+      !Customer_ID
+    ) {
       res.status(400).json({ message: "Attenzione: Compilare tutti i campi" });
       return;
     }
@@ -53,7 +102,7 @@ export const saveBooking = async (req: Request, res: Response) => {
         [newJobId, service],
       );
     }
-    res.status(200).json({message : "Prenotazione Confermata"})
+    res.status(200).json({ message: "Prenotazione Confermata" });
   } catch (error) {
     errorHandler(req, res, error);
   }
