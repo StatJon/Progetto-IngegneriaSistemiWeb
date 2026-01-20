@@ -72,18 +72,6 @@ export const listEmployeeJobs = async (req: Request, res: Response) => {
         c.Email,
         c.Phone
 
-        j.Job_ID,
-        j.Model,
-        j.Vehicle_Type,
-        j.License_Plate,
-        j.Date_Time,
-        soj.JobService_Status,
-        s.Title,
-        s.Description,
-        s.Estimated_Duration_Minutes,
-        c.Email,
-        c.Phone
-
         FROM JOB AS j
 
         LEFT JOIN SERVICES_OF_JOB AS soj ON j.Job_ID = soj.JOB_Job_ID
@@ -111,18 +99,40 @@ export const listEmployeeJobs = async (req: Request, res: Response) => {
   }
 };
 
-
-export const setJobStatus = async (req: Request, res: Response) => {
+export const setStatusJob = async (req: Request, res: Response) => {
   try{
-    const user = validateEmployee;
+    const user = validateEmployee(req,res);
     const {Job_ID, Service_ID, Job_Status} = req.body;
     await connection.execute(
       `
-      UPDATE JOB
-      `
-    )
-
+      UPDATE SERVICES_OF_JOB
+      SET JobService_Status = ?
+      WHERE JOB_Job_ID = ?
+      AND SERVICE_SERVICE_ID = ?
+      `,
+      [Job_Status, Job_ID, Service_ID]
+    );
+    res.status(200).json({ message : "Lavoro " + Job_ID + "." + Service_ID + "impostato a " + Job_Status});
   }catch (error){
     errorHandler(req,res,error)
   }
+};
+
+export const setEmployeeToJob = async (req: Request, res: Response) => {
+  try{
+    const user = validateEmployee(req,res);
+    const {Job_ID, Service_ID} = req.body;
+    await connection.execute(`
+      UPDATE SERVICES_OF_JOB
+      SET 
+      JobService_Status  = ?,
+
+      WHERE JOB_Job_ID = ?
+      AND SERVICE_SERVICE_ID = ?
+      `,
+    [user.id, Job_ID, Service_ID]
+  );
+  res.status(200).json({ message : "Lavoro " + Job_ID + "." + Service_ID + "assegnato a " + user.id })
+
+  }catch (error){errorHandler(req,res,error)}
 };
