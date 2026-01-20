@@ -50,7 +50,8 @@ export const registerEmployee = async (req: Request, res: Response) => {
       .status(201)
       .json({
         message: "Successo: Registrazione effettuata con successo",
-        employee: First_Name + " " + Last_Name,
+        first_name : First_Name,
+        last_name : Last_Name,
       });
   } catch (error) {
     errorHandler(req, res, error);
@@ -76,14 +77,19 @@ export const removeEmployee = async (req: Request, res: Response) => {
     }
 
     await connection.execute(
-      "DELETE * FROM EMPLOYEE WHERE 'ID_Badge_Number = ?",
+      `
+      UPDATE EMPLOYEE
+      SET Role = 'Inactive'
+      WHERE 'ID_Badge_Number = ?,
       [ID_Badge_Number]
+      `
     );
 
     res.status(200).json({
       message: "Successo, Dipendente rimosso",
-      employee:
-        employeeToBeDeleted.First_Name + " " + employeeToBeDeleted.Last_Name,
+      badge: employeeToBeDeleted.ID_Badge_Number,
+      first_name : employeeToBeDeleted.First_Name,
+      last_name : employeeToBeDeleted.Last_Name,
     });
   } catch (error) {
     errorHandler(req, res, error);

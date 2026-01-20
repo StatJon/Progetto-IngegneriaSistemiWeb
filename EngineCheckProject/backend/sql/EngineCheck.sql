@@ -17,7 +17,7 @@ CREATE TABLE IF NOT EXISTS `EMPLOYEE` (
     `Last_Name` varchar(100) NOT NULL,
     `Password` varchar(255) NOT NULL,
     `Role` varchar(32) NOT NULL,
-    CHECK (`Role` IN ('Worker', 'Admin')),
+    CHECK (`Role` IN ('Worker', 'Admin', 'Inactive')),
     PRIMARY KEY (`ID_Badge_Number`)
 );
 CREATE TABLE IF NOT EXISTS `CUSTOMER` (
