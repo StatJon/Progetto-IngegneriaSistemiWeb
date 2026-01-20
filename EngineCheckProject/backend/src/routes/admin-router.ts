@@ -8,16 +8,25 @@ const router: Router = Router()
 //
 
 router.get("/api/admin/listAllEmployees", adminController.listAllEmployees)
-//Elenca tutti i dipendenti, per pagina tabella dipendenti
+/*
+Richiede: nulla
+Ritorna : JSON {ID_Badge_Number, First_Name, Last_Name, Role}
+Elenca tutti i dipendenti, per pagina tabella dipendenti
+*/
 
 router.post("/api/admin/registerEmployee", adminController.registerEmployee)
-//Per form registrazione nuovo dipendente
-//post json: { First_Name, Last_Name, Password }
-
+/*
+Richiede: POST JSON { First_Name, Last_Name, Password }
+Ritorna : JSON { message, first_name, last_name}
+//Inserisce un nuovo employee in DB
+*/
 
 router.post("/api/admin/removeEmployee", adminController.removeEmployee)
-//Per cancellazione dipendente, richiede numero di badge da cancellare, non può cancellare utenti Admin
-//Nota: non cancella dal DB, imposta il ruolo del dipendente a 'Inactive' rendendo inutile il cookie del dipendente
-//post json: { ID_Badge_Number }
+/*
+Richiede: POST JSON { ID_Badge_Number }
+Ritorna : JSON { message, badge, first_name, last_name }
+Rimuove un dipendente settando il suo 'Role' ad 'Inactive', rende il suo token inutilizzabile ma rimane in DB
+Nota: non può rimuovere utenti Admin
+*/
 
 export default router

@@ -18,7 +18,7 @@ import { connection } from "../utils/db";
 //alla conferma:
 //--post saveBooking per INSERT in DB
 
-//GET richiesto parametro URL /monthYear in formato aaaa-mm es 2026-05-20
+//GET richiesto parametro URL /yearMonth in formato aaaa-mm es 2026-05
 //Restituisce giorni disponibili per il mese in questione in formato: json({yearMonth : yyyy-mm, daysAvailable : {day : day, available : bool})
 export const checkDayAvailable = async (req: Request, res: Response) => {
   try {
@@ -29,33 +29,38 @@ export const checkDayAvailable = async (req: Request, res: Response) => {
     let targetYear: number;
     let targetMonth: number;
 
-    
-    if (!param) {//Se non è stato passato alcun param -> default ad oggi
+    if (!param) {
+      //Se non è stato passato alcun param -> default ad oggi
       const today = new Date();
+      today.setHours(0,0,0,0);
       const year: number = today.getFullYear();
       const month: number = today.getMonth() + 1; //<-- getMonth parte da 0
       targetYear = year;
       targetMonth = month;
-    } else {//Se c'è param -> prepara i campi
-      //fare parsing/cast string--->number
-      const [targetYearStr, targetMonthStr]: any = param.split("-");
-      if ([targetYearStr, targetMonthStr].length === 2) {
-        const year: number = parseInt(targetYearStr);
-        const month: number = parseInt(targetMonthStr);
-        targetYear = year;
-        targetMonth = month;
-        //isNaN da controllare
-      } else {//Se param passato è errato -> 400
+    } else {
+      //Se c'è param -> prepara i campi
+      const targetDate : any = param.split("-");
+      //Check formato corretto
+      if (targetDate.length !== 2) {
         res
           .status(400)
           .json({ message: "Formato non valido, usare formato aaaa-mm" });
         return;
       }
+      //Parsing string-->number: parseInt(nomeArray[index], baseNumerica(10)), check dati
+      const year: number = parseInt(targetDate[0], 10); 
+      const month: number = parseInt(targetDate[1], 10);
+      if (isNaN(year) || isNaN(month) || month < 1 || month > 12) {
+        res.status(400).json({ message: "Data inserita non valida" });
+        return;
+      }
+      targetYear = year;
+      targetMonth = month;
     }
-    //Da qui usare: todayDay, targetMonth, targetYear
+    //Da qui usare: targetMonth, targetYear
 
-    const calendarResults = []; //Crea stack giorni
-    const daysOfMonth = new Date(targetYear, targetMonth, 0).getDate(); //Trova giorno ultimo del mese, per for a seguire
+    const calendarResults = []; //Elemento per stack giorni
+    const daysOfMonth = new Date(targetYear, targetMonth, 0).getDate();
 
     /*for, pseudocode:
     Per ogni giorno del mese,
@@ -66,37 +71,46 @@ export const checkDayAvailable = async (req: Request, res: Response) => {
     */
 
     const today = new Date();
-     today.setHours(0,0,0,0);
+    today.setHours(0, 0, 0, 0);
 
     for (let day = 1; day <= daysOfMonth; day++) {
-      let available : boolean = true; //Dichiara campo per json dopo
+      let available: boolean = true; //Dichiara campo per json dopo
 
-      const dateToCheck = new Date(targetYear,targetMonth-1,day);
-      dateToCheck.setHours(0,0,0,0);
+      const dateToCheck = new Date(targetYear, targetMonth - 1, day);
+      dateToCheck.setHours(0, 0, 0, 0);
 
       //check giorno passato
-      if (dateToCheck < today){available = false};
+      if (dateToCheck < today) {
+        available = false;
+      }
 
       //check domenica
-      if (dateToCheck.getDay() === 0) {available = false};
+      if (dateToCheck.getDay() === 0) {
+        available = false;
+      }
 
-      //check festività 
+      //check festività
       //<--- DA FARE, se rimane tempo, richiede DB,CRUD,Pagina frontend --->
 
       calendarResults.push({
-        day : day,
-        available : available
+        day: day,
+        available: available,
       });
     }
-    
-    res.status(200).json({yearMonth: targetYear+"-"+targetMonth,
-                          daysAvailable : calendarResults})
+
+    const formattedTargetMonth = String(targetMonth).padStart(2, '0');
+    res
+      .status(200)
+      .json({
+        yearMonth: targetYear + "-" + formattedTargetMonth,
+        daysAvailable: calendarResults,
+      });
   } catch (error) {
     errorHandler(req, res, error);
   }
 };
 
-export const checkTimeAvailability = async (req: Request, res: Response) => {
+export const checkTimeAvailable = async (req: Request, res: Response) => {
   /*
   //importa ServicesArray
   const {ServicesArray} = req.body;
