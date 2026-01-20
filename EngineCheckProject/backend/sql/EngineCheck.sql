@@ -29,7 +29,7 @@ CREATE TABLE IF NOT EXISTS `CUSTOMER` (
     `Phone` varchar(13) NOT NULL, /*Nota: viene validato dal controller*/
     PRIMARY KEY (`ID_Customer`)
 );
-/*Il singolo servizio standard da effettuare/offrire*/
+/*Il singolo servizio standard da listino da effettuare/offrire*/
 CREATE TABLE IF NOT EXISTS `SERVICE` (
     `Service_ID` int(12) NOT NULL AUTO_INCREMENT,
     `Estimated_Duration_Minutes` int(12) NOT NULL,
@@ -55,11 +55,12 @@ CREATE TABLE IF NOT EXISTS `JOB` (
     ON DELETE NO ACTION
     ON UPDATE NO ACTION
 );
-/*Lega un JOB con tutti i SERVICE relativi*/
-CREATE TABLE IF NOT EXISTS `SERVICES_OF_JOB` (
+/*Lega un JOB con tutti i SERVICE relativi, per ogni JobService assegna Status ed Employee*/
+CREATE TABLE IF NOT EXISTS `JOB_SERVICE` (
     `JOB_Job_ID` int(12) NOT NULL ,
     `SERVICE_Service_ID` int(12) NOT NULL ,
     `JobService_Status` varchar(32) NOT NULL DEFAULT 'Pending',
+    `EMPLOYEE_Badge_Number` int(12) DEFAULT NULL,
     CHECK (`JobService_Status` IN ('Pending', 'Assigned', 'Working', 'Completed', 'Cancelled')),
     PRIMARY KEY (`JOB_Job_ID`, `SERVICE_Service_ID`),
     FOREIGN KEY (`JOB_Job_ID`) REFERENCES `JOB` (`Job_ID`)
@@ -67,18 +68,8 @@ CREATE TABLE IF NOT EXISTS `SERVICES_OF_JOB` (
     ON UPDATE CASCADE,
     FOREIGN KEY (`SERVICE_Service_ID`) REFERENCES `SERVICE` (`Service_ID`)
     ON DELETE NO ACTION
-    ON UPDATE CASCADE
-);
-/*Lega un EMPLOYEE ad un JOB*/
-CREATE TABLE IF NOT EXISTS `EMPLOYEE_OF_JOB` (
-    `EMPLOYEE_Badge_Number` int(12) NOT NULL ,
-    `JOB_Job_ID` int(12) NOT NULL ,
-    PRIMARY KEY (`EMPLOYEE_Badge_Number`, `JOB_Job_ID`),
+    ON UPDATE CASCADE,
     FOREIGN KEY (`EMPLOYEE_Badge_Number`) REFERENCES `EMPLOYEE` (`ID_Badge_Number`)
     ON DELETE NO ACTION
     ON UPDATE CASCADE,
-    FOREIGN KEY (`JOB_Job_ID`) REFERENCES `JOB` (`Job_ID`)
-    ON DELETE CASCADE
-    ON UPDATE CASCADE
 );
-

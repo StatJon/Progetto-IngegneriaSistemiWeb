@@ -3,24 +3,7 @@ import { connection } from "../utils/db";
 import { getUser } from "../utils/auth";
 import { validateUserLoggedIn, validateAdmin, errorHandler} from "../utils/auth-helpers";
 
-export const testCustomer = async (req: Request, res: Response) => {
-  try {
-    const user = validateUserLoggedIn(req,res);
-    const [results] = (await connection.execute(
-      "SELECT Phone FROM CUSTOMER WHERE ID_Customer=?",
-      [user.id]
-    )) as any;
-    if (!Array.isArray(results) || results.length == 0){
-        res
-        .status(401)
-        .json({ message: "Attenzione: Utente non esistente." });
-      return;
-    }
-    const phone = results[0].Phone;
 
-    res.json({ id: user.id, phone: phone });
-  } catch (error) {errorHandler(req,res,error)}
-};
 
 /*Email -> JOBs -for_each-> SERVICES_OF_JOBs -for_each-> SERVICE_Service_ID */
 /*

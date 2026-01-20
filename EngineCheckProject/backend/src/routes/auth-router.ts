@@ -11,6 +11,7 @@ router.post("/api/auth/loginCustomer", authController.loginCustomer)
 
 router.post("/api/auth/loginEmployee", authController.loginEmployee)
 // post json: { BadgeNumber, Password }
+// nota: il controller restituisce un cookie Admin o Worker in base al numero di badge
 
 router.get("/api/auth/logout", authController.logout)
 

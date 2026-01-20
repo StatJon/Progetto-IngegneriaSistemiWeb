@@ -10,7 +10,6 @@ import {
 } from "../utils/auth-helpers";
 import { connection } from "../utils/db";
 
-///---CUSTOMER AUTH---///
 
 export const registerCustomer = async (req: Request, res: Response) => {
   try {
@@ -125,10 +124,6 @@ export const loginCustomer = async (req: Request, res: Response) => {
   }
 };
 
-///---EMPLOYEE AUTH---///
-
-//ATTENZIONE, rivedere con logica finale
-
 export const loginEmployee = async (req: Request, res: Response) => {
   try {
     validateUserNotLoggedIn(req, res);
@@ -183,8 +178,6 @@ export const loginEmployee = async (req: Request, res: Response) => {
   }
 };
 
-///---GENERAL AUTH---///
-
 export const logout = async (req: Request, res: Response) => {
   try {
     //validateUserLoggedIn(req,res); //non necessario, se non c'era il JWT è comunque non loggato
@@ -196,8 +189,7 @@ export const logout = async (req: Request, res: Response) => {
   }
 };
 
-///---TEMPLATE AUTH---///
-
+//DEV: non usare
 export const templateAuth = async (req: Request, res: Response) => {
   try {
   } catch (error) {
