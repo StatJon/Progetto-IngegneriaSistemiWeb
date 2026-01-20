@@ -81,8 +81,8 @@ export const removeEmployee = async (req: Request, res: Response) => {
       UPDATE EMPLOYEE
       SET Role = 'Inactive'
       WHERE 'ID_Badge_Number = ?,
+      `,
       [ID_Badge_Number]
-      `
     );
 
     res.status(200).json({

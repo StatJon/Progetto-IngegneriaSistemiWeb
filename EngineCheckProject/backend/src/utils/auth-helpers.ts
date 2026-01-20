@@ -35,7 +35,6 @@ export const validateAdmin = (req: Request, res: Response) => {
   return user;
 };
 
-
 export const validateEmployee = (req: Request, res: Response) => {
   const user = validateUserLoggedIn(req,res);
   if (!(user.role === "Worker" || user.role === "Admin")) {
@@ -43,6 +42,17 @@ export const validateEmployee = (req: Request, res: Response) => {
       .status(403)
       .json({ message: "Attenzione: utente non autorizzato" });
     throw new Error("User is not Employee");
+  }
+  return user;
+};
+
+export const validateCustomer = (req: Request, res: Response) => {
+  const user = validateUserLoggedIn(req,res);
+  if (user.role !== "Customer" ) {
+    res
+      .status(403)
+      .json({ message: "Attenzione: utente non autorizzato" });
+    throw new Error("User is not Customer");
   }
   return user;
 };
