@@ -24,7 +24,6 @@ export const checkDayAvailable = async (req: Request, res: Response) => {
   try {
     //Recupero dati,
     const param = req.params.yearMonth;
-
     //Controllo dati, dichiarazione senza assegnazione
     let targetYear: number;
     let targetMonth: number;
@@ -32,14 +31,14 @@ export const checkDayAvailable = async (req: Request, res: Response) => {
     if (!param) {
       //Se non è stato passato alcun param -> default ad oggi
       const today = new Date();
-      today.setHours(0,0,0,0);
+      today.setHours(0, 0, 0, 0);
       const year: number = today.getFullYear();
       const month: number = today.getMonth() + 1; //<-- getMonth parte da 0
       targetYear = year;
       targetMonth = month;
     } else {
       //Se c'è param -> prepara i campi
-      const targetDate : any = param.split("-");
+      const targetDate: any = param.split("-");
       //Check formato corretto
       if (targetDate.length !== 2) {
         res
@@ -48,7 +47,7 @@ export const checkDayAvailable = async (req: Request, res: Response) => {
         return;
       }
       //Parsing string-->number: parseInt(nomeArray[index], baseNumerica(10)), check dati
-      const year: number = parseInt(targetDate[0], 10); 
+      const year: number = parseInt(targetDate[0], 10);
       const month: number = parseInt(targetDate[1], 10);
       if (isNaN(year) || isNaN(month) || month < 1 || month > 12) {
         res.status(400).json({ message: "Data inserita non valida" });
@@ -98,20 +97,51 @@ export const checkDayAvailable = async (req: Request, res: Response) => {
       });
     }
 
-    const formattedTargetMonth = String(targetMonth).padStart(2, '0');
-    res
-      .status(200)
-      .json({
-        yearMonth: targetYear + "-" + formattedTargetMonth,
-        daysAvailable: calendarResults,
-      });
+    const formattedTargetMonth = String(targetMonth).padStart(2, "0");
+    res.status(200).json({
+      yearMonth: targetYear + "-" + formattedTargetMonth,
+      daysAvailable: calendarResults,
+    });
   } catch (error) {
     errorHandler(req, res, error);
   }
 };
 
 export const checkTimeAvailable = async (req: Request, res: Response) => {
-  /*
+  // entra GET : ?date=2026-05-15&services=1,3,4
+  try {
+    const { date, services } = req.query;
+    if (!date || !services) {
+      res.status(400).json({ message : "Attenzione: parametri date e/o services non validi o vuoti"})
+      return;
+    }
+    //split + map per trasformare services in un array utilizzabile
+    const paramIdServices = (services as string).split(',').map(service => parseInt(service, 10))
+
+    const [dbServices] = await connection.execute( //nota: (?) invece id ? perchè si passa array
+      `
+      SELECT Service_ID, Estimated_Duration_Minutes
+      FROM SERVICE
+      WHERE Service_ID IN (?)
+      `,
+      [paramIdServices]
+    ) as [any[],[]]; //<--nota: sintassi necessaria per la struttura di dbServices
+
+    if (paramIdServices.length !== dbServices.length){//Check eventuali id mancanti
+      res.status(400).json({ message : "Attenzione, uno o più servizi inesistenti"})
+      return;
+    };
+    let sumMinutesServices : number = 0; 
+    for (const service of dbServices){
+      sumMinutesServices += service.Estimated_Duration_Minutes
+    };
+
+    //Usare da qui in poi sumMinutesServices e date
+    //controlli: 
+    
+
+
+    /*
   //importa ServicesArray
   const {ServicesArray} = req.body;
 
@@ -129,6 +159,9 @@ export const checkTimeAvailable = async (req: Request, res: Response) => {
     timeTotal += timeService;
   }
     */
+  } catch (error) {
+    errorHandler(req, res, error);
+  }
 };
 
 //nota, i service da salvare vengono passati tramite url
