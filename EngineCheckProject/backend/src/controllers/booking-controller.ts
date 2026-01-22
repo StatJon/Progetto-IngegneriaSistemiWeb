@@ -9,6 +9,11 @@ import {
 } from "../utils/auth-helpers";
 import { connection } from "../utils/db";
 
+//CONFIG ORARI
+const WORKDAY_START: string = "08:30";
+const WORKDAY_END: string = "19:00";
+const TIMESTEP_MINUTES: number = 30;
+
 //flow booking:
 
 //all'apertura pagina:
@@ -112,33 +117,119 @@ export const checkTimeAvailable = async (req: Request, res: Response) => {
   try {
     const { date, services } = req.query;
     if (!date || !services) {
-      res.status(400).json({ message : "Attenzione: parametri date e/o services non validi o vuoti"})
+      res.status(400).json({
+        message: "Attenzione: parametri date e/o services non validi o vuoti",
+      });
       return;
     }
     //split + map per trasformare services in un array utilizzabile
-    const paramIdServices = (services as string).split(',').map(service => parseInt(service, 10))
+    const paramIdServices = (services as string)
+      .split(",")
+      .map((service) => parseInt(service, 10));
 
-    const [dbServices] = await connection.execute( //nota: (?) invece id ? perchè si passa array
+    const [dbServices] = (await connection.execute(
+      //nota: (?) invece id ? perchè si passa array
       `
       SELECT Service_ID, Estimated_Duration_Minutes
       FROM SERVICE
       WHERE Service_ID IN (?)
       `,
-      [paramIdServices]
-    ) as [any[],[]]; //<--nota: sintassi necessaria per la struttura di dbServices
+      [paramIdServices],
+    )) as [any[], []]; //<--nota: sintassi necessaria per la struttura di dbServices
 
-    if (paramIdServices.length !== dbServices.length){//Check eventuali id mancanti
-      res.status(400).json({ message : "Attenzione, uno o più servizi inesistenti"})
+    if (paramIdServices.length !== dbServices.length) {
+      //Check eventuali id mancanti
+      res
+        .status(400)
+        .json({ message: "Attenzione, uno o più servizi inesistenti" });
       return;
-    };
-    let sumMinutesServices : number = 0; 
-    for (const service of dbServices){
-      sumMinutesServices += service.Estimated_Duration_Minutes
-    };
+    }
+    let sumMinutesServices: number = 0;
+    for (const service of dbServices) {
+      sumMinutesServices += service.Estimated_Duration_Minutes;
+    }
 
     //Usare da qui in poi sumMinutesServices e date
-    //controlli: 
+
+    /* pseudoCode:
+    Creare griglia orari {orario : orario, disponibile : bool} (mezz'ore)
+    Recuperare Worker massimi da DB
+    Recuperare array lavori {JOB(DATE_TIME), SUM (JOB_SERVICE(SERVICE(Estimated_Duration_Minutes))) WHERE JOB(DATE(DATE_TIME)) = date } 
+    Per ogni slot della griglia, controllare nell'array lavori se c'è almeno 1 worker disponibile per ogni slot necessario, segnare TRUE/FALSE nella griglia orari
+    res.status(200).json(griglia orari)
+
+    !Attenzione: manca gestione degli orari dei singoli dipendenti ed assenze (ferie/malattia)
+    */
+
+    // Preparazione: crea array timeSlots e trasforma gli orari in minuti per essere utilizzabili
+    let timeSlots = [];
+    const [hoursStart, minutesStart] = WORKDAY_START.split(":").map((part) =>
+      parseInt(part, 10),
+    );
+    const startMins: number = (hoursStart || 0) * 60 + (minutesStart || 0); //calcolo con failsafe, defaulta a 0
+    const [hoursEnd, minutesEnd] = WORKDAY_END.split(":").map((part) =>
+      parseInt(part, 10),
+    );
+    const endMins: number = (hoursEnd || 0) * 60 + (minutesEnd || 0); //calcolo con failsafe, defaulta a 0
+
+    for (let time = startMins; time < endMins; time += TIMESTEP_MINUTES) {
+      const timeSlotHour: string = Math.floor(time / 60)
+        .toString()
+        .padStart(2, "0");
+      const timeSlotMinutes: string = (time % 60).toString().padStart(2, "0");
+      const timeSlot: string = timeSlotHour + ":" + timeSlotMinutes;
+      timeSlots.push({
+        timeSlot: timeSlot,
+        available: true,
+        timeSlotAsMinutes: time,
+        busyWorkers: 0,
+      });
+    }
+
+    const [workersArray] = await connection.execute(
+      `
+      SELECT COUNT(*) as totalWorkers
+      FROM EMPLOYEE
+      WHERE Role = 'Worker'
+      `,
+    ) as any;
+    const maxWorkers : number = workersArray[0].total;
+
+    const [jobsArray] = (await connection.execute(
+      `
+      SELECT
+      j.Date_Time, 
+      SUM(s.Estimated_Duration_Minutes) as Total_Duration
+      FROM JOB j
+      JOIN JOB_SERVICE js ON j.Job_ID = js.JOB_Job_ID
+      JOIN SERVICE s ON js.SERVICE_Service_ID = s.Service_ID
+      WHERE DATE(j.Date_Time) = ?
+      GROUP BY j.Job_ID
+      `,
+      [date],
+    )) as any;
+
+
+    for (const job of jobsArray) {
+      //Conversione a minuti per check
+      const jobDate = new Date(job.Date_Time);
+      const startJobMinutes = jobDate.getHours() * 60 + jobDate.getMinutes();
+      const endJobMinutes = startJobMinutes + job.Total_Duration;
+
+      //Per ogni slot controlla se il job lo occupa, +1 busyWorkers se vero
+      for (const slot of timeSlots) {
+        if (
+          slot.timeSlotAsMinutes >= startJobMinutes &&
+          slot.timeSlotAsMinutes < endJobMinutes
+        ) {
+          slot.busyWorkers = slot.busyWorkers + 1;
+        }
+      }
+    }
+
     
+
+
 
 
     /*
