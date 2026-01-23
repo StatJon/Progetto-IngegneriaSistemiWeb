@@ -11,9 +11,12 @@ Per ogni giorno del mese, controlla se è giorno lavorativo
 Nota: da inviare all'apertura della pagina (default ad oggi) e al cambio di mese selezionato nel calendario
 */
 
-router.post("/api/booking/checkTimeAvailable", bookingController.checkTimeAvailable)
+router.get("/api/booking/checkTimeAvailable", bookingController.checkTimeAvailable)
 /*
-WIP
+Richiede: GET: ?date=aaaa-mm-gg&services=1,2,3,...
+Ritorna : JSON ({timeSlot : hh:mm, available : true/false})
+Per il giorno selezionato, verifica in quali orari è possibile prenotare il lavoro composto dai servizi richiesti
+Nota: anche se nel controller non c'è scritto, appendere i parametri scritti in "Richiede: GET:"
 */
 
 router.post("/api/booking/saveBooking", bookingController.saveBooking)

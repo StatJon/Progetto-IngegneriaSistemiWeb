@@ -70,7 +70,7 @@ export const checkDayAvailable = async (req: Request, res: Response) => {
     Per ogni giorno del mese,
     controlla se è passato,
     controlla se è domenica (.getDay==0), 
-    controlla se è festività (WIP),
+    controlla se è festività (WIP, se c'è tempo),
     .push su calendarResults json.{day : day , available : false|true}
     */
 
@@ -115,6 +115,7 @@ export const checkDayAvailable = async (req: Request, res: Response) => {
 export const checkTimeAvailable = async (req: Request, res: Response) => {
   // entra GET : ?date=2026-05-15&services=1,3,4
   try {
+    //CONTROLLI PRELIMINARI///
     const { date, services } = req.query;
     if (!date || !services) {
       res.status(400).json({
@@ -149,6 +150,7 @@ export const checkTimeAvailable = async (req: Request, res: Response) => {
       sumMinutesServices += service.Estimated_Duration_Minutes;
     }
 
+    ///LOGICA PRINCIPALE///
     //Usare da qui in poi sumMinutesServices e date
 
     /* pseudoCode:
@@ -186,15 +188,17 @@ export const checkTimeAvailable = async (req: Request, res: Response) => {
       });
     }
 
-    const [workersArray] = await connection.execute(
+    //Calcolo lavoratori massimi disponibili
+    const [workersArray] = (await connection.execute(
       `
       SELECT COUNT(*) as totalWorkers
       FROM EMPLOYEE
       WHERE Role = 'Worker'
       `,
-    ) as any;
-    const maxWorkers : number = workersArray[0].total;
+    )) as any;
+    const maxWorkers: number = workersArray[0].totalWorkers;
 
+    //Query lista lavori per ciclo for sotto
     const [jobsArray] = (await connection.execute(
       `
       SELECT
@@ -209,7 +213,7 @@ export const checkTimeAvailable = async (req: Request, res: Response) => {
       [date],
     )) as any;
 
-
+    //Occupazione griglia orari
     for (const job of jobsArray) {
       //Conversione a minuti per check
       const jobDate = new Date(job.Date_Time);
@@ -227,29 +231,37 @@ export const checkTimeAvailable = async (req: Request, res: Response) => {
       }
     }
 
-    
-
-
-
+    //Controllo disponibilità effettivo
 
     /*
-  //importa ServicesArray
-  const {ServicesArray} = req.body;
-
-  //calcola tempo necessario
-  let timeTotal : number = 0;
-  for (const service of ServicesArray) {
-    const [resultService] = await connection.execute(
-      `SELECT Estimated_Duration_Minutes 
-        FROM SERVICE 
-        WHERE Service_ID = ?
-        `,
-      [service],
-    ) as any;
-    const timeService = resultService.Estimated_Duration_Minutes;
-    timeTotal += timeService;
-  }
+    for (const slot of timeSlots),
+     per ogni slot controlla se tutti gli slot richiesti sono liberi,
+     se è vero non fare nulla (available=true di default)
+     se è falso available=false e break 
     */
+
+    let timeSlotsToFrontend = []; //{timeSlot,available}
+
+    const timeSlotsNeeded = Math.ceil(sumMinutesServices / TIMESTEP_MINUTES); //nota: Math.ceil per evitare errori con TIMESTEP_MINUTES
+
+    for (const slot of timeSlots) {
+      //per ogni slot
+      const currentIndex = timeSlots.indexOf(slot);
+
+      for (let i = 0; i < timeSlotsNeeded; i++) {
+        //per ogni slot necessario a partire dallo slot in controllo
+        const nextSlot = timeSlots[currentIndex + i]; //per controllo fuori orario
+        if (!nextSlot || nextSlot.busyWorkers >= maxWorkers) {
+          slot.available = false;
+          break;
+        }
+      }
+      timeSlotsToFrontend.push({
+        timeSlot: slot.timeSlot,
+        available: slot.available,
+      });
+    }
+    res.status(200).json(timeSlotsToFrontend);
   } catch (error) {
     errorHandler(req, res, error);
   }
@@ -265,7 +277,6 @@ export const saveBooking = async (req: Request, res: Response) => {
       Vehicle_Type,
       License_Plate,
       Date_Time,
-      Customer_ID,
       ServicesArray,
     } = req.body;
 
@@ -275,7 +286,7 @@ export const saveBooking = async (req: Request, res: Response) => {
       !Vehicle_Type ||
       !License_Plate ||
       !Date_Time ||
-      !Customer_ID
+      !user.id
     ) {
       res.status(400).json({ message: "Attenzione: Compilare tutti i campi" });
       return;
@@ -292,7 +303,7 @@ export const saveBooking = async (req: Request, res: Response) => {
         (Model, Vehicle_Type, License_Plate, Date_Time, CUSTOMER_ID) VALUES
         (?,?,?,?,?)
         `,
-      [Model, Vehicle_Type, License_Plate, Date_Time, Customer_ID],
+      [Model, Vehicle_Type, License_Plate, Date_Time, user.id],
     )) as any;
     const newJobId = newJob.insertId;
 
@@ -307,7 +318,7 @@ export const saveBooking = async (req: Request, res: Response) => {
         [newJobId, service],
       );
     }
-    res.status(200).json({ message: "Prenotazione Confermata" });
+    res.status(201).json({ message: "Prenotazione Confermata" });
   } catch (error) {
     errorHandler(req, res, error);
   }

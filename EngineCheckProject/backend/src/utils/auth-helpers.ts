@@ -61,7 +61,7 @@ export const validateCustomer = (req: Request, res: Response) => {
 export const errorHandler = async (req: Request, res: Response, error:any) => {
   if (!res.headersSent){
     console.error(`Server Error in ${req.method} ${req.url}: `, error);
-    res.status(500).json({ message: "Errore del Server/DB", error: error });
+    res.status(500).json({ message: "Errore del Server/DB" });
   }else{
   console.warn(`Controller Error in ${req.method} ${req.url}: `, error);
   }
