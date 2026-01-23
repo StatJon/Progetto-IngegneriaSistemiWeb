@@ -4,16 +4,30 @@ import * as authController from "../controllers/auth-controller"
 const router: Router = Router()
 
 router.post("/api/auth/registerCustomer", authController.registerCustomer)
-// post json: { Email, First_Name, Last_Name, Password, Phone }
+/*
+Richiede: POST: JSON : { Email, First_Name, Last_Name, Password, Phone }
+Ritorna: Assegna JWT Token, messaggio di conferma
+*/
 
 router.post("/api/auth/loginCustomer", authController.loginCustomer)
-// post json: { Email, Password }
+/*
+Richiede: POST: JSON: { Email, Password }
+Ritorna: Assegna JWT Token, messaggio di conferma
+*/
+// post json: 
 
 router.post("/api/auth/loginEmployee", authController.loginEmployee)
-// post json: { BadgeNumber, Password }
-// nota: il controller restituisce un cookie Admin o Worker in base al numero di badge
+/*
+Richiede: POST: JSON: { BadgeNumber, Password }
+Ritorna: Assegna JWT Token, messaggio di conferma
+Nota: Nel JWT viene inserito anche il ruolo worker/admin automaticamente
+*/
 
 router.get("/api/auth/logout", authController.logout)
+/*
+Richiede: Nulla
+Ritorna: Rimuove JWT, se c'è, messaggio di conferma
+*/
 
 
 export default router

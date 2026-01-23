@@ -4,16 +4,31 @@ import * as jobController from "../controllers/job-controller"
 const router: Router = Router()
 
 router.get("/api/job/listAllJobs",jobController.listAllJobs);
-//Query Generale, per Admin
+/*
+Richiede: JWT Admin
+Ritorna: JSON { Job_ID, Service_ID, JobService_Status, JobService_Status, Model, Vehicle_Type, License_Plate, Date_Time, Title, Description, Minutes, Worker_Name, Worker_Last_Name, Customer_Email, Customer_Phone }
+Query Generale di tutti i lavori, per Admin
+*/
 
 router.get("/api/job/listEmployeeJobs",jobController.listEmployeeJobs);
-//Query per Employee, elenca i jobs assegnati e i non assegnati in generale
+/*
+Richiede: JWT Worker
+Ritorna: JSON: { Job_ID, Service_ID, JobService_Status, Model, Vehicle_Type, License_Plate, Date_Time, Title, Description, Minutes, CustomerEmail, CustomerPhone }
+Query per Employee, elenca i jobs ad egli/ella assegnati e i non assegnati a nessuno
+*/
 
 router.post("/api/job/setStatusJobService",jobController.setStatusJobService);
-//post json: {Job_ID, Service_ID, Job_Status} dove Job_Status deve essere uno di : 'Pending', 'Assigned', 'Working', 'Completed', 'Cancelled'
+/*
+Richiede: JWT Worker, POST JSON: {Job_ID, Service_ID, Job_Status}
+Ritorna: Messaggio di conferma
+Imposta lo status di un Job a Job_Status (deve essere uno tra 'Pending', 'Assigned', 'Working', 'Completed', 'Cancelled' )
+*/
+
 
 router.post("/api/job/setEmployeeJobService",jobController.setEmployeeJobService) //possibile refactor a GET
-//post json: {Job_ID, Service_ID} nota: il numero di badge viene recuperato in automatico dal cookie
+/*
+Richiede: JWT Worker, POST: JSON: {Job_ID, Service_ID}
+Ritorna: Messaggio di conferma
+Imposta il worker come assegnato al Job_ID passato (deduce il badge del worker dal JWT)
+*/
 
-
-export default router

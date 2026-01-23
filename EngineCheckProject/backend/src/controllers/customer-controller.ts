@@ -41,7 +41,31 @@ try{
 export const jobDetails = async (req: Request, res: Response) => {
 try{
     const user = validateCustomer(req,res);
-    
+    const [results] = await connection.execute(
+        `
+        SELECT 
+        DATE(j.Date_Time) AS Date,
+        TIME(j.Date_Time) AS Time,
+        j.Model,
+        j.License_Plate,
+        s.Title,
+        c.ID_Customer
+        FROM JOB j
+        JOIN JOB_SERVICE js ON j.Job_ID = js.JOB_Job_ID
+        JOIN SERVICE s ON s.Service_ID = js.SERVICE_Service_ID
+        JOIN CUSTOMER c ON j.CUSTOMER_ID = c.ID_Customer
+        WHERE j.Job_ID = ?
+        `,
+        [req.params.jobId]
+    ) as any;
+    if (results[0].ID_Customer !== user.id){
+        res.status(400).json({ message: "Errore: Utente errato" });
+      return;
+    };
+
+    //Trasformare da [results] ad un JSON utilizzabile
+
+    res.status(200).json(results);//CAMBIARE results
 }catch(error){errorHandler(req,res,error)}
 }
 

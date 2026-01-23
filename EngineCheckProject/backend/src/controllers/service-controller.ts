@@ -5,7 +5,16 @@ import { errorHandler } from "../utils/auth-helpers";
 export const servicesCarAll = async (req: Request, res: Response) => {
   try {
     const [results] = (await connection.execute(
-      "SELECT * FROM SERVICE WHERE Vehicle_Type = ?",
+      `SELECT
+      Service_ID,
+      Estimated_Duration_Minutes as Minutes,
+      Title,
+      Description,
+      Price, 
+      Category
+      FROM SERVICE 
+      WHERE Vehicle_Type = ?
+      `,
       ["car"]
     )) as any;
     if (!Array.isArray(results) || results.length == 0){
@@ -22,7 +31,17 @@ export const servicesCarAll = async (req: Request, res: Response) => {
 export const servicesMotorcycleAll = async (req: Request, res: Response) => {
   try {
     const [results] = (await connection.execute(
-      "SELECT * FROM SERVICE WHERE Vehicle_Type = ?",
+      `
+      SELECT
+      Service_ID,
+      Estimated_Duration_Minutes as Minutes,
+      Title,
+      Description,
+      Price, 
+      Category
+      FROM SERVICE 
+      WHERE Vehicle_Type = ?
+      `,
       ["motorcycle"]
     )) as any;
     if (!Array.isArray(results) || results.length == 0){

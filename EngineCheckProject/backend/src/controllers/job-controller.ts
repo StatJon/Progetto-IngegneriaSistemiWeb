@@ -22,13 +22,13 @@ export const listAllJobs = async (req: Request, res: Response) => {
         j.Vehicle_Type,
         j.License_Plate,
         j.Date_Time,
-        s.Title,
+        s.Title as Service, 
         s.Description,
-        s.Estimated_Duration_Minutes,
-        e.First_Name,
-        e.Last_Name,
-        c.Email,
-        c.Phone
+        s.Estimated_Duration_Minutes, as Minutes
+        e.First_Name, as Worker_Name
+        e.Last_Name, as Worker_Last_Name
+        c.Email, as Customer_Email
+        c.Phone as Customer_Phone
 
         FROM JOB AS j
 
@@ -64,9 +64,9 @@ export const listEmployeeJobs = async (req: Request, res: Response) => {
         j.Date_Time,
         s.Title,
         s.Description,
-        s.Estimated_Duration_Minutes,
-        c.Email,
-        c.Phone
+        s.Estimated_Duration_Minutes as Minutes,
+        c.Email as CustomerEmail,
+        c.Phone as CustomerPhone
 
         FROM JOB AS j
 
@@ -78,7 +78,7 @@ export const listEmployeeJobs = async (req: Request, res: Response) => {
         WHERE 
         (e.ID_Badge_Number = ? OR e.ID_Badge_Number IS NULL)
         AND 
-        (j.Job_Status IN ('Pending', 'Assigned', 'Working'))
+        (sj.JobService_Status IN ('Pending', 'Assigned', 'Working'))
         `,
       [user.id],
     );

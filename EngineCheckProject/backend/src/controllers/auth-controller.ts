@@ -93,7 +93,7 @@ export const loginCustomer = async (req: Request, res: Response) => {
 
     //Errore, email inesistente
     if (!Array.isArray(results) || results.length == 0) {
-      res.status(400).json({ message: "Credenziali email errate." });
+      res.status(400).json({ message: "Credenziali errate." });
       return;
     }
 
@@ -104,7 +104,7 @@ export const loginCustomer = async (req: Request, res: Response) => {
 
     //Errore, password errata
     if (!correctPassword) {
-      res.status(400).json({ message: "Credenziali password errate." });
+      res.status(400).json({ message: "Credenziali errate." });
       return;
     }
 
