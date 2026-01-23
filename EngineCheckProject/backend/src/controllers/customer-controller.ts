@@ -1,9 +1,31 @@
 import { Request, Response } from "express";
+import { getUser, setUser, unsetUser, User } from "../utils/auth";
+import {
+  validateUserLoggedIn,
+  validateUserNotLoggedIn,
+  validateAdmin,
+  errorHandler,
+  validateCustomer,
+} from "../utils/auth-helpers";
 import { connection } from "../utils/db";
-import { getUser } from "../utils/auth";
-import { validateUserLoggedIn, validateAdmin, errorHandler} from "../utils/auth-helpers";
 
+export const customerPage = async (req: Request, res: Response) => {
+try{
 
+}catch(error){errorHandler(req,res,error)}
+}
+
+export const jobDetails = async (req: Request, res: Response) => {
+try{
+
+}catch(error){errorHandler(req,res,error)}
+}
+
+export const jobDelete = async (req: Request, res: Response) => {
+try{
+
+}catch(error){errorHandler(req,res,error)}
+}
 
 /*Email -> JOBs -for_each-> SERVICES_OF_JOBs -for_each-> SERVICE_Service_ID */
 /*

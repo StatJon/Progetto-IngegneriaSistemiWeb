@@ -12,7 +12,7 @@ router.get("/api/job/listEmployeeJobs",jobController.listEmployeeJobs);
 router.post("/api/job/setStatusJobService",jobController.setStatusJobService);
 //post json: {Job_ID, Service_ID, Job_Status} dove Job_Status deve essere uno di : 'Pending', 'Assigned', 'Working', 'Completed', 'Cancelled'
 
-router.post("/api/job/setEmployeeJobService",jobController.setEmployeeJobService)
+router.post("/api/job/setEmployeeJobService",jobController.setEmployeeJobService) //possibile refactor a GET
 //post json: {Job_ID, Service_ID} nota: il numero di badge viene recuperato in automatico dal cookie
 
 
