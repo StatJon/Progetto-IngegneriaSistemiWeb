@@ -11,13 +11,37 @@ import { connection } from "../utils/db";
 
 export const customerPage = async (req: Request, res: Response) => {
 try{
+    const user = validateCustomer(req,res);
+    const [results] = await connection.execute(
+        `
+        SELECT 
+        DATE(j.Date_Time) AS Date,
+        TIME(j.Date_Time) AS Time,
+        j.Model,
+        j.License_Plate,
+        GROUP_CONCAT(s.Title SEPARATOR ', ') AS Services
+        FROM JOB j
+        JOIN JOB_SERVICE js ON j.Job_ID = js.JOB_Job_ID
+        JOIN SERVICE s ON s.Service_ID = js.SERVICE_Service_ID
+        WHERE j.CUSTOMER_ID = ?
+        `,
+        [user.id]
+    );
+    if (!Array.isArray(results) || results.length == 0){
+        res
+        .status(401)
+        .json({ message: "Nessun servizio prenotato." });
+      return;
+    }
+    res.status(200).json(results);
 
 }catch(error){errorHandler(req,res,error)}
 }
 
 export const jobDetails = async (req: Request, res: Response) => {
 try{
-
+    const user = validateCustomer(req,res);
+    
 }catch(error){errorHandler(req,res,error)}
 }
 
