@@ -32,3 +32,4 @@ Ritorna: Messaggio di conferma
 Imposta il worker come assegnato al Job_ID passato (deduce il badge del worker dal JWT)
 */
 
+export default router
