@@ -1,12 +1,12 @@
 import bcrypt from "bcrypt";
 import { Request, Response } from "express";
-import { getUser, setUser, unsetUser, User } from "../utils/auth";
+import { getUser, setUser, unsetUser, User } from "../utils/auth.js";
 import {
   validateUserLoggedIn,
   validateAdmin,
   errorHandler,
-} from "../utils/auth-helpers";
-import { connection } from "../utils/db";
+} from "../utils/auth-helpers.js";
+import { connection } from "../utils/db.js";
 
 export const listAllEmployees = async (req: Request, res: Response) => {
   try {

@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { getUser, setUser, unsetUser, User } from "../utils/auth";
+import { getUser, setUser, unsetUser, User } from "../utils/auth.js";
 
 //METODI VALIDATE
 //Usare un solo metodo "validate..." per controller

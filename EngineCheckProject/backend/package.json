@@ -5,7 +5,7 @@
   "description": "",
   "main": "app.js",
   "dependencies": {
-    "awesome-phonenumber": "^7.6.0",
+    "awesome-phonenumber": "^7.7.0",
     "axios": "^1.13.2",
     "bcrypt": "^6.0.0",
     "connect-history-api-fallback": "^2.0.0",

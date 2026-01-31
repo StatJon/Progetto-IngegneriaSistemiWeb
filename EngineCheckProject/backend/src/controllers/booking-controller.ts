@@ -1,13 +1,13 @@
 import { Request, Response } from "express";
-import { getUser, setUser, unsetUser, User } from "../utils/auth";
+import { getUser, setUser, unsetUser, User } from "../utils/auth.js";
 import {
   validateUserLoggedIn,
   validateUserNotLoggedIn,
   validateAdmin,
   errorHandler,
   validateCustomer,
-} from "../utils/auth-helpers";
-import { connection } from "../utils/db";
+} from "../utils/auth-helpers.js";
+import { connection } from "../utils/db.js";
 
 //CONFIG ORARI
 const WORKDAY_START: string = "08:30";

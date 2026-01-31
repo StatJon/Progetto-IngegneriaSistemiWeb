@@ -1,12 +1,12 @@
 import { Request, Response } from "express";
-import { getUser, setUser, unsetUser, User } from "../utils/auth";
+import { getUser, setUser, unsetUser, User } from "../utils/auth.js";
 import {
   validateUserLoggedIn,
   validateAdmin,
   errorHandler,
   validateEmployee,
-} from "../utils/auth-helpers";
-import { connection } from "../utils/db";
+} from "../utils/auth-helpers.js";
+import { connection } from "../utils/db.js";
 
 //Query Generale, per Admin
 export const listAllJobs = async (req: Request, res: Response) => {

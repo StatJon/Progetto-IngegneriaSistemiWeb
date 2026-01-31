@@ -1,14 +1,14 @@
 import bcrypt from "bcrypt"; //Libreria Hashing Password
 import { parsePhoneNumber } from "awesome-phonenumber"; //Libreria Validazione numeri telefono
 import { Request, Response } from "express";
-import { getUser, setUser, unsetUser, User } from "../utils/auth";
+import { getUser, setUser, unsetUser, User } from "../utils/auth.js";
 import {
   validateUserLoggedIn,
   validateUserNotLoggedIn,
   validateAdmin,
   errorHandler,
-} from "../utils/auth-helpers";
-import { connection } from "../utils/db";
+} from "../utils/auth-helpers.js";
+import { connection } from "../utils/db.js";
 
 
 export const registerCustomer = async (req: Request, res: Response) => {

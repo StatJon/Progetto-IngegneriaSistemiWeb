@@ -4,11 +4,12 @@
     // File Layout
     "rootDir": "./src",
     "outDir": "./dist",
-
+    
     // Environment Settings
     // See also https://aka.ms/tsconfig/module
-    "module": "esnext", //"nodenext",
-    "target": "esnext",//"esnext",
+    "module": "nodenext", //"nodenext",
+    "target": "esnext", //"esnext",
+    "moduleResolution": "nodenext",
     "types": [],
     // For nodejs:
     // "lib": ["esnext"],
@@ -40,5 +41,19 @@
     "noUncheckedSideEffectImports": true,
     "moduleDetection": "force",
     "skipLibCheck": true,
-  }
+
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "rewriteRelativeImportExtensions": true,
+    "allowImportingTsExtensions": true,
+
+
+    
+    "paths": {
+      "dotenv/config": ["./node_modules/dotenv/config"],
+      "awesome-phonenumber": ["./node_modules/awesome-phonenumber"],
+      "mysql2/promise": ["./node_modules/mysql2/promise"]
+    }
+  },
+  "include": ["src/**/*.ts"]
 }

@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
-import { connection } from "../utils/db";
-import { validateAdmin, validateEmployee, validateUserLoggedIn, validateUserNotLoggedIn, errorHandler } from "../utils/auth-helpers";
+import { connection } from "../utils/db.js";
+import { validateAdmin, validateEmployee, validateUserLoggedIn, validateUserNotLoggedIn, errorHandler } from "../utils/auth-helpers.js";
 
 export const testingJson = async (req: Request, res: Response) => {
     res.status(200).json({message : "Ciao dal Backend!"})

@@ -4,13 +4,13 @@ import bodyParser from "body-parser"
 import cookieParser from "cookie-parser"
 import historyApiFallback from "connect-history-api-fallback"
 
-import adminRouter from "./routes/admin-router"
-import authRouter from "./routes/auth-router"
-import bookingRouter from "./routes/booking-router"
-import customerRouter from "./routes/customer-router"
-import jobRouter from "./routes/job-router"
-import serviceRouter from "./routes/service-router"
-import testingRouter from "./routes/testing-router" //da rimuovere per final release
+import adminRouter from "./routes/admin-router.js"
+import authRouter from "./routes/auth-router.js"
+import bookingRouter from "./routes/booking-router.js"
+import customerRouter from "./routes/customer-router.js"
+import jobRouter from "./routes/job-router.js"
+import serviceRouter from "./routes/service-router.js"
+import testingRouter from "./routes/testing-router.js" //da rimuovere per final release
 
 const app: Express = express()
 const port: number = 3000

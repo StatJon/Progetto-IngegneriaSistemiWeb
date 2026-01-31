@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
-import { connection } from "../utils/db";
-import { errorHandler } from "../utils/auth-helpers";
+import { connection } from "../utils/db.js";
+import { errorHandler } from "../utils/auth-helpers.js";
 
 export const servicesCarAll = async (req: Request, res: Response) => {
   try {
