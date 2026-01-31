@@ -22,7 +22,7 @@ Nota: anche se nel controller non c'è scritto, appendere i parametri scritti in
 router.post("/api/booking/saveBooking", bookingController.saveBooking)
 /*
 Richiede: POST JSON {Model, Vehicle_Type, License_Plate, Date_Time, Customer_ID, ServicesArray,}
-Ritorna : WIP
+Ritorna : Messaggio di conferma
 Salva i dati della prenotazione nel DB
 */
 export default router
