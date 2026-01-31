@@ -64,7 +64,7 @@ export const jobDetails = async (req: Request, res: Response) => {
     }
 
     if (results[0].ID_Customer !== user.id) {
-      res.status(400).json({ message: "Errore: Utente errato" });
+      res.status(403).json({ message: "Errore: Utente errato" });
       return;
     }
 

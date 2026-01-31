@@ -10,7 +10,7 @@ import bookingRouter from "./routes/booking-router"
 import customerRouter from "./routes/customer-router"
 import jobRouter from "./routes/job-router"
 import serviceRouter from "./routes/service-router"
-import testingRouter from "./routes/testing-router" //da rimuovere per final relase
+import testingRouter from "./routes/testing-router" //da rimuovere per final release
 
 const app: Express = express()
 const port: number = 3000
@@ -26,7 +26,6 @@ app.use(authRouter)
 app.use(bookingRouter)
 app.use(customerRouter)
 app.use(jobRouter)
-app.use(serviceRouter)
 app.use(serviceRouter)
 
 //history fallback
