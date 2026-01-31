@@ -7,6 +7,6 @@ router.get("/api/customer/customerPage", customerController.customerPage)
 
 router.get("/api/customer/jobDetails", customerController.jobDetails)
 
-router.get("/api/customer/jobDelete", customerController.jobDelete)
+router.delete("/api/customer/jobDelete", customerController.jobDelete)
 
 export default router
