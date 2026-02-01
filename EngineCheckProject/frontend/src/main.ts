@@ -4,7 +4,8 @@ import './style.css'
 import App from './App.vue'
 
 // Importazione pagine
-import TestBackend from './pages/TestBackend.vue'
+//import TestBackend from './pages/TestBackend.vue'
+import Test1 from './pages/Test1.vue'
 import HomePage from './pages/HomePage.vue'
 import UserLogin from './pages/UserLogin.vue'
 import EmployeeLogin from './pages/EmployeeLogin.vue'
@@ -24,7 +25,7 @@ import AddEmployee from './pages/AddEmployee.vue'
 
 // Definizione Rotte
 const routes: Array<RouteRecordRaw> = [
-  { path: '/testing', component: TestBackend, name: 'TestBackend'},
+  //{ path: '/testing', component: TestBackend, name: 'TestBackend'},
   { path: '/', component: HomePage, name: 'Home' },
   { path: '/login-user', component: UserLogin, name: 'UserLogin' },
   { path: '/login-employee', component: EmployeeLogin, name: 'EmployeeLogin' },
@@ -40,6 +41,7 @@ const routes: Array<RouteRecordRaw> = [
   { path: '/booking-edit/:id', component: EditBooking, name: 'EditBooking' },
   { path: '/booking-final-confirmation', component: FinalConfirmation, name: 'FinalConfirmation' },
   { path: '/Add-Employee', component: AddEmployee, name: 'AddEmployee' },
+  { path: '/testing', component:Test1, name: 'Test1'}
 
 
 

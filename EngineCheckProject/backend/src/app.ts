@@ -27,6 +27,7 @@ app.use(bookingRouter)
 app.use(customerRouter)
 app.use(jobRouter)
 app.use(serviceRouter)
+app.use(testingRouter)
 
 //history fallback
 app.use(historyApiFallback())

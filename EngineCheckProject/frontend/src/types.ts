@@ -1,6 +1,5 @@
 export interface Testing {
-  id:string;
-  phone:string;
+ message: string;
 }
 
 export interface Pinco{
