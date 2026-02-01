@@ -13,18 +13,20 @@ export default defineComponent({
     data() {
         return {
           
-            testBackend: [] as Testing []
+            testBackend: [] as Testing[]
         }
     },
     methods: {
         getTestBackend() {
-            axios.get("/api/customer-test")
+            axios.get("/api/testing")
                 .then(response => {
                     // Salva i dati nella variabile
                     this.testBackend = response.data;
+                    alert(response.data);
                 })
                 .catch(error => {
                     console.error(error);
+                    alert(error);
                 });
         }
     },
