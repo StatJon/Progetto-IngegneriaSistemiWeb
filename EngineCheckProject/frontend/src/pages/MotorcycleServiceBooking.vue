@@ -1,120 +1,72 @@
-<script setup lang="ts">
-import { ref, computed } from 'vue';
-import { useRouter } from 'vue-router';
+<script lang="ts">
+import { defineComponent } from "vue";
+import axios from "axios";
 
-// 1. DATI STATICI (Copiati esattamente dalla tua immagine)
-const servicesData = [
-  // COLONNA 1: Manutenzione Auto
-  {
-    id: 1,
-    category: 'Manutenzione Auto',
-    title: 'Tagliando completo',
-    description: 'Controllo e sostituzione di filtri (aria, olio, carburante), olio motore, controllo freni, luci e liquidi.',
-    priceRange: '100 - 200 €',
-    duration: '1,5 - 3 ore'
+// Definiamo l'interfaccia basandoci esattamente sul tuo SQL
+interface Service {
+  Service_ID: number;
+  Minutes: number;
+  Title: string;
+  Description: string;
+  Price: number;
+  Vehicle_Type: 'car' | 'motorcycle';
+  Category: 'maintenance' | 'repair' | 'tyres';
+} 
+
+export default defineComponent({
+  data() {
+    return {
+      servicesCar: [] as Service[],
+      selectedServices: [] as number[],
+    };
   },
-  {
-    id: 2,
-    category: 'Manutenzione Auto',
-    title: 'Sostituzione pastiglie dei freni',
-    description: 'Smontaggio e sostituzione delle pastiglie dei freni anteriori o posteriori.',
-    priceRange: '80 - 150 €',
-    duration: '1 - 2 ore'
+  computed: {
+    // Filtri basati sui vincoli CHECK del tuo database
+    maintenanceServices() {
+      return this.servicesCar.filter(s => s.Category === 'maintenance');
+    },
+    tireServices() {
+      return this.servicesCar.filter(s => s.Category === 'tyres');
+    },
+    repairServices() {
+      return this.servicesCar.filter(s => s.Category === 'repair');
+    }
   },
-  {
-    id: 3,
-    category: 'Manutenzione Auto',
-    title: 'Revisione e manutenzione',
-    description: 'Controllo e riparazione del sistema di scarico, inclusa la sostituzione del catalizzatore o del silenziatore.',
-    priceRange: '150 - 400 €',
-    duration: '1 - 3 ore'
+  methods: {
+    async getServicesCar() {
+      try {
+        // Questa chiamata ora punta al tuo router Express
+        const response = await axios.get("/api/service/motorcycle");
+        console.log(response.status);
+        this.servicesCar = response.data;
+      } catch (error) {
+        console.error("Errore nel recupero dei servizi:", error);
+      }
+    },
+    toggleService(id: number) {
+      const index = this.selectedServices.indexOf(id);
+      if (index > -1) {
+        this.selectedServices.splice(index, 1);
+      } else {
+        this.selectedServices.push(id);
+      }
+    },
+    confirmSelection() {
+      if (this.selectedServices.length === 0) {
+        alert("Seleziona almeno un servizio per continuare.");
+        return;
+      }
+      // Navigazione verso la conferma/scelta data
+      this.$router.push({ 
+        path: '/booking-car-confirm', 
+        query: { services: this.selectedServices.join(',') } 
+      });
+    }
   },
-  // COLONNA 2: Pneumatici
-  {
-    id: 4,
-    category: 'Pneumatici',
-    title: 'Pneumatici',
-    description: 'Montaggio, equilibratura e, se necessario, sostituzione di pneumatici usurati.',
-    priceRange: '20 - 50 €/p',
-    duration: '30 - 60 minuti per pneumatico'
-  },
-  {
-    id: 5,
-    category: 'Pneumatici',
-    title: 'Diagnosi elettronica (OBD)',
-    description: 'Collegamento della centralina per individuare malfunzionamenti elettronici o guasti.',
-    priceRange: '300 - 600 €',
-    duration: '3 - 6 ore'
-  },
-  {
-    id: 6,
-    category: 'Pneumatici',
-    title: 'Cinghia di distribuzione',
-    description: 'Rimozione e sostituzione della cinghia di distribuzione, fondamentale per il sincronismo del motore.',
-    priceRange: '60 - 120 €',
-    duration: '30 - 60 minuti'
-  },
-  // COLONNA 3: Cura del veicolo
-  {
-    id: 7,
-    category: 'Cura del veicolo',
-    title: 'Manutenzione impianto di climatizzazione',
-    description: 'Ricarica gas refrigerante, controllo e pulizia del sistema aria condizionata.',
-    priceRange: '80 - 150 €',
-    duration: '1 - 2 ore'
-  },
-  {
-    id: 8,
-    category: 'Cura del veicolo',
-    title: 'Riparazione impianto frenante',
-    description: 'Sostituzione o riparazione di dischi, tubi freno o cambio del liquido freni.',
-    priceRange: '100 - 300 €',
-    duration: '2 - 4 ore'
-  },
-  {
-    id: 9,
-    category: 'Cura del veicolo',
-    title: 'Sostituzione batteria',
-    description: 'Rimozione e installazione di una nuova batteria fornita da noi, controllo del sistema di ricarica.',
-    priceRange: '80 - 150 €',
-    duration: '15 - 30 minuti'
+  mounted() {
+    this.getServicesCar();
   }
-];
-
-// Stato per tenere traccia degli ID selezionati
-const selectedServices = ref<number[]>([]); 
-const router = useRouter();
-
-// 2. FILTRI PER COLONNA (Computed properties)
-const maintenanceServices = computed(() => servicesData.filter(s => s.category === 'Manutenzione Auto'));
-const tireServices = computed(() => servicesData.filter(s => s.category === 'Pneumatici'));
-const careServices = computed(() => servicesData.filter(s => s.category === 'Cura del veicolo'));
-
-// 3. LOGICA DI SELEZIONE (Toggle)
-const toggleService = (id: number) => {
-  if (selectedServices.value.includes(id)) {
-    // Rimuovi se già presente
-    selectedServices.value = selectedServices.value.filter(sId => sId !== id);
-  } else {
-    // Aggiungi se non presente
-    selectedServices.value.push(id);
-  }
-};
-
-// 4. NAVIGAZIONE ALLA PROSSIMA PAGINA
-const confirmSelection = () => {
-  if (selectedServices.value.length === 0) {
-    alert("Per favore, seleziona almeno un servizio per procedere.");
-    return;
-  }
-  
-  // Passiamo gli ID dei servizi scelti via URL (Query Params)
-  // Esempio URL finale: /booking-date?services=1,4,7
-  router.push({ 
-    path: '/booking-motorcycle-confirm', 
-    query: { services: selectedServices.value.join(',') } 
-  });
-};
+});
 </script>
 
 <template>
@@ -122,29 +74,26 @@ const confirmSelection = () => {
     <h1 class="page-title">Selezionare i servizi per Moto da prenotare</h1>
 
     <div class="services-grid">
-      
       <div class="service-column">
         <h2 class="column-title">Manutenzione Moto</h2>
         <div 
           v-for="service in maintenanceServices" 
-          :key="service.id" 
+          :key="service.Service_ID" 
           class="service-card" 
-          :class="{ 'selected': selectedServices.includes(service.id) }"
-          @click="toggleService(service.id)"
+          :class="{ 'selected': selectedServices.includes(service.Service_ID) }"
+          @click="toggleService(service.Service_ID)"
         >
           <div class="card-header">
             <div class="checkbox-custom">
-              <span v-if="selectedServices.includes(service.id)">✔</span>
+              <span v-if="selectedServices.includes(service.Service_ID)">✔</span>
             </div>
-            <span class="price-tag">{{ service.priceRange }}</span>
+            <span class="price-tag">{{ service.Price }} €</span>
           </div>
-          
-          <h3 class="service-title">{{ service.title }}</h3>
-          <p class="service-desc">{{ service.description }}</p>
-          
+          <h3 class="service-title">{{ service.Title }}</h3>
+          <p class="service-desc">{{ service.Description }}</p>
           <div class="service-footer">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
-            <span class="duration-text">{{ service.duration }}</span>
+             <i class="clock-icon">🕒</i> 
+             <span>{{ service.Minutes }} min</span>
           </div>
         </div>
       </div>
@@ -153,66 +102,56 @@ const confirmSelection = () => {
         <h2 class="column-title">Pneumatici</h2>
         <div 
           v-for="service in tireServices" 
-          :key="service.id" 
+          :key="service.Service_ID" 
           class="service-card"
-          :class="{ 'selected': selectedServices.includes(service.id) }"
-          @click="toggleService(service.id)"
+          :class="{ 'selected': selectedServices.includes(service.Service_ID) }"
+          @click="toggleService(service.Service_ID)"
         >
           <div class="card-header">
             <div class="checkbox-custom">
-              <span v-if="selectedServices.includes(service.id)">✔</span>
+              <span v-if="selectedServices.includes(service.Service_ID)">✔</span>
             </div>
-            <span class="price-tag">{{ service.priceRange }}</span>
+            <span class="price-tag">{{ service.Price }} €</span>
           </div>
-          
-          <h3 class="service-title">{{ service.title }}</h3>
-          <p class="service-desc">{{ service.description }}</p>
-          
+          <h3 class="service-title">{{ service.Title }}</h3>
+          <p class="service-desc">{{ service.Description }}</p>
           <div class="service-footer">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
-            <span class="duration-text">{{ service.duration }}</span>
+             <span>🕒 {{ service.Minutes }} min</span>
           </div>
         </div>
       </div>
 
       <div class="service-column">
-        <h2 class="column-title">Cura del veicolo</h2>
+        <h2 class="column-title">Riparazioni / Cura</h2>
         <div 
-          v-for="service in careServices" 
-          :key="service.id" 
+          v-for="service in repairServices" 
+          :key="service.Service_ID" 
           class="service-card"
-          :class="{ 'selected': selectedServices.includes(service.id) }"
-          @click="toggleService(service.id)"
+          :class="{ 'selected': selectedServices.includes(service.Service_ID) }"
+          @click="toggleService(service.Service_ID)"
         >
           <div class="card-header">
             <div class="checkbox-custom">
-              <span v-if="selectedServices.includes(service.id)">✔</span>
+              <span v-if="selectedServices.includes(service.Service_ID)">✔</span>
             </div>
-            <span class="price-tag">{{ service.priceRange }}</span>
+            <span class="price-tag">{{ service.Price }} €</span>
           </div>
-          
-          <h3 class="service-title">{{ service.title }}</h3>
-          <p class="service-desc">{{ service.description }}</p>
-          
+          <h3 class="service-title">{{ service.Title }}</h3>
+          <p class="service-desc">{{ service.Description }}</p>
           <div class="service-footer">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
-            <span class="duration-text">{{ service.duration }}</span>
+             <span>🕒 {{ service.Minutes }} min</span>
           </div>
         </div>
       </div>
-
     </div>
 
     <div class="action-bar">
       <button class="btn-confirm" @click="confirmSelection">
-        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:8px"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
         Conferma servizi e scegli data
       </button>
     </div>
-
   </div>
 </template>
-
 <style scoped>
 /* CONTAINER GENERALE */
 .page-container {

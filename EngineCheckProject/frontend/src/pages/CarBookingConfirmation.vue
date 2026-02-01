@@ -1,7 +1,8 @@
-<script setup lang="ts">
+<script lang="ts">
 import { ref, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
-//import axios from 'axios';
+import axios from 'axios';
+import { defineComponent } from 'vue';
 
 const route = useRoute();
 const router = useRouter();
@@ -26,83 +27,57 @@ const serviceIds = ref<number[]>([]);
 // --- 2. STATO DEL FORM ---
 const vehicleType = ref('');
 const vehiclePlate = ref('');
-const additionalNote = ref('');
-const selectedDay = ref<number | null>(null);
-const selectedHour = ref('09');
-const selectedMinute = ref('00');
-const isLoading = ref(false);
+const selectedYear = ref('');
+const selectedMonth = ref('');
+const selectedDay = ref('');
+//const selectedTimeSlot = ref('');
 
-// --- 3. LOGICA CALENDARIO (Semplificata per il mese corrente) ---
-const currentMonthName = "Settembre";
-const currentYear = 2025;
-const daysInMonth = 30; // Settembre ha 30 giorni
-const startDayOffset = 1; // Supponiamo inizi di Lunedì (0=Dom, 1=Lun...)
-const days = Array.from({ length: daysInMonth }, (_, i) => i + 1);
+export default defineComponent({
+    data(): {
+        return {
+        };
+    },
+methods: {
+    async getTest() {
+      try {
+        
+      } catch (err) {
+        console.error("Error fetching /api/testing:", err);
+      }
+    },
+  },
+    mounted() { }
+})
 
-const selectDay = (day: number) => {
-  selectedDay.value = day;
-};
 
-// --- 4. INIZIALIZZAZIONE ---
-onMounted(() => {
-  // Leggi query params dalla URL (es: ?services=1,4,7)
-  const queryServices = route.query.services as string;
-  
-  if (queryServices) {
-    const ids = queryServices.split(',').map(Number);
-    serviceIds.value = ids;
-    // Filtra i servizi completi basandosi sugli ID
-    selectedServices.value = allServices.filter(s => ids.includes(s.id));
-  } else {
-    // Se non ci sono servizi, torna indietro
-    router.push('/services-selection');
-  }
-});
-
-const goBack = () => {
-  router.back();
-};
+//const goBack = () => {
+// router.back();
+//};
 
 // --- 5. INVIO PRENOTAZIONE ---
-const confirmBooking = async () => {
-  if (!selectedDay.value || !vehiclePlate.value || !vehicleType.value) {
-    alert("Per favore compila tutti i campi obbligatori (Veicolo, Targa, Data).");
-    return;
+const bookingData = {
+  vehicleType: vehicleType.value,
+  vehiclePlate: vehiclePlate.value,
+  date: {
+    year: selectedYear.value,
+    month: selectedMonth.value,
+    day: selectedDay.value
+  },
+  //timeSlot: selectedTimeSlot.value,
+  services: serviceIds.value // Gli ID recuperati nell'onMounted
+};
+const checkAvailable = async () => {
+  try {
+    const response = await axios.get(
+      `/api/booking/checkDayAvailable/2026-01`
+    );
+    alert(response);
+    
+  } catch (error) {
+    console.error("Errore durante il controllo disponibilità:", error);
+    alert(error);
   }
-
-  // isLoading.value = true;
-  
-  // // Costruisci data stringa YYYY-MM-DD
-  // const dayStr = selectedDay.value < 10 ? `0${selectedDay.value}` : selectedDay.value;
-  // const fullDate = `${currentYear}-09-${dayStr}`;
-  // const fullTime = `${selectedHour.value}:${selectedMinute.value}`;
-
-  // // Recupera utente
-  // const storedUser = localStorage.getItem('user');
-  // const userId = storedUser ? JSON.parse(storedUser).id : null;
-
-  // try {
-  //   // Chiamata al Backend
-  //   await axios.post('http://localhost:3000/api/bookings', {
-  //     userId: userId || 1, // Fallback ID 1 se test senza login
-  //     vehicleType: vehicleType.value,
-  //     vehiclePlate: vehiclePlate.value,
-  //     additionalNote: additionalNote.value,
-  //     date: fullDate,
-  //     time: fullTime,
-  //     serviceIds: serviceIds.value
-  //   });
-
-    alert("Prenotazione confermata con successo!");
-    router.push('/booking-final-confirmation'); // Torna alla dashboard utente
-
-//   } catch (error) {
-//     console.error(error);
-//     alert("Errore durante la prenotazione.");
-//   } finally {
-//     isLoading.value = false;
-//   }
- };
+};
 </script>
 
 <template>
@@ -110,10 +85,10 @@ const confirmBooking = async () => {
     <h1 class="page-title">Selezionare la data dell’appuntamento</h1>
 
     <div class="layout-grid">
-      
+
       <div class="left-column">
         <h2 class="section-title">Riepilogo servizi prenotati</h2>
-        
+
         <div class="services-list">
           <div v-for="service in selectedServices" :key="service.id" class="summary-card">
             <div class="card-check">✔</div>
@@ -121,14 +96,14 @@ const confirmBooking = async () => {
               <h3 class="s-title">{{ service.title }}</h3>
               <p class="s-desc">{{ service.description }}</p>
               <div class="s-footer">
-                <span class="s-time">⏱ {{ service.duration }}</span>
+
                 <span class="s-price">{{ service.priceRange }}</span>
               </div>
             </div>
           </div>
         </div>
 
-        <button class="btn-back" @click="goBack">
+        <button class="btn-back" @click="">
           ← Rivedi scelte
         </button>
       </div>
@@ -137,7 +112,7 @@ const confirmBooking = async () => {
         <h2 class="section-title">Prenota l’appuntamento</h2>
 
         <div class="booking-form-card">
-          
+
           <div class="form-group">
             <label>Tipo Veicolo</label>
             <input type="text" v-model="vehicleType" placeholder="Es. Moto, Auto, SUV" />
@@ -148,62 +123,58 @@ const confirmBooking = async () => {
             <input type="text" v-model="vehiclePlate" placeholder="Inserisci targa" />
           </div>
 
-          <div class="form-group">
-            <label>Messaggio aggiuntivo</label>
-            <textarea v-model="additionalNote" placeholder="Dettagli extra..."></textarea>
-          </div>
+
 
           <hr class="divider" />
 
-          <div class="calendar-wrapper">
-            <div class="calendar-header">
-              <button>&lt;</button>
-              <span class="month-label">{{ currentMonthName }} {{ currentYear }}</span>
-              <button>&gt;</button>
-            </div>
-            
-            <div class="calendar-grid">
-              <div class="day-name">Su</div>
-              <div class="day-name">Mo</div>
-              <div class="day-name">Tu</div>
-              <div class="day-name">We</div>
-              <div class="day-name">Th</div>
-              <div class="day-name">Fr</div>
-              <div class="day-name">Sa</div>
 
-              <div v-for="n in startDayOffset" :key="'empty-'+n" class="day-empty"></div>
+          <div calss="Calendar">
+            <label>Anno</label>
+            <input type="text" v-model="bookingData.date.year" @change="checkAvailable" placeholder="Anno">
 
-              <div 
-                v-for="day in days" 
-                :key="day" 
-                class="day-number" 
-                :class="{ 'selected': selectedDay === day }"
-                @click="selectDay(day)"
-              >
-                {{ day }}
-              </div>
-            </div>
+            <label>Mese</label>
+            <input type="text" v-model="bookingData.date.month" @change="checkAvailable" placeholder="mese">
+
+            <label> giorno </label>
+            <input type="text" v-model="selectedDay" placeholder="giorno">
+
+
           </div>
+
+
 
           <div class="time-selector">
-            <label>Select time</label>
-            <div class="time-inputs">
-              <select v-model="selectedHour">
-                <option v-for="h in 11" :key="h" :value="(h+7).toString().padStart(2,'0')">{{ (h+7).toString().padStart(2,'0') }}</option>
-              </select>
-              <span class="colon">:</span>
-              <select v-model="selectedMinute">
-                <option value="00">00</option>
-                <option value="15">15</option>
-                <option value="30">30</option>
-                <option value="45">45</option>
-              </select>
-            </div>
+            <label for="orari">Scegli una fascia oraria:</label>
+
+            <select name="fascia-oraria" id="orari">
+              <option value="08:30-09:00">08:30 - 09:00</option>
+              <option value="09:00-09:30">09:00 - 09:30</option>
+              <option value="09:30-10:00">09:30 - 10:00</option>
+              <option value="10:00-10:30">10:00 - 10:30</option>
+              <option value="10:30-11:00">10:30 - 11:00</option>
+              <option value="11:00-11:30">11:00 - 11:30</option>
+              <option value="11:30-12:00">11:30 - 12:00</option>
+              <option value="12:00-12:30">12:00 - 12:30</option>
+              <option value="12:30-13:00">12:30 - 13:00</option>
+              <option value="13:00-13:30">13:00 - 13:30</option>
+              <option value="13:30-14:00">13:30 - 14:00</option>
+              <option value="14:00-14:30">14:00 - 14:30</option>
+              <option value="14:30-15:00">14:30 - 15:00</option>
+              <option value="15:00-15:30">15:00 - 15:30</option>
+              <option value="15:30-16:00">15:30 - 16:00</option>
+              <option value="16:00-16:30">16:00 - 16:30</option>
+              <option value="16:30-17:00">16:30 - 17:00</option>
+              <option value="17:00-17:30">17:00 - 17:30</option>
+              <option value="17:30-18:00">17:30 - 18:00</option>
+              <option value="18:00-18:30">18:00 - 18:30</option>
+              <option value="18:30-19:00">18:30 - 19:00</option>
+            </select>
           </div>
 
-          <button class="btn-submit" @click="confirmBooking" :disabled="isLoading">
-            {{ isLoading ? 'Invio in corso...' : '✓ Conferma ed invia' }}
+          <button class="btn-submit" @click="checkAvailable">
+            Conferma prenotazione ✓
           </button>
+          <button @click="checkAvailable"> controlla </button>
 
         </div>
       </div>
@@ -272,9 +243,26 @@ const confirmBooking = async () => {
   font-size: 14px;
 }
 
-.s-title { font-size: 15px; font-weight: bold; margin: 0 0 5px 0; }
-.s-desc { font-size: 13px; color: #666; margin: 0 0 10px 0; line-height: 1.3; }
-.s-footer { display: flex; justify-content: space-between; font-size: 12px; font-weight: bold; color: #444; }
+.s-title {
+  font-size: 15px;
+  font-weight: bold;
+  margin: 0 0 5px 0;
+}
+
+.s-desc {
+  font-size: 13px;
+  color: #666;
+  margin: 0 0 10px 0;
+  line-height: 1.3;
+}
+
+.s-footer {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  font-weight: bold;
+  color: #444;
+}
 
 .btn-back {
   width: 100%;
@@ -287,7 +275,10 @@ const confirmBooking = async () => {
   font-weight: 600;
   margin-top: 20px;
 }
-.btn-back:hover { background-color: #006bcf; }
+
+.btn-back:hover {
+  background-color: #006bcf;
+}
 
 
 /* COLONNA DESTRA */
@@ -300,21 +291,40 @@ const confirmBooking = async () => {
   border: 1px solid #eee;
   border-radius: 12px;
   padding: 30px;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
 }
 
-.form-group { margin-bottom: 15px; }
-.form-group label { display: block; font-weight: 600; margin-bottom: 5px; font-size: 14px; color: #555; }
-.form-group input, .form-group textarea {
+.form-group {
+  margin-bottom: 15px;
+}
+
+.form-group label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 5px;
+  font-size: 14px;
+  color: #555;
+}
+
+.form-group input,
+.form-group textarea {
   width: 100%;
   padding: 10px;
   border: 1px solid #ddd;
   border-radius: 6px;
   font-size: 14px;
 }
-.form-group textarea { height: 80px; resize: vertical; }
 
-.divider { margin: 30px 0; border: 0; border-top: 1px solid #eee; }
+.form-group textarea {
+  height: 80px;
+  resize: vertical;
+}
+
+.divider {
+  margin: 30px 0;
+  border: 0;
+  border-top: 1px solid #eee;
+}
 
 /* CALENDARIO */
 .calendar-wrapper {
@@ -326,8 +336,20 @@ const confirmBooking = async () => {
   background: #fff;
 }
 
-.calendar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; font-weight: bold; }
-.calendar-header button { background: none; border: none; font-size: 18px; cursor: pointer; }
+.calendar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+  font-weight: bold;
+}
+
+.calendar-header button {
+  background: none;
+  border: none;
+  font-size: 18px;
+  cursor: pointer;
+}
 
 .calendar-grid {
   display: grid;
@@ -336,7 +358,12 @@ const confirmBooking = async () => {
   text-align: center;
 }
 
-.day-name { font-size: 12px; color: #888; margin-bottom: 5px; }
+.day-name {
+  font-size: 12px;
+  color: #888;
+  margin-bottom: 5px;
+}
+
 .day-number {
   height: 35px;
   display: flex;
@@ -346,22 +373,35 @@ const confirmBooking = async () => {
   border-radius: 50%;
   font-size: 14px;
 }
-.day-number:hover { background-color: #f0f0f0; }
-.day-number.selected { background-color: #333; color: white; }
+
+.day-number:hover {
+  background-color: #f0f0f0;
+}
+
+.day-number.selected {
+  background-color: #333;
+  color: white;
+}
 
 /* TIME SELECTOR */
-.time-selector { text-align: center; margin-bottom: 30px; }
+.time-selector {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
 .time-inputs {
   display: flex;
   justify-content: center;
   align-items: center;
   gap: 10px;
-  background: #e0dcf5; /* Colore viola chiaro tipo immagine */
+  background: #e0dcf5;
+  /* Colore viola chiaro tipo immagine */
   padding: 10px;
   border-radius: 12px;
   width: fit-content;
   margin: 10px auto;
 }
+
 .time-inputs select {
   background: transparent;
   border: none;
@@ -383,11 +423,21 @@ const confirmBooking = async () => {
   font-weight: bold;
   cursor: pointer;
 }
-.btn-submit:hover { background-color: #006bcf; }
+
+.btn-submit:hover {
+  background-color: #006bcf;
+}
 
 /* Responsive */
 @media (max-width: 800px) {
-  .layout-grid { flex-direction: column; }
-  .left-column, .right-column { width: 100%; max-width: none; }
+  .layout-grid {
+    flex-direction: column;
+  }
+
+  .left-column,
+  .right-column {
+    width: 100%;
+    max-width: none;
+  }
 }
 </style>
