@@ -12,7 +12,7 @@ Ritorna: {Service_ID, Minutes, Title, Description, Price, Category}
 Per videata selezione servizi auto
 */
 
-router.get("/api/service/mootorcycle", serviceController.servicesMotorcycleAll)
+router.get("/api/service/motorcycle", serviceController.servicesMotorcycleAll)
 /*
 Richiede: Nulla
 Ritorna: {Service_ID, Minutes, Title, Description, Price, Category}
