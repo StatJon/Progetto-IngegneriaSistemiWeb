@@ -33,20 +33,20 @@ const selectedDay = ref('');
 //const selectedTimeSlot = ref('');
 
 export default defineComponent({
-    data(): {
-        return {
-        };
-    },
-methods: {
+  data() {
+    return {
+    };
+  },
+  methods: {
     async getTest() {
       try {
-        
+
       } catch (err) {
         console.error("Error fetching /api/testing:", err);
       }
     },
   },
-    mounted() { }
+  mounted() { }
 })
 
 
@@ -72,7 +72,7 @@ const checkAvailable = async () => {
       `/api/booking/checkDayAvailable/2026-01`
     );
     alert(response);
-    
+
   } catch (error) {
     console.error("Errore durante il controllo disponibilità:", error);
     alert(error);

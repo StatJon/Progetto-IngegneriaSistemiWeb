@@ -51,10 +51,7 @@ export default defineComponent({
       }
     },
     confirmSelection() {
-      if (this.selectedServices.length === 0) {
-        alert("Seleziona almeno un servizio per continuare.");
-        return;
-      }
+      
       // Navigazione verso la conferma/scelta data
       this.$router.push({ 
         path: '/booking-car-confirm', 
