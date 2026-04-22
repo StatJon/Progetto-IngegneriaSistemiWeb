@@ -114,6 +114,7 @@ export const checkDayAvailable = async (req: Request, res: Response) => {
 
 export const checkTimeAvailable = async (req: Request, res: Response) => {
   // entra GET : ?date=2026-05-15&services=1,3,4
+
   try {
     //CONTROLLI PRELIMINARI///
     const { date, services } = req.query;
@@ -128,15 +129,21 @@ export const checkTimeAvailable = async (req: Request, res: Response) => {
       .split(",")
       .map((service) => parseInt(service, 10));
 
+    console.log(paramIdServices)
+
+    const placeholders = paramIdServices.map(() => '?').join(', ');
+
     const [dbServices] = (await connection.execute(
-      //nota: (?) invece id ? perchè si passa array
       `
       SELECT Service_ID, Estimated_Duration_Minutes
       FROM SERVICE
-      WHERE Service_ID IN (?)
+      WHERE Service_ID IN (${placeholders})
       `,
-      [paramIdServices],
-    )) as [any[], []]; //<--nota: sintassi necessaria per la struttura di dbServices
+      paramIdServices,
+    )) as [any[], []]; 
+    //<--nota: sintassi necessaria per la struttura di dbServices
+
+    console.log("Prima chiamata DB (Services) OK")
 
     if (paramIdServices.length !== dbServices.length) {
       //Check eventuali id mancanti
@@ -198,6 +205,8 @@ export const checkTimeAvailable = async (req: Request, res: Response) => {
     )) as any;
     const maxWorkers: number = workersArray[0].totalWorkers;
 
+    console.log("Seconda chiamata DB (Workers) OK")
+
     //Query lista lavori per ciclo for sotto
     const [jobsArray] = (await connection.execute(
       `
@@ -212,6 +221,8 @@ export const checkTimeAvailable = async (req: Request, res: Response) => {
       `,
       [date],
     )) as any;
+
+    console.log("Terza chiamata DB (Jobs) OK")
 
     //Occupazione griglia orari
     for (const job of jobsArray) {
