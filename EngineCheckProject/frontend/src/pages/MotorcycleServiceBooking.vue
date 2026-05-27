@@ -2,7 +2,7 @@
 import { defineComponent } from "vue";
 import axios from "axios";
 
-// Definiamo l'interfaccia basandoci esattamente sul tuo SQL
+//l'interfaccia basandoci sul  SQL
 interface Service {
   Service_ID: number;
   Minutes: number;
@@ -16,29 +16,29 @@ interface Service {
 export default defineComponent({
   data() {
     return {
-      servicesCar: [] as Service[],
+      servicesMotorcycle: [] as Service[],
       selectedServices: [] as number[],
     };
   },
   computed: {
     // Filtri basati sui vincoli CHECK del tuo database
     maintenanceServices() {
-      return this.servicesCar.filter(s => s.Category === 'maintenance');
+      return this.servicesMotorcycle.filter(s => s.Category === 'maintenance');
     },
     tireServices() {
-      return this.servicesCar.filter(s => s.Category === 'tyres');
+      return this.servicesMotorcycle.filter(s => s.Category === 'tyres');
     },
     repairServices() {
-      return this.servicesCar.filter(s => s.Category === 'repair');
+      return this.servicesMotorcycle.filter(s => s.Category === 'repair');
     }
   },
   methods: {
-    async getServicesCar() {
+    async getServicesMotorcycle() {
       try {
         // Questa chiamata ora punta al tuo router Express
         const response = await axios.get("/api/service/motorcycle");
         console.log(response.status);
-        this.servicesCar = response.data;
+        this.servicesMotorcycle = response.data;
       } catch (error) {
         console.error("Errore nel recupero dei servizi:", error);
       }
@@ -52,10 +52,10 @@ export default defineComponent({
       }
     },
     confirmSelection() {
-      if (this.selectedServices.length === 0) {
-        alert("Seleziona almeno un servizio per continuare.");
-        return;
-      }
+      // if (this.selectedServices.length === 0) {
+      //   alert("Seleziona almeno un servizio per continuare.");
+      //   return;
+      // }
       // Navigazione verso la conferma/scelta data
       this.$router.push({ 
         path: '/booking-car-confirm', 
@@ -64,7 +64,7 @@ export default defineComponent({
     }
   },
   mounted() {
-    this.getServicesCar();
+    this.getServicesMotorcycle();
   }
 });
 </script>
