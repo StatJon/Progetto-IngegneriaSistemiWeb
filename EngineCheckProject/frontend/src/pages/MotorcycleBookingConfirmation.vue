@@ -1,59 +1,102 @@
-<script setup lang="ts">
-import { ref, onMounted } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
+<script lang="ts">
+import { ref, onMounted, defineComponent } from 'vue';
+//import { useRoute, useRouter } from 'vue-router';
 import axios from 'axios';
 
-const route = useRoute();
-const router = useRouter();
+/*todo
+  finire la richesta api del checkAvailable
+  riadattare le richieste nel template
+  menu a tendina orari va bene 
 
-// --- 1. RECUPERO DATI SERVIZI (Copia statica per visualizzazione) ---
-// In un'app reale, questi dati potrebbero venire da uno Store (Pinia) o ricaricati dal Backend
-const allServices = [
-  { id: 1, title: 'Tagliando completo', description: 'Controllo filtri, olio, freni...', priceRange: '100 - 200 €', duration: '1,5 - 3 ore' },
-  { id: 2, title: 'Sostituzione pastiglie freni', description: 'Sostituzione anteriore/posteriore.', priceRange: '80 - 150 €', duration: '1 - 2 ore' },
-  { id: 3, title: 'Revisione e manutenzione', description: 'Controllo scarico e catalizzatore.', priceRange: '150 - 400 €', duration: '1 - 3 ore' },
-  { id: 4, title: 'Pneumatici', description: 'Montaggio ed equilibratura.', priceRange: '20 - 50 €/p', duration: '30 - 60 min' },
-  { id: 5, title: 'Diagnosi elettronica (OBD)', description: 'Check centralina errori.', priceRange: '300 - 600 €', duration: '3 - 6 ore' },
-  { id: 6, title: 'Cinghia di distribuzione', description: 'Sostituzione cinghia.', priceRange: '60 - 120 €', duration: '30 - 60 min' },
-  { id: 7, title: 'Manutenzione clima', description: 'Ricarica gas e pulizia.', priceRange: '80 - 150 €', duration: '1 - 2 ore' },
-  { id: 8, title: 'Riparazione freni', description: 'Dischi o tubi freno.', priceRange: '100 - 300 €', duration: '2 - 4 ore' },
-  { id: 9, title: 'Sostituzione batteria', description: 'Nuova batteria e check.', priceRange: '80 - 150 €', duration: '15 - 30 min' },
-];
 
-const selectedServices = ref<any[]>([]);
-const serviceIds = ref<number[]>([]);
-
-// --- 2. STATO DEL FORM ---
-const vehicleType = ref('');
-const vehiclePlate = ref('');
-const selectedYear = ref('');
-const selectedMonth = ref('');
-const selectedDay = ref('');
-//const selectedTimeSlot = ref('');
+*/
 
 
 
-// --- 3. LOGICA CALENDARIO (Semplificata per il mese corrente) ---
+// route = useRoute();
+//const router = useRouter();
 
-// --- 4. INIZIALIZZAZIONE ---
-onMounted(() => {
-  // Leggi query params dalla URL (es: ?services=1,4,7)
-  const queryServices = route.query.services as string;
 
-  if (queryServices) {
-    const ids = queryServices.split(',').map(Number);
-    serviceIds.value = ids;
-    // Filtra i servizi completi basandosi sugli ID
-    selectedServices.value = allServices.filter(s => ids.includes(s.id));
-  } else {
-    // Se non ci sono servizi, torna indietro
-    router.push('/services-selection');
+
+//const selectedServices = ref<any[]>([]);
+
+export default defineComponent({
+  data() {
+    return {
+      serviceIds : [] as number[],
+      avYear : [] as number[],
+      avMonth : [] as number[],
+      avDay : [] as number[],
+      bookingForm: {
+        vehicleType: '',
+        vehiclePlate: '',
+        month: '',
+        year: '',
+        day: '',
+        timeSlot: '' 
+      }
+
+    };
+
+  },
+  methods: {
+    async checkDay(){
+      // dai in input al backend anno-mese e in output riceverai tutti i giorni assieme alla disponibilita in booleano
+
+    },
+    async checkTime(){
+      // GET: ?date=aaaa-mm-gg&services=1,2,3,..., gli do questo in richiesta get, e ricevo JSON ({timeSlot : hh:mm, available : true/false})
+      
+    },
+    async submit(){
+      // salva le variabili nel form bookingForm 
+      // e io devo darli come input POST JSON {Model, Vehicle_Type, License_Plate, Date_Time, Customer_ID, ServicesArray,}
+      // in output compare il messaggio di conferma (va tutto bene)
+    },
+    async goBack(){
+      // tasto per tornare nella pagina precedente , senza salvare le cose
+      this.$router.back();
+    }
+
+
+
+
+
+    // async checkAviable() {
+    //   try {
+    //     const response = await axios.get(
+    //       `/api/booking/checkDayAvailable/`,
+    //       {
+    //         params: {
+    //           year: AvYear.value,
+    //           month: AvMonth.value
+    //         }
+    //       }
+    //     );
+    //   } catch (error) {
+    //     console.error("Errore durante il controllo disponibilità:", error);
+    //   }
+
+    // }
+
+
+
+
   }
+})
+
+
+
+
+
+
+
+onMounted(() => {
+
+
 });
 
-//const goBack = () => {
-// router.back();
-//};
+
 
 // --- 5. INVIO PRENOTAZIONE ---
 const bookingData = {
@@ -67,33 +110,11 @@ const bookingData = {
   //timeSlot: selectedTimeSlot.value,
   services: serviceIds.value // Gli ID recuperati nell'onMounted
 };
-const checkAvailable = async () => {
-  try {
-    const response = await axios.get(
-      `/api/booking/checkDayAvailable/2026-01`
-    );
-    alert(response);
-    /*
-    // 1. Estraiamo i dati dal tuo oggetto bookingData
-    // Usiamo il template literal per creare la stringa yearMonth
-    // Esempio risultato: "2024-05"
-    const yearMonthParam = `${bookingData.date.year}-${bookingData.date.month}`;
 
-    // 2. Eseguiamo la GET passando il parametro nell'URL
-    const response = await axios.get(
-      `/api/booking/checkDayAvailable/${yearMonthParam}`
-    );
 
-    console.log("Risposta dal backend:", response.data);
-    alert(response.data);
-    // Qui potresti aggiornare la UI con i giorni disponibili ricevuti
-    // es: availableDays.value = response.data;
-    */
-  } catch (error) {
-    console.error("Errore durante il controllo disponibilità:", error);
-    alert(error);
-  }
-};
+
+
+
 </script>
 
 <template>
@@ -106,6 +127,8 @@ const checkAvailable = async () => {
         <h2 class="section-title">Riepilogo servizi prenotati</h2>
 
         <div class="services-list">
+          <!-- devi togliere selectedServices e adattarlo al nuva versione che usa il 
+           backend -->
           <div v-for="service in selectedServices" :key="service.id" class="summary-card">
             <div class="card-check">✔</div>
             <div class="card-content">
@@ -119,7 +142,7 @@ const checkAvailable = async () => {
           </div>
         </div>
 
-        <button class="btn-back" @click="">
+        <button class="btn-back" @click="{goBack()}">
           ← Rivedi scelte
         </button>
       </div>
@@ -131,11 +154,15 @@ const checkAvailable = async () => {
 
           <div class="form-group">
             <label>Tipo Veicolo</label>
+            <!-- devi togliere selectedServices e adattarlo al nuva versione che usa il 
+           backend -->
             <input type="text" v-model="vehicleType" placeholder="Es. Moto, Auto, SUV" />
           </div>
 
           <div class="form-group">
             <label>Targa veicolo</label>
+            <!-- devi togliere selectedServices e adattarlo al nuva versione che usa il 
+           backend -->
             <input type="text" v-model="vehiclePlate" placeholder="Inserisci targa" />
           </div>
 
