@@ -66,7 +66,9 @@ export const checkDayAvailable = async (req: Request, res: Response) => {
     const calendarResults = []; //Elemento per stack giorni
     const daysOfMonth = new Date(targetYear, targetMonth, 0).getDate();
 
-    /*for, pseudocode:
+    /*
+    Se c'è tempo, aggiunta giorni non prenotabili 
+    for, pseudocode:
     Per ogni giorno del mese,
     controlla se è passato,
     controlla se è domenica (.getDay==0), 
@@ -141,7 +143,6 @@ export const checkTimeAvailable = async (req: Request, res: Response) => {
       `,
       paramIdServices,
     )) as [any[], []]; 
-    //<--nota: sintassi necessaria per la struttura di dbServices
 
     console.log("Prima chiamata DB (Services) OK")
 
