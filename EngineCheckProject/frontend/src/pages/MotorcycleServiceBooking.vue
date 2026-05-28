@@ -58,7 +58,7 @@ export default defineComponent({
       // }
       // Navigazione verso la conferma/scelta data
       this.$router.push({ 
-        path: '/booking-car-confirm', 
+        path: '/booking-motorcycle-confirm', 
         query: { services: this.selectedServices.join(',') } 
       });
     }
