@@ -1,8 +1,8 @@
 <script lang="ts">
 import { ref, onMounted, defineComponent } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
+//import { useRoute, useRouter } from 'vue-router';
 import axios from 'axios';
- 
+
 /*todo
   finire la richesta api del checkAvailable
   riadattare le richieste nel template
@@ -13,51 +13,79 @@ import axios from 'axios';
 
 
 
-const route = useRoute();
-const router = useRouter();
+// route = useRoute();
+//const router = useRouter();
 
 
 
-const selectedServices = ref<any[]>([]);
-const serviceIds = ref<number[]>([]);
-const AvYear = ref('');
-const AvMonth = ref('');
+//const selectedServices = ref<any[]>([]);
 
 export default defineComponent({
   data() {
-    return {};
+    return {
+      serviceIds : [] as number[],
+      avYear : [] as number[],
+      avMonth : [] as number[],
+      avDay : [] as number[],
+      bookingForm: {
+        vehicleType: '',
+        vehiclePlate: '',
+        month: '',
+        year: '',
+        day: '',
+        timeSlot: '' 
+      }
+
+    };
 
   },
   methods: {
-    async checkAviable() {
-      try {
-        const response = await axios.get(
-          `/api/booking/checkDayAvailable/`,
-          {
-            params: {
-             year : AvYear.value,
-             month : AvMonth.value
-            }
-          }
-        );
-      } catch (error) {
-        console.error("Errore durante il controllo disponibilità:", error);
-      }
+    async checkDay(){
+      // dai in input al backend anno-mese e in output riceverai tutti i giorni assieme alla disponibilita in booleano
+
+    },
+    async checkTime(){
+      // GET: ?date=aaaa-mm-gg&services=1,2,3,..., gli do questo in richiesta get, e ricevo JSON ({timeSlot : hh:mm, available : true/false})
       
+    },
+    async submit(){
+      // salva le variabili nel form bookingForm 
+      // e io devo darli come input POST JSON {Model, Vehicle_Type, License_Plate, Date_Time, Customer_ID, ServicesArray,}
+      // in output compare il messaggio di conferma (va tutto bene)
+    },
+    async goBack(){
+      // tasto per tornare nella pagina precedente , senza salvare le cose
+      this.$router.back();
     }
 
-     
+
+
+
+
+    // async checkAviable() {
+    //   try {
+    //     const response = await axios.get(
+    //       `/api/booking/checkDayAvailable/`,
+    //       {
+    //         params: {
+    //           year: AvYear.value,
+    //           month: AvMonth.value
+    //         }
+    //       }
+    //     );
+    //   } catch (error) {
+    //     console.error("Errore durante il controllo disponibilità:", error);
+    //   }
+
+    // }
+
+
 
 
   }
 })
 
-// --- 2. STATO DEL FORM ---
-const vehicleType = ref('');
-const vehiclePlate = ref('');
-const selectedYear = ref('');
-const selectedMonth = ref('');
-const selectedDay = ref('');
+
 
 
 
@@ -114,7 +142,7 @@ const bookingData = {
           </div>
         </div>
 
-        <button class="btn-back" @click="">
+        <button class="btn-back" @click="{goBack()}">
           ← Rivedi scelte
         </button>
       </div>
