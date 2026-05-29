@@ -1,6 +1,6 @@
 <script lang="ts">
-import { ref, onMounted, defineComponent } from 'vue';
-//import { useRoute, useRouter } from 'vue-router';
+import { defineComponent } from 'vue';
+// import { useRoute, useRouter } from 'vue-router';
 import axios from 'axios';
 
 /*todo
@@ -20,40 +20,77 @@ import axios from 'axios';
 
 //const selectedServices = ref<any[]>([]);
 
+interface Service {
+  Service_ID: number;
+  Minutes: number;
+  Title: string;
+  Description: string;
+  Price: number;
+  Vehicle_Type: 'car' | 'motorcycle';
+  Category: 'maintenance' | 'repair' | 'tyres';
+}
+
 export default defineComponent({
   data() {
     return {
-      serviceIds : [] as number[],
-      avYear : [] as number[],
-      avMonth : [] as number[],
-      avDay : [] as number[],
+      serviceIds: [] as number[],
+      serviceData: [] as Service[],
+      avYear: [] as number[],
+      avMonth: [] as number[],
+      avDay: [] as number[],
+
+      // Aggiunti per memorizzare i dati ricevuti dal backend
+      availableDays: [] as { day: number; available: boolean }[],
+      availableTimes: [] as { timeSlot: string; available: boolean }[],
+
+
       bookingForm: {
         vehicleType: '',
         vehiclePlate: '',
+        vehicleModel: '',
         month: '',
         year: '',
         day: '',
-        timeSlot: '' 
+        timeSlot: ''
       }
 
     };
 
   },
+  mounted() {
+    // Se ti serve del codice all'avvio, inseriscilo qui invece di onMounted() esterno
+    console.log("Componente montato correttamente!");
+
+    this.serviceIds = this.$route.query.services as any;
+  },
   methods: {
-    async checkDay(){
+    async getServices() {
+      try {
+        // Questa chiamata ora punta al tuo router Express
+        const response = await axios.get("/api/service/motorcycle");
+        console.log(response.status);
+        this.serviceData = response.data;
+      } catch (error) {
+        console.error("Errore nel recupero dei servizi:", error);
+      }
+    },
+    async checkDay() {
       // dai in input al backend anno-mese e in output riceverai tutti i giorni assieme alla disponibilita in booleano
 
     },
-    async checkTime(){
+    async checkTime() {
       // GET: ?date=aaaa-mm-gg&services=1,2,3,..., gli do questo in richiesta get, e ricevo JSON ({timeSlot : hh:mm, available : true/false})
-      
+
     },
-    async submit(){
+    async submit() {
       // salva le variabili nel form bookingForm 
       // e io devo darli come input POST JSON {Model, Vehicle_Type, License_Plate, Date_Time, Customer_ID, ServicesArray,}
       // in output compare il messaggio di conferma (va tutto bene)
+
+
+
     },
-    async goBack(){
+    async goBack() {
       // tasto per tornare nella pagina precedente , senza salvare le cose
       this.$router.back();
     }
@@ -91,25 +128,12 @@ export default defineComponent({
 
 
 
-onMounted(() => {
-
-
-});
+  ;
 
 
 
 // --- 5. INVIO PRENOTAZIONE ---
-const bookingData = {
-  vehicleType: vehicleType.value,
-  vehiclePlate: vehiclePlate.value,
-  date: {
-    year: selectedYear.value,
-    month: selectedMonth.value,
-    day: selectedDay.value
-  },
-  //timeSlot: selectedTimeSlot.value,
-  services: serviceIds.value // Gli ID recuperati nell'onMounted
-};
+
 
 
 
@@ -127,22 +151,23 @@ const bookingData = {
         <h2 class="section-title">Riepilogo servizi prenotati</h2>
 
         <div class="services-list">
-          <!-- devi togliere selectedServices e adattarlo al nuva versione che usa il 
-           backend -->
-          <div v-for="service in selectedServices" :key="service.id" class="summary-card">
+          <div v-for="service in serviceData" :key="service.Service_ID" class="summary-card">
             <div class="card-check">✔</div>
             <div class="card-content">
-              <h3 class="s-title">{{ service.title }}</h3>
-              <p class="s-desc">{{ service.description }}</p>
+              <h3 class="s-title">{{ service.Title }}</h3>
+              <p class="s-desc">{{ service.Description }}</p>
               <div class="s-footer">
-
-                <span class="s-price">{{ service.priceRange }}</span>
+                <span class="s-price">{{ service.Price }}</span>
+              </div>
+              <div class="service-footer">
+                <i class="clock-icon">🕒</i>
+                <span>{{ service.Minutes }} min</span>
               </div>
             </div>
           </div>
         </div>
 
-        <button class="btn-back" @click="{goBack()}">
+        <button class="btn-back" @click="goBack">
           ← Rivedi scelte
         </button>
       </div>
@@ -154,37 +179,31 @@ const bookingData = {
 
           <div class="form-group">
             <label>Tipo Veicolo</label>
-            <!-- devi togliere selectedServices e adattarlo al nuva versione che usa il 
-           backend -->
-            <input type="text" v-model="vehicleType" placeholder="Es. Moto, Auto, SUV" />
+            <input type="text" v-model="bookingForm.vehicleType" placeholder="Es. Moto, Auto, SUV" />
           </div>
 
           <div class="form-group">
             <label>Targa veicolo</label>
-            <!-- devi togliere selectedServices e adattarlo al nuva versione che usa il 
-           backend -->
-            <input type="text" v-model="vehiclePlate" placeholder="Inserisci targa" />
+            <input type="text" v-model="bookingForm.vehiclePlate" placeholder="Inserisci targa" />
           </div>
-
-
+          <div class="form-group">
+            <label>modello veicolo</label>
+            <input type="text" v-model="bookingForm.vehicleModel" placeholder="Inserisci modello" />
+          </div>
 
           <hr class="divider" />
 
-
-          <div calss="Calendar">
+          <div class="Calendar">
             <label>Anno</label>
-            <input type="text" v-model="bookingData.date.year" @change="checkAvailable" placeholder="Anno">
+            <input type="number" v-model="bookingForm.year" @change="checkDay" placeholder="Es. 2026">
 
             <label>Mese</label>
-            <input type="text" v-model="bookingData.date.month" @change="checkAvailable" placeholder="mese">
+            <input type="number" v-model="bookingForm.month" @change="checkDay" placeholder="Es. 4">
 
-            <label> giorno </label>
-            <input type="text" v-model="selectedDay" placeholder="giorno">
-
+            <label>Giorno</label>
+            <input type="number" v-model="bookingForm.day" @change="checkTime" placeholder="Es. 19">
 
           </div>
-
-
 
           <div class="time-selector">
             <label for="orari">Scegli una fascia oraria:</label>
@@ -212,12 +231,13 @@ const bookingData = {
               <option value="18:00-18:30">18:00 - 18:30</option>
               <option value="18:30-19:00">18:30 - 19:00</option>
             </select>
+
           </div>
 
-          <button class="btn-submit" @click="checkAvailable">
-            Conferma prenotazione ✓
+
+          <button class="btn-submit" @click="submit">
+            Conferma prenotazione ✔
           </button>
-          <button @click="checkAvailable"> controlla </button>
 
         </div>
       </div>

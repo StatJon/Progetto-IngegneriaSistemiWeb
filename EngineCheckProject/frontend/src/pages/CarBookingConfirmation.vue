@@ -1,83 +1,111 @@
 <script lang="ts">
-import { ref, onMounted } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
-import axios from 'axios';
 import { defineComponent } from 'vue';
+// import { useRoute, useRouter } from 'vue-router';
+// import axios from 'axios';
 
-const route = useRoute();
-const router = useRouter();
+/*todo
+  finire la richesta api del checkAvailable
+  riadattare le richieste nel template
+  menu a tendina orari va bene 
 
-// --- 1. RECUPERO DATI SERVIZI (Copia statica per visualizzazione) ---
-// In un'app reale, questi dati potrebbero venire da uno Store (Pinia) o ricaricati dal Backend
-const allServices = [
-  { id: 1, title: 'Tagliando completo', description: 'Controllo filtri, olio, freni...', priceRange: '100 - 200 €', duration: '1,5 - 3 ore' },
-  { id: 2, title: 'Sostituzione pastiglie freni', description: 'Sostituzione anteriore/posteriore.', priceRange: '80 - 150 €', duration: '1 - 2 ore' },
-  { id: 3, title: 'Revisione e manutenzione', description: 'Controllo scarico e catalizzatore.', priceRange: '150 - 400 €', duration: '1 - 3 ore' },
-  { id: 4, title: 'Pneumatici', description: 'Montaggio ed equilibratura.', priceRange: '20 - 50 €/p', duration: '30 - 60 min' },
-  { id: 5, title: 'Diagnosi elettronica (OBD)', description: 'Check centralina errori.', priceRange: '300 - 600 €', duration: '3 - 6 ore' },
-  { id: 6, title: 'Cinghia di distribuzione', description: 'Sostituzione cinghia.', priceRange: '60 - 120 €', duration: '30 - 60 min' },
-  { id: 7, title: 'Manutenzione clima', description: 'Ricarica gas e pulizia.', priceRange: '80 - 150 €', duration: '1 - 2 ore' },
-  { id: 8, title: 'Riparazione freni', description: 'Dischi o tubi freno.', priceRange: '100 - 300 €', duration: '2 - 4 ore' },
-  { id: 9, title: 'Sostituzione batteria', description: 'Nuova batteria e check.', priceRange: '80 - 150 €', duration: '15 - 30 min' },
-];
 
-const selectedServices = ref<any[]>([]);
-const serviceIds = ref<number[]>([]);
+*/
 
-// --- 2. STATO DEL FORM ---
-const vehicleType = ref('');
-const vehiclePlate = ref('');
-const selectedYear = ref('');
-const selectedMonth = ref('');
-const selectedDay = ref('');
-//const selectedTimeSlot = ref('');
+
+
+// route = useRoute();
+//const router = useRouter();
+
+
+
+//const selectedServices = ref<any[]>([]);
 
 export default defineComponent({
   data() {
     return {
+      serviceIds: [] as number[],
+      avYear: [] as number[],
+      avMonth: [] as number[],
+      avDay: [] as number[],
+      bookingForm: {
+        vehicleType: '',
+        vehiclePlate: '',
+        month: '',
+        year: '',
+        day: '',
+        timeSlot: ''
+      }
+
     };
+
+  },
+  mounted() {
+    // Se ti serve del codice all'avvio, inseriscilo qui invece di onMounted() esterno
+    console.log("Componente montato correttamente!");
   },
   methods: {
-    async getTest() {
-      try {
+    async checkDay() {
+      // dai in input al backend anno-mese e in output riceverai tutti i giorni assieme alla disponibilita in booleano
 
-      } catch (err) {
-        console.error("Error fetching /api/testing:", err);
-      }
     },
-  },
-  mounted() { }
+    async checkTime() {
+      // GET: ?date=aaaa-mm-gg&services=1,2,3,..., gli do questo in richiesta get, e ricevo JSON ({timeSlot : hh:mm, available : true/false})
+
+    },
+    async submit() {
+      // salva le variabili nel form bookingForm 
+      // e io devo darli come input POST JSON {Model, Vehicle_Type, License_Plate, Date_Time, Customer_ID, ServicesArray,}
+      // in output compare il messaggio di conferma (va tutto bene)
+    },
+    async goBack() {
+      // tasto per tornare nella pagina precedente , senza salvare le cose
+      this.$router.back();
+    }
+
+
+
+
+
+    // async checkAviable() {
+    //   try {
+    //     const response = await axios.get(
+    //       `/api/booking/checkDayAvailable/`,
+    //       {
+    //         params: {
+    //           year: AvYear.value,
+    //           month: AvMonth.value
+    //         }
+    //       }
+    //     );
+    //   } catch (error) {
+    //     console.error("Errore durante il controllo disponibilità:", error);
+    //   }
+
+    // }
+
+
+
+
+  }
 })
 
 
-//const goBack = () => {
-// router.back();
-//};
+
+
+
+
+
+;
+
+
 
 // --- 5. INVIO PRENOTAZIONE ---
-const bookingData = {
-  vehicleType: vehicleType.value,
-  vehiclePlate: vehiclePlate.value,
-  date: {
-    year: selectedYear.value,
-    month: selectedMonth.value,
-    day: selectedDay.value
-  },
-  //timeSlot: selectedTimeSlot.value,
-  services: serviceIds.value // Gli ID recuperati nell'onMounted
-};
-const checkAvailable = async () => {
-  try {
-    const response = await axios.get(
-      `/api/booking/checkDayAvailable/2026-01`
-    );
-    alert(response);
 
-  } catch (error) {
-    console.error("Errore durante il controllo disponibilità:", error);
-    alert(error);
-  }
-};
+
+
+
+
+
 </script>
 
 <template>
@@ -88,24 +116,15 @@ const checkAvailable = async () => {
 
       <div class="left-column">
         <h2 class="section-title">Riepilogo servizi prenotati</h2>
+        <div style="display: flex; flex-direction: column; align-items: center; gap: 10px;">
+          <button class="btn-back" @click="goBack()">
+            ← Rivedi scelte
+          </button>
 
-        <div class="services-list">
-          <div v-for="service in selectedServices" :key="service.id" class="summary-card">
-            <div class="card-check">✔</div>
-            <div class="card-content">
-              <h3 class="s-title">{{ service.title }}</h3>
-              <p class="s-desc">{{ service.description }}</p>
-              <div class="s-footer">
-
-                <span class="s-price">{{ service.priceRange }}</span>
-              </div>
-            </div>
-          </div>
         </div>
 
-        <button class="btn-back" @click="">
-          ← Rivedi scelte
-        </button>
+
+
       </div>
 
       <div class="right-column">
@@ -113,33 +132,11 @@ const checkAvailable = async () => {
 
         <div class="booking-form-card">
 
-          <div class="form-group">
-            <label>Tipo Veicolo</label>
-            <input type="text" v-model="vehicleType" placeholder="Es. Moto, Auto, SUV" />
-          </div>
-
-          <div class="form-group">
-            <label>Targa veicolo</label>
-            <input type="text" v-model="vehiclePlate" placeholder="Inserisci targa" />
-          </div>
-
 
 
           <hr class="divider" />
 
 
-          <div calss="Calendar">
-            <label>Anno</label>
-            <input type="text" v-model="bookingData.date.year" @change="checkAvailable" placeholder="Anno">
-
-            <label>Mese</label>
-            <input type="text" v-model="bookingData.date.month" @change="checkAvailable" placeholder="mese">
-
-            <label> giorno </label>
-            <input type="text" v-model="selectedDay" placeholder="giorno">
-
-
-          </div>
 
 
 
@@ -171,10 +168,8 @@ const checkAvailable = async () => {
             </select>
           </div>
 
-          <button class="btn-submit" @click="checkAvailable">
-            Conferma prenotazione ✓
-          </button>
-          <button @click="checkAvailable"> controlla </button>
+
+
 
         </div>
       </div>
