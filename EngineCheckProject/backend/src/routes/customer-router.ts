@@ -19,7 +19,7 @@ Elenca tutti i dettagli di un job specifico
 
 router.delete("/api/customer/jobDelete/:jobId", customerController.jobDelete)
 /*
-Richiede: GET: jonId da eliminare, JWT Cliente
+Richiede: GET: jobId da eliminare, JWT Cliente
 Ritorna : Conferma di eliminazione
 Elimina il Job specificato
 */
