@@ -19,4 +19,7 @@ Ritorna: {Service_ID, Minutes, Title, Description, Price, Category}
 Per videata selezione servizi moto
 */
 
+router.get("/api/service/select", serviceController.servicesSelect)
+
+
 export default router

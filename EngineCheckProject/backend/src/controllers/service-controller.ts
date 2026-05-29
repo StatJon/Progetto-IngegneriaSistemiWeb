@@ -15,17 +15,16 @@ export const servicesCarAll = async (req: Request, res: Response) => {
       FROM SERVICE 
       WHERE Vehicle_Type = ?
       `,
-      ["car"]
+      ["car"],
     )) as any;
-    if (!Array.isArray(results) || results.length == 0){
-        res
-        .status(401)
-        .json({ message: "Servizi mancanti." });
+    if (!Array.isArray(results) || results.length == 0) {
+      res.status(401).json({ message: "Servizi mancanti." });
       return;
     }
     res.status(200).json(results);
-
-  } catch (error) {errorHandler(req,res,error)}
+  } catch (error) {
+    errorHandler(req, res, error);
+  }
 };
 
 export const servicesMotorcycleAll = async (req: Request, res: Response) => {
@@ -42,15 +41,35 @@ export const servicesMotorcycleAll = async (req: Request, res: Response) => {
       FROM SERVICE 
       WHERE Vehicle_Type = ?
       `,
-      ["motorcycle"]
+      ["motorcycle"],
     )) as any;
-    if (!Array.isArray(results) || results.length == 0){
-        res
-        .status(401)
-        .json({ message: "Servizi mancanti." });
+    if (!Array.isArray(results) || results.length == 0) {
+      res.status(401).json({ message: "Servizi mancanti." });
       return;
     }
     res.status(200).json(results);
+  } catch (error) {
+    errorHandler(req, res, error);
+  }
+};
 
-  } catch (error) {errorHandler(req,res,error)}
+export const servicesSelect = async (req: Request, res: Response) => {
+  try {
+    const services = req.params.services;
+    const [results] = await connection.execute(
+      `SELECT
+      Service_ID,
+      Estimated_Duration_Minutes as Minutes,
+      Title,
+      Description,
+      Price, 
+      Category
+      FROM SERVICE 
+      WHERE Service_ID = ?
+      `,
+      [services],
+    ) as any;
+  } catch (error) {
+    errorHandler(req, res, error);
+  }
 };
