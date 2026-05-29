@@ -1,7 +1,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 // import { useRoute, useRouter } from 'vue-router';
-// import axios from 'axios';
+import axios from 'axios';
 
 /*todo
   finire la richesta api del checkAvailable
@@ -20,16 +20,34 @@ import { defineComponent } from 'vue';
 
 //const selectedServices = ref<any[]>([]);
 
+interface Service {
+  Service_ID: number;
+  Minutes: number;
+  Title: string;
+  Description: string;
+  Price: number;
+  Vehicle_Type: 'car' | 'motorcycle';
+  Category: 'maintenance' | 'repair' | 'tyres';
+}
+
 export default defineComponent({
   data() {
     return {
       serviceIds: [] as number[],
+      serviceData: [] as Service[],
       avYear: [] as number[],
       avMonth: [] as number[],
       avDay: [] as number[],
+
+      // Aggiunti per memorizzare i dati ricevuti dal backend
+      availableDays: [] as { day: number; available: boolean }[],
+      availableTimes: [] as { timeSlot: string; available: boolean }[],
+
+
       bookingForm: {
         vehicleType: '',
         vehiclePlate: '',
+        vehicleModel: '',
         month: '',
         year: '',
         day: '',
@@ -42,8 +60,20 @@ export default defineComponent({
   mounted() {
     // Se ti serve del codice all'avvio, inseriscilo qui invece di onMounted() esterno
     console.log("Componente montato correttamente!");
+
+    this.serviceIds = this.$route.query.services as any;
   },
   methods: {
+    async getServices() {
+      try {
+        // Questa chiamata ora punta al tuo router Express
+        const response = await axios.get("/api/service/motorcycle");
+        console.log(response.status);
+        this.serviceData = response.data;
+      } catch (error) {
+        console.error("Errore nel recupero dei servizi:", error);
+      }
+    },
     async checkDay() {
       // dai in input al backend anno-mese e in output riceverai tutti i giorni assieme alla disponibilita in booleano
 
@@ -56,6 +86,9 @@ export default defineComponent({
       // salva le variabili nel form bookingForm 
       // e io devo darli come input POST JSON {Model, Vehicle_Type, License_Plate, Date_Time, Customer_ID, ServicesArray,}
       // in output compare il messaggio di conferma (va tutto bene)
+
+
+
     },
     async goBack() {
       // tasto per tornare nella pagina precedente , senza salvare le cose
@@ -95,7 +128,7 @@ export default defineComponent({
 
 
 
-;
+  ;
 
 
 
@@ -116,15 +149,27 @@ export default defineComponent({
 
       <div class="left-column">
         <h2 class="section-title">Riepilogo servizi prenotati</h2>
-        <div style="display: flex; flex-direction: column; align-items: center; gap: 10px;">
-          <button class="btn-back" @click="goBack()">
-            ← Rivedi scelte
-          </button>
 
+        <div class="services-list">
+          <div v-for="service in serviceData" :key="service.Service_ID" class="summary-card">
+            <div class="card-check">✔</div>
+            <div class="card-content">
+              <h3 class="s-title">{{ service.Title }}</h3>
+              <p class="s-desc">{{ service.Description }}</p>
+              <div class="s-footer">
+                <span class="s-price">{{ service.Price }}</span>
+              </div>
+              <div class="service-footer">
+                <i class="clock-icon">🕒</i>
+                <span>{{ service.Minutes }} min</span>
+              </div>
+            </div>
+          </div>
         </div>
 
-
-
+        <button class="btn-back" @click="goBack">
+          ← Rivedi scelte
+        </button>
       </div>
 
       <div class="right-column">
@@ -132,13 +177,33 @@ export default defineComponent({
 
         <div class="booking-form-card">
 
+          <div class="form-group">
+            <label>Tipo Veicolo</label>
+            <input type="text" v-model="bookingForm.vehicleType" placeholder="Es. Moto, Auto, SUV" />
+          </div>
 
+          <div class="form-group">
+            <label>Targa veicolo</label>
+            <input type="text" v-model="bookingForm.vehiclePlate" placeholder="Inserisci targa" />
+          </div>
+          <div class="form-group">
+            <label>modello veicolo</label>
+            <input type="text" v-model="bookingForm.vehicleModel" placeholder="Inserisci modello" />
+          </div>
 
           <hr class="divider" />
 
+          <div class="Calendar">
+            <label>Anno</label>
+            <input type="number" v-model="bookingForm.year" @change="checkDay" placeholder="Es. 2026">
 
+            <label>Mese</label>
+            <input type="number" v-model="bookingForm.month" @change="checkDay" placeholder="Es. 4">
 
+            <label>Giorno</label>
+            <input type="number" v-model="bookingForm.day" @change="checkTime" placeholder="Es. 19">
 
+          </div>
 
           <div class="time-selector">
             <label for="orari">Scegli una fascia oraria:</label>
@@ -166,10 +231,13 @@ export default defineComponent({
               <option value="18:00-18:30">18:00 - 18:30</option>
               <option value="18:30-19:00">18:30 - 19:00</option>
             </select>
+
           </div>
 
 
-
+          <button class="btn-submit" @click="submit">
+            Conferma prenotazione ✔
+          </button>
 
         </div>
       </div>
