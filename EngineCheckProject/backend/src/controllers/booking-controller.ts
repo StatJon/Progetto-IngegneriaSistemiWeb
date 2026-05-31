@@ -131,7 +131,7 @@ export const checkTimeAvailable = async (req: Request, res: Response) => {
       .split(",")
       .map((service) => parseInt(service, 10));
 
-    console.log(paramIdServices)
+    //console.log(paramIdServices)
 
     const placeholders = paramIdServices.map(() => '?').join(', ');
 

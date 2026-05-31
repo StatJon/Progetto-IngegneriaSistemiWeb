@@ -31,11 +31,12 @@ app.use(testingRouter)
 
 //history fallback
 app.use(historyApiFallback())
+app.use(express.static("public"))
 
 //404 fallback
 app.use(function(req, res, next) {
   res.setHeader("Content-Type", "text/plain")
-  res.status(404).json({ message: "Ohibo... Pagina non trovata" })
+  res.status(404).json({ message: "Ohiba... Pagina non trovata" })
 })
 
 //start express

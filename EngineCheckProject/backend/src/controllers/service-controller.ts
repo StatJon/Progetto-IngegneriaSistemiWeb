@@ -17,8 +17,8 @@ export const servicesCarAll = async (req: Request, res: Response) => {
       `,
       ["car"],
     )) as any;
-    if (!Array.isArray(results) || results.length == 0) {
-      res.status(401).json({ message: "Servizi mancanti." });
+    if (!Array.isArray(results) || results.length === 0) {
+      res.status(400).json({ message: "Servizi mancanti." });
       return;
     }
     res.status(200).json(results);
@@ -43,8 +43,8 @@ export const servicesMotorcycleAll = async (req: Request, res: Response) => {
       `,
       ["motorcycle"],
     )) as any;
-    if (!Array.isArray(results) || results.length == 0) {
-      res.status(401).json({ message: "Servizi mancanti." });
+    if (!Array.isArray(results) || results.length === 0) {
+      res.status(400).json({ message: "Servizi mancanti." });
       return;
     }
     res.status(200).json(results);
@@ -55,8 +55,14 @@ export const servicesMotorcycleAll = async (req: Request, res: Response) => {
 
 export const servicesSelect = async (req: Request, res: Response) => {
   try {
-    const services = req.params.services;
-    const [results] = await connection.execute(
+    const id = req.query.id;
+    if (!id) {
+      res.status(400).json({ message: "Selezionare almeno un servizio" });
+      return;
+    }
+    const services = (id as string).split(",").map((id) => parseInt(id, 10));
+    const placeholders = services.map(() => "?").join(", ");
+    const [results] = (await connection.query(
       `SELECT
       Service_ID,
       Estimated_Duration_Minutes as Minutes,
@@ -65,10 +71,11 @@ export const servicesSelect = async (req: Request, res: Response) => {
       Price, 
       Category
       FROM SERVICE 
-      WHERE Service_ID = ?
+      WHERE Service_ID IN (${placeholders})
       `,
-      [services],
-    ) as any;
+      services,
+    )) as any;
+    res.status(200).json(results);
   } catch (error) {
     errorHandler(req, res, error);
   }
