@@ -77,19 +77,33 @@ export const jobDetails = async (req: Request, res: Response) => {
 
 export const jobDelete = async (req: Request, res: Response) => {
   try {
-    validateCustomer(req, res);
-    const [result] = (await connection.execute(
+    const user = validateCustomer(req, res);
+
+    const [rows] = (await connection.execute(
+      `
+      SELECT CUSTOMER_ID
+      FROM JOB
+      WHERE Job_ID = ?`,
+      [req.params.jobId]
+    )) as any;
+
+    if (rows.length === 0) {
+      res.status(404).json({ message: "Errore: lavoro inesistente" });
+      return;
+    }
+
+    if (rows[0].CUSTOMER_ID !== Number(user.id)){
+      res.status(403).json({ message : "Errore: utente errato"});
+      return;
+    }
+    
+    await connection.execute(
       `
         DELETE FROM JOB
         WHERE Job_ID = ?
         `,
       [req.params.jobId],
-    )) as any;
-
-    if (result.affectedRows === 0) {
-      res.status(404).json({ message: "Errore: lavoro inesistente" });
-      return;
-    }
+    ) as any;
     res
       .status(200)
       .json({ message: "Successo: Lavoro eliminato correttamente" });
