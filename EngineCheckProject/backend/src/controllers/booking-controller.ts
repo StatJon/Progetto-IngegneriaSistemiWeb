@@ -1,9 +1,5 @@
 import { Request, Response } from "express";
-import { getUser, setUser, unsetUser, User } from "../utils/auth.js";
 import {
-  validateUserLoggedIn,
-  validateUserNotLoggedIn,
-  validateAdmin,
   errorHandler,
   validateCustomer,
 } from "../utils/auth-helpers.js";
@@ -116,7 +112,6 @@ export const checkDayAvailable = async (req: Request, res: Response) => {
 
 export const checkTimeAvailable = async (req: Request, res: Response) => {
   // entra GET : ?date=2026-05-15&services=1,3,4
-
   try {
     //CONTROLLI PRELIMINARI///
     const { date, services } = req.query;
@@ -130,10 +125,7 @@ export const checkTimeAvailable = async (req: Request, res: Response) => {
     const paramIdServices = (services as string)
       .split(",")
       .map((service) => parseInt(service, 10));
-
-    //console.log(paramIdServices)
-
-    const placeholders = paramIdServices.map(() => '?').join(', ');
+    const placeholders = paramIdServices.map(() => "?").join(", ");
 
     const [dbServices] = (await connection.execute(
       `
@@ -142,9 +134,9 @@ export const checkTimeAvailable = async (req: Request, res: Response) => {
       WHERE Service_ID IN (${placeholders})
       `,
       paramIdServices,
-    )) as [any[], []]; 
+    )) as [any[], []];
 
-    console.log("Prima chiamata DB (Services) OK")
+    //console.log("Prima chiamata DB (Services) OK");
 
     if (paramIdServices.length !== dbServices.length) {
       //Check eventuali id mancanti
@@ -206,7 +198,7 @@ export const checkTimeAvailable = async (req: Request, res: Response) => {
     )) as any;
     const maxWorkers: number = workersArray[0].totalWorkers;
 
-    console.log("Seconda chiamata DB (Workers) OK")
+    //console.log("Seconda chiamata DB (Workers) OK");
 
     //Query lista lavori per ciclo for sotto
     const [jobsArray] = (await connection.execute(
@@ -223,7 +215,7 @@ export const checkTimeAvailable = async (req: Request, res: Response) => {
       [date],
     )) as any;
 
-    console.log("Terza chiamata DB (Jobs) OK")
+    //console.log("Terza chiamata DB (Jobs) OK");
 
     //Occupazione griglia orari
     for (const job of jobsArray) {
@@ -284,22 +276,11 @@ export const checkTimeAvailable = async (req: Request, res: Response) => {
 export const saveBooking = async (req: Request, res: Response) => {
   try {
     const user = validateCustomer(req, res);
-    const {
-      Model,
-      Vehicle_Type,
-      License_Plate,
-      Date_Time,
-      ServicesArray,
-    } = req.body;
+    const { Model, Vehicle_Type, License_Plate, Date_Time, ServicesArray } =
+      req.body;
 
     //Controllo campi
-    if (
-      !Model ||
-      !Vehicle_Type ||
-      !License_Plate ||
-      !Date_Time ||
-      !user.id
-    ) {
+    if (!Model || !Vehicle_Type || !License_Plate || !Date_Time || !user.id) {
       res.status(400).json({ message: "Attenzione: Compilare tutti i campi" });
       return;
     }

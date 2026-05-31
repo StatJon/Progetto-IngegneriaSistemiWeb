@@ -1,15 +1,12 @@
 import bcrypt from "bcrypt"; //Libreria Hashing Password
 import { parsePhoneNumber } from "awesome-phonenumber"; //Libreria Validazione numeri telefono
 import { Request, Response } from "express";
-import { getUser, setUser, unsetUser, User } from "../utils/auth.js";
+import { setUser, unsetUser, User } from "../utils/auth.js";
 import {
-  validateUserLoggedIn,
   validateUserNotLoggedIn,
-  validateAdmin,
   errorHandler,
 } from "../utils/auth-helpers.js";
 import { connection } from "../utils/db.js";
-
 
 export const registerCustomer = async (req: Request, res: Response) => {
   try {
@@ -173,8 +170,7 @@ export const loginEmployee = async (req: Request, res: Response) => {
 
     res.json({ message: "Successo: Login effettuato correttamente" });
   } catch (error) {
-    console.error("Errore: ", error);
-    res.status(500).json({ message: "Errore del Server/DB", error: error });
+    errorHandler(req, res, error);
   }
 };
 
@@ -193,7 +189,6 @@ export const logout = async (req: Request, res: Response) => {
 export const templateAuth = async (req: Request, res: Response) => {
   try {
   } catch (error) {
-    console.error("Errore: ", error);
-    res.status(500).json({ message: "Errore del Server/DB", error: error });
+    errorHandler(req, res, error);
   }
 };

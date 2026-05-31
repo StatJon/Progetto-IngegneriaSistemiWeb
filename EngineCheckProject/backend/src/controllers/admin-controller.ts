@@ -1,8 +1,6 @@
 import bcrypt from "bcrypt";
 import { Request, Response } from "express";
-import { getUser, setUser, unsetUser, User } from "../utils/auth.js";
 import {
-  validateUserLoggedIn,
   validateAdmin,
   errorHandler,
 } from "../utils/auth-helpers.js";
@@ -41,9 +39,10 @@ export const registerEmployee = async (req: Request, res: Response) => {
 
     //INSERT
     //Nota: const [insertResult] serve per estrarre l'ID creato da DB AUTO_INCREMENT
+    //Nota: default nuovoEmployee.role == worker
     await connection.execute(
-      "INSERT INTO EMPLOYEE (First_Name, Last_Name, Password) VALUES (?, ?, ?)",
-      [First_Name, Last_Name, passwordHash]
+      "INSERT INTO EMPLOYEE (First_Name, Last_Name, Password, Role) VALUES (?, ?, ?)",
+      [First_Name, Last_Name, passwordHash, "Worker"]
     );
 
     res
@@ -64,12 +63,14 @@ export const removeEmployee = async (req: Request, res: Response) => {
 
     const { ID_Badge_Number } = req.body;
 
-    const [employeeToBeDeleted] = (await connection.execute(
+    const [employeeRaw] = (await connection.execute(
       "SELECT First_Name, Last_Name, Role FROM EMPLOYEE WHERE ID_Badge_Number = ?",
       [ID_Badge_Number]
     )) as any;
 
-    if (employeeToBeDeleted.Role === "Admin") {
+    const employee = employeeRaw[0];
+
+    if (employee.Role === "Admin") {
       res
         .status(401)
         .json({ message: "Attenzione: Dipendente Admin non cancellabile" });
@@ -80,16 +81,16 @@ export const removeEmployee = async (req: Request, res: Response) => {
       `
       UPDATE EMPLOYEE
       SET Role = 'Inactive'
-      WHERE 'ID_Badge_Number = ?,
+      WHERE ID_Badge_Number = ?
       `,
       [ID_Badge_Number]
     );
 
     res.status(200).json({
       message: "Successo, Dipendente rimosso",
-      badge: employeeToBeDeleted.ID_Badge_Number,
-      first_name : employeeToBeDeleted.First_Name,
-      last_name : employeeToBeDeleted.Last_Name,
+      badge: ID_Badge_Number,
+      first_name : employee.First_Name,
+      last_name : employee.Last_Name,
     });
   } catch (error) {
     errorHandler(req, res, error);
