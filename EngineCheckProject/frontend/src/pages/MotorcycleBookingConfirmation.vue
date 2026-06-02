@@ -62,6 +62,8 @@ export default defineComponent({
     console.log("Componente montato correttamente!");
 
     this.serviceIds = this.$route.query.services as any;
+    console.log(this.serviceIds, this.serviceData);
+
   },
   methods: {
     async getServices() {
