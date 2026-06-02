@@ -67,6 +67,7 @@ export default defineComponent({
     this.getServices();
     this.getCurrentYear();
     this.getMonths();
+    this.checkDay();
 
 
   },
@@ -101,6 +102,18 @@ export default defineComponent({
     },
     async checkDay() {
       // dai in input al backend anno-mese e in output riceverai tutti i giorni assieme alla disponibilita in booleano   
+      this.availableDays = [];
+      try {
+      
+        const response = await axios.get(`/api/booking/checkDayAvailable/${this.cYear}-${this.cMonth}`);
+
+       
+        this.availableDays = response.data;
+        console.log(this.availableDays);
+      } catch (error) {
+        console.error("Errore nel recupero dei servizi:", error);
+      }
+
 
     },
     async checkTime() {
@@ -167,7 +180,7 @@ export default defineComponent({
               <h3 class="s-title">{{ service.Title }}</h3>
               <p class="s-desc">{{ service.Description }}</p>
               <div class="s-footer">
-                <span class="s-price">{{ service.Price }}</span>
+                <span class="s-price">{{ service.Price + "€"}}</span>
               </div>
               <div class="service-footer">
                 <i class="clock-icon">🕒</i>
@@ -217,7 +230,10 @@ export default defineComponent({
             </select>
 
             <label>Giorno</label>
-            <input type="number" v-model="bookingForm.day" @change="checkTime" placeholder="Es. 19">
+            <select>
+              <option v-for="days in availableDays" :key="days.day" >{{ days.day }}</option>
+
+            </select>
 
           </div>
 
