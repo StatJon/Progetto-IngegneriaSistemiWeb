@@ -59,25 +59,27 @@ export default defineComponent({
   },
   mounted() {
     // Se ti serve del codice all'avvio, inseriscilo qui invece di onMounted() esterno
-    console.log("Componente montato correttamente!");
+    //console.log("Componente montato correttamente!");
 
     this.serviceIds = this.$route.query.services as any;
-    console.log(this.serviceIds, this.serviceData);
+    //console.log(this.serviceIds, this.serviceData);
+    this.getServices();
 
   },
   methods: {
     async getServices() {
       try {
         // Questa chiamata ora punta al tuo router Express
-        const response = await axios.get("/api/service/motorcycle");
-        console.log(response.status);
+        const response = await axios.get("/api/service/select", {params: {id: this.serviceIds }});
+       
         this.serviceData = response.data;
+        console.log(this.serviceData);
       } catch (error) {
         console.error("Errore nel recupero dei servizi:", error);
       }
     },
     async checkDay() {
-      // dai in input al backend anno-mese e in output riceverai tutti i giorni assieme alla disponibilita in booleano
+      // dai in input al backend anno-mese e in output riceverai tutti i giorni assieme alla disponibilita in booleano   
 
     },
     async checkTime() {
