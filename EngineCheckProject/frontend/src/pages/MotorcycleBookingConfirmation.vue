@@ -38,6 +38,9 @@ export default defineComponent({
       avYear: [] as number[],
       avMonth: [] as number[],
       avDay: [] as number[],
+      cYear: 0,
+      cMonth: 0,
+      
 
       // Aggiunti per memorizzare i dati ricevuti dal backend
       availableDays: [] as { day: number; available: boolean }[],
@@ -58,25 +61,43 @@ export default defineComponent({
 
   },
   mounted() {
-    // Se ti serve del codice all'avvio, inseriscilo qui invece di onMounted() esterno
-    //console.log("Componente montato correttamente!");
-
+   
     this.serviceIds = this.$route.query.services as any;
-    //console.log(this.serviceIds, this.serviceData);
+    
     this.getServices();
+    this.getCurrentYear();
+    this.getMonths();
+
 
   },
   methods: {
     async getServices() {
       try {
-        // Questa chiamata ora punta al tuo router Express
+      
         const response = await axios.get("/api/service/select", {params: {id: this.serviceIds }});
        
         this.serviceData = response.data;
-        console.log(this.serviceData);
+        
       } catch (error) {
         console.error("Errore nel recupero dei servizi:", error);
       }
+    },
+    async getCurrentYear() {
+      const today = new Date();
+      this.cYear = today.getFullYear();
+      this.cMonth = today.getMonth() + 1;
+      
+
+    },
+    async getMonths() {
+      this.avMonth = [];
+      for (let i = this.cMonth; i <= 12; i++)
+      {
+        this.avMonth.push(i);
+        
+      }
+
+
     },
     async checkDay() {
       // dai in input al backend anno-mese e in output riceverai tutti i giorni assieme alla disponibilita in booleano   
@@ -103,22 +124,7 @@ export default defineComponent({
 
 
 
-    // async checkAviable() {
-    //   try {
-    //     const response = await axios.get(
-    //       `/api/booking/checkDayAvailable/`,
-    //       {
-    //         params: {
-    //           year: AvYear.value,
-    //           month: AvMonth.value
-    //         }
-    //       }
-    //     );
-    //   } catch (error) {
-    //     console.error("Errore durante il controllo disponibilità:", error);
-    //   }
-
-    // }
+   
 
 
 
@@ -199,10 +205,16 @@ export default defineComponent({
 
           <div class="Calendar">
             <label>Anno</label>
-            <input type="number" v-model="bookingForm.year" @change="checkDay" placeholder="Es. 2026">
+            <select name="Anno">
+              <option>{{ cYear }}</option>
+              <option>{{ cYear + 1 }}</option>
+            </select>
 
             <label>Mese</label>
-            <input type="number" v-model="bookingForm.month" @change="checkDay" placeholder="Es. 4">
+            <select>
+              <option v-for="(month, index) in avMonth" :key="index">{{ month }}</option>
+
+            </select>
 
             <label>Giorno</label>
             <input type="number" v-model="bookingForm.day" @change="checkTime" placeholder="Es. 19">
