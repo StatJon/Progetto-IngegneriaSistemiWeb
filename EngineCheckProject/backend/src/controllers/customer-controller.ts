@@ -1,9 +1,5 @@
 import { Request, Response } from "express";
-import { getUser, setUser, unsetUser, User } from "../utils/auth.js";
 import {
-  validateUserLoggedIn,
-  validateUserNotLoggedIn,
-  validateAdmin,
   errorHandler,
   validateCustomer,
 } from "../utils/auth-helpers.js";
@@ -24,13 +20,10 @@ export const customerPage = async (req: Request, res: Response) => {
         JOIN JOB_SERVICE js ON j.Job_ID = js.JOB_Job_ID
         JOIN SERVICE s ON s.Service_ID = js.SERVICE_Service_ID
         WHERE j.CUSTOMER_ID = ?
+        GROUP BY j.job_ID
         `,
       [user.id],
     );
-    if (!Array.isArray(results) || results.length == 0) {
-      res.status(401).json({ message: "Nessun servizio prenotato." });
-      return;
-    }
     res.status(200).json(results);
   } catch (error) {
     errorHandler(req, res, error);
@@ -63,7 +56,7 @@ export const jobDetails = async (req: Request, res: Response) => {
       return;
     }
 
-    if (results[0].ID_Customer !== user.id) {
+    if (results[0].ID_Customer !== Number(user.id)) {
       res.status(403).json({ message: "Errore: Utente errato" });
       return;
     }
@@ -84,18 +77,33 @@ export const jobDetails = async (req: Request, res: Response) => {
 
 export const jobDelete = async (req: Request, res: Response) => {
   try {
-    validateCustomer(req, res);
-    const [result] = (await connection.execute(
+    const user = validateCustomer(req, res);
+
+    const [rows] = (await connection.execute(
+      `
+      SELECT CUSTOMER_ID
+      FROM JOB
+      WHERE Job_ID = ?`,
+      [req.params.jobId]
+    )) as any;
+
+    if (rows.length === 0) {
+      res.status(404).json({ message: "Errore: lavoro inesistente" });
+      return;
+    }
+
+    if (rows[0].CUSTOMER_ID !== Number(user.id)){
+      res.status(403).json({ message : "Errore: utente errato"});
+      return;
+    }
+    
+    await connection.execute(
       `
         DELETE FROM JOB
         WHERE Job_ID = ?
         `,
       [req.params.jobId],
-    )) as any;
-
-    if (result.affectedRows === 0) {
-      res.status(404).json({ message: "Errore: lavoro inesistente" });
-    }
+    ) as any;
     res
       .status(200)
       .json({ message: "Successo: Lavoro eliminato correttamente" });

@@ -1,7 +1,5 @@
 import { Request, Response } from "express";
-import { getUser, setUser, unsetUser, User } from "../utils/auth.js";
 import {
-  validateUserLoggedIn,
   validateAdmin,
   errorHandler,
   validateEmployee,
@@ -24,10 +22,10 @@ export const listAllJobs = async (req: Request, res: Response) => {
         j.Date_Time,
         s.Title as Service, 
         s.Description,
-        s.Estimated_Duration_Minutes, as Minutes
-        e.First_Name, as Worker_Name
-        e.Last_Name, as Worker_Last_Name
-        c.Email, as Customer_Email
+        s.Estimated_Duration_Minutes as Minutes,
+        e.First_Name as Worker_Name,
+        e.Last_Name as Worker_Last_Name,
+        c.Email as Customer_Email,
         c.Phone as Customer_Phone
 
         FROM JOB AS j

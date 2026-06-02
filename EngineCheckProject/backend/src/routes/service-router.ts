@@ -20,6 +20,10 @@ Per videata selezione servizi moto
 */
 
 router.get("/api/service/select", serviceController.servicesSelect)
-
+/*
+Richiede: GET ?id=1,2,3... dove gli id sono gli ID dei servizi selezionati
+Ritorna: {Service_ID, Minutes, Title, Description, Price, Category} dei servizi selezionati
+Per selezionare i servizi per la videata di conferma prenotazione
+*/
 
 export default router
