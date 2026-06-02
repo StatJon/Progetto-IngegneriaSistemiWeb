@@ -1,8 +1,52 @@
-<script setup lang="ts">
-import { ref } from 'vue';
-//import axios from 'axios';
-import { useRouter } from 'vue-router'; 
+<script lang="ts">
+import { defineComponent/*, ref*/ } from 'vue';
+import axios from 'axios';
+//import { useRouter } from 'vue-router';
 
+export default defineComponent({
+
+  data() {
+    return {
+      badgeNumber: 0,
+      password: "",
+      errorMessage: "", //testo da mostrare all'utente se il login fallisce
+      isLoading: false, //flag per evitare richieste mentre se ne sta già eseguendo una
+    }
+  },
+  mounted() {
+
+  },
+  methods: {
+    async handleEmployeeLogin() {
+      this.errorMessage = "";
+      this.isLoading = false;
+      try {
+        await axios.post('/api/auth/loginEmployee', {
+          BadgeNumber: this.badgeNumber,
+          Password: this.password
+        });
+        this.$router.push('/jobs');
+      } catch (error: any) {
+        if (error.response?.status === 400) {
+          this.errorMessage = "Credenziali errate."
+        } else {
+          this.errorMessage = "Errore del server.";
+        }
+      } finally {
+        this.isLoading = false;
+      }
+
+    },
+
+    goToUserLogin() {
+      this.$router.push('/login-user')
+    }
+
+  }
+
+})
+
+/*
 // Stati del form (nota: badgeNumber al posto di email)
 const badgeNumber = ref('');
 const password = ref('');
@@ -43,15 +87,18 @@ const handleEmployeeLogin = async () => {
 const goToUserLogin = () => {
   router.push('/login-user'); // Assumiamo che '/login' sia la rotta utente
 };
+
+*/
 </script>
 
 <template>
   <div class="main-container">
-    
+
     <div class="login-card">
-      
+
       <div class="icon-wrapper">
-        <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+        <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
           <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
           <circle cx="12" cy="7" r="4"></circle>
         </svg>
@@ -59,22 +106,12 @@ const goToUserLogin = () => {
 
       <div class="form-group">
         <label for="badge">Numero Badge</label>
-        <input 
-          id="badge" 
-          type="text" 
-          v-model="badgeNumber" 
-          placeholder="Value" 
-        />
+        <input id="badge" type="text" v-model="badgeNumber" placeholder="Value" />
       </div>
 
       <div class="form-group">
         <label for="password">Password</label>
-        <input 
-          id="password" 
-          type="password" 
-          v-model="password" 
-          placeholder="Value" 
-        />
+        <input id="password" type="password" v-model="password" placeholder="Value" />
       </div>
 
       <p v-if="errorMessage" class="error-text">{{ errorMessage }}</p>
@@ -83,7 +120,7 @@ const goToUserLogin = () => {
         {{ isLoading ? 'Accesso in corso...' : 'Sign In' }}
       </button>
 
-      </div>
+    </div>
 
     <div class="user-login-section">
       <button class="btn-user-login" @click="goToUserLogin">
@@ -101,7 +138,7 @@ const goToUserLogin = () => {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  min-height: 80vh; 
+  min-height: 80vh;
   background-color: #f0f6fc;
   padding: 20px;
 }
@@ -110,7 +147,7 @@ const goToUserLogin = () => {
   background-color: white;
   padding: 40px;
   border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
   border: 1px solid #e1e4e8;
   width: 100%;
   max-width: 400px;
@@ -148,7 +185,9 @@ const goToUserLogin = () => {
   color: #333;
 }
 
-.form-group input::placeholder { color: #bfbfbf; }
+.form-group input::placeholder {
+  color: #bfbfbf;
+}
 
 .form-group input:focus {
   border-color: #0969da;
@@ -173,7 +212,9 @@ const goToUserLogin = () => {
   transition: background 0.2s;
 }
 
-.btn-primary:hover { background-color: #000; }
+.btn-primary:hover {
+  background-color: #000;
+}
 
 /* STILE BOTTONE LOGIN UTENTE (Bottom) */
 .user-login-section {
@@ -191,7 +232,7 @@ const goToUserLogin = () => {
   display: flex;
   align-items: center;
   gap: 8px;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
   transition: all 0.2s;
 }
 
@@ -201,6 +242,7 @@ const goToUserLogin = () => {
 }
 
 .icon-arrow {
-  font-size: 1.2em; /* Freccia leggermente più grande */
+  font-size: 1.2em;
+  /* Freccia leggermente più grande */
 }
 </style>
