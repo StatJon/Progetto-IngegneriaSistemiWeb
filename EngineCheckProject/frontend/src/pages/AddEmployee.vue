@@ -1,15 +1,37 @@
+<script lang="ts">
+import { defineComponent } from 'vue';
+import axios from 'axios';
+
+export default defineComponent({
+  data() {
+    return {
+
+    }
+  },
+  mounted() {
+
+  },
+  methods: {
+
+  }
+}
+)
+
+
+</script>
+
 <template>
   <div class="page-container">
     <main class="main-content">
       <div class="Info-card">
-        
+
         <div class="form-group">
           <label>Nome del dipendente</label>
           <input type="text" placeholder="Inserisci il nome" />
         </div>
-        
+
         <div class="form-group">
-          <label>Cognome  del dipendente</label>
+          <label>Cognome del dipendente</label>
           <input type="text" placeholder="Inserisci il cognome" />
         </div>
 
@@ -20,19 +42,19 @@
 
         <div class="form-group">
           <label>Ruolo</label>
-        <select name="fascia-oraria" id="orari">
+          <select name="fascia-oraria" id="orari">
             <optgroup label="Ruoli">
-                <option value="Worker">Worker</option>
-                <option value="Admin">Admin</option>
-            </optgroup> 
-        </select>  
+              <option value="Worker">Worker</option>
+              <option value="Admin">Admin</option>
+            </optgroup>
+          </select>
         </div>
-        
-        
-        
+
+
+
       </div>
-     
-      
+
+
       <button class="btn-signin" @click="">Aggiungi Dipendente </button>
     </main>
 
@@ -44,19 +66,22 @@
 </template>
 
 <style scoped>
-
-
 .form-group label {
   display: block;
-  margin-bottom: 0.8rem; /* Aumentato lo spazio sotto la label */
+  margin-bottom: 0.8rem;
+  /* Aumentato lo spazio sotto la label */
   font-weight: 600;
   color: #000000;
-  
+
   /* --- MODIFICHE PER RENDERE LE LABEL PIÙ "LUNGHE" E VISIBILI --- */
-  letter-spacing: 0.5px;      /* Distanzia leggermente le lettere */
-  text-transform: uppercase;  /* Opzionale: rende il testo più imponente */
-  font-size: 0.85rem;         /* Leggermente più piccolo se maiuscolo, bilancia la lunghezza */
-  width: 100%;                /* Assicura che occupi tutta la riga */
+  letter-spacing: 0.5px;
+  /* Distanzia leggermente le lettere */
+  text-transform: uppercase;
+  /* Opzionale: rende il testo più imponente */
+  font-size: 0.85rem;
+  /* Leggermente più piccolo se maiuscolo, bilancia la lunghezza */
+  width: 100%;
+  /* Assicura che occupi tutta la riga */
 }
 
 .Info-card {
@@ -65,7 +90,8 @@
   border-radius: 8px;
   box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
   width: 100%;
-  max-width: 500px; /* Ho allargato leggermente la card (da 450 a 500) per far stare le label lunghe su una riga */
+  max-width: 500px;
+  /* Ho allargato leggermente la card (da 450 a 500) per far stare le label lunghe su una riga */
   border: 1px solid #e2e8f0;
 }
 
@@ -96,7 +122,7 @@
 }
 
 .btn-signin {
- 
+
   padding: 0.8rem;
   background-color: #2d3748;
   color: white;

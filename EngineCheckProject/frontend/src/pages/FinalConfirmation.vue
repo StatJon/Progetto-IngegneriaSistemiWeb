@@ -1,12 +1,13 @@
-<script setup lang="ts">
-import { useRouter } from 'vue-router';
+<script lang="ts">
+import { defineComponent } from 'vue'
 
-const router = useRouter();
-
-// Funzione per tornare alla dashboard (lista prenotazioni)
-const goToDashboard = () => {
-  router.push('/user-dashboard');
-};
+export default defineComponent({
+  methods: {
+    goToDashboard() {
+      this.$router.push('/user-dashboard')
+    }
+  }
+})
 </script>
 
 <template>
