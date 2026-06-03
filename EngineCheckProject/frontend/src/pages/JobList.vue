@@ -39,7 +39,7 @@ export default defineComponent({
       const lastName = sessionStorage.getItem('lastName');
       this.employeeName = `${firstName} ${lastName}`.trim();
       this.badgeNumber = sessionStorage.getItem('badgeNumber') || "";
-    }
+    },
 
     async getJobs() {
       try {

@@ -1,62 +1,46 @@
-<script setup lang="ts">
-import { ref } from 'vue';
-//import axios from 'axios';
-import { useRouter } from 'vue-router'; 
+<script lang="ts">
+import { defineComponent } from 'vue';
+import axios from 'axios';
 
-// Stati del form
-const email = ref('');
-const password = ref('');
-const errorMessage = ref('');
-const isLoading = ref(false);
+export default defineComponent({
+  data() {
+    return {
+      email: '',
+      password: '',
+      errorMessage: '',
+    }
+  },
+  methods: {
+    async submitLogin() {
+      try {
+        const response = await axios.post("/api/auth/loginCustomer", { Email: this.email, Password: this.password })
+        sessionStorage.setItem('firstName', response.data.firstName)
+        sessionStorage.setItem('lastName', response.data.lastName)
+        this.$router.push('/user-dashboard')
+      } catch (error) {
+        this.errorMessage = "Credenziali errate, si prega di riprovare."
+      }
+    },
+    goToCreateProfile() {
+      this.$router.push('/create-profile')
+    },
+    goToEmployeeLogin() {
+      this.$router.push('/login-employee')
+    }
+  }
+}
+)
 
-const router = useRouter();
-
-// Funzione di Login
-const handleLogin = async () => {
-  errorMessage.value = '';
-  isLoading.value = true;
-   router.push('/user-dashboard');} 
-
-//   try {
-//     // Sostituisci con la porta corretta del tuo backend
-//     const response = await axios.post('http://localhost:3000/api/auth/login', {
-//       email: email.value,
-//       password: password.value
-//     });
-
-//     if (response.data.success) {
-//       // Login riuscito -> vai alla dashboard o home
-//       router.push('/user-dashboard'); 
-//     }
-//   } catch (error: any) {
-//     if (error.response && error.response.status === 401) {
-//       errorMessage.value = 'Credenziali non valide.';
-//     } else {
-//       errorMessage.value = 'Errore del server. Riprova più tardi.';
-//     }
-//   } finally {
-//     isLoading.value = false;
-//   }
-// };
-
-// Navigazione verso registrazione
-const goToRegister = () => {
-  router.push('/create-profile'); 
-};
-
-// Navigazione verso login dipendente (se esiste la rotta)
-const goToEmployeeLogin = () => {
-  router.push('/login-employee');
-};
 </script>
 
 <template>
   <div class="main-container">
-    
+
     <div class="login-card">
-      
+
       <div class="icon-wrapper">
-        <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+        <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
           <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
           <circle cx="12" cy="7" r="4"></circle>
         </svg>
@@ -64,31 +48,21 @@ const goToEmployeeLogin = () => {
 
       <div class="form-group">
         <label for="email">Email</label>
-        <input 
-          id="email" 
-          type="email" 
-          v-model="email" 
-          placeholder="Value" 
-        />
+        <input id="email" type="email" v-model="email" placeholder="supermario@mail.com" />
       </div>
 
       <div class="form-group">
         <label for="password">Password</label>
-        <input 
-          id="password" 
-          type="password" 
-          v-model="password" 
-          placeholder="Value" 
-        />
+        <input id="password" type="password" v-model="password" placeholder="password" />
       </div>
 
       <p v-if="errorMessage" class="error-text">{{ errorMessage }}</p>
 
-      <button class="btn-primary" @click="handleLogin" :disabled="isLoading">
-        {{ isLoading ? 'Accesso in corso...' : 'Sign In' }}
+      <button class="btn-primary" @click="submitLogin">
+        Accedi
       </button>
 
-      <button class="btn-secondary" @click="goToRegister">
+      <button class="btn-secondary" @click="goToCreateProfile">
         Crea Account
       </button>
     </div>
@@ -103,14 +77,16 @@ const goToEmployeeLogin = () => {
 </template>
 
 <style scoped>
-/* CONTENITORE PRINCIPALE */ 
+/* CONTENITORE PRINCIPALE */
 .main-container {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  min-height: 80vh; /* Occupa buona parte dello schermo verticale */
-  background-color: #f0f6fc; /* Sfondo azzurrino chiaro */
+  min-height: 80vh;
+  /* Occupa buona parte dello schermo verticale */
+  background-color: #f0f6fc;
+  /* Sfondo azzurrino chiaro */
   padding: 20px;
 }
 
@@ -119,7 +95,7 @@ const goToEmployeeLogin = () => {
   background-color: white;
   padding: 40px;
   border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
   border: 1px solid #e1e4e8;
   width: 100%;
   max-width: 400px;
@@ -179,7 +155,8 @@ const goToEmployeeLogin = () => {
 .btn-primary {
   width: 100%;
   padding: 12px;
-  background-color: #24292f; /* Grigio scuro/Nero */
+  background-color: #24292f;
+  /* Grigio scuro/Nero */
   color: white;
   font-weight: 600;
   border: none;
@@ -225,7 +202,7 @@ const goToEmployeeLogin = () => {
   display: flex;
   align-items: center;
   gap: 8px;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
   transition: all 0.2s;
 }
 
