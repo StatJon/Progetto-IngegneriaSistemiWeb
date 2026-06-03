@@ -35,12 +35,12 @@ export default defineComponent({
     return {
       serviceIds: [] as number[],
       serviceData: [] as Service[],
-      avYear: [] as number[],
       avMonth: [] as number[],
-      avDay: [] as number[],
-      cYear: 0,
-      cMonth: 0,
-      
+      selectedYear: 0,
+      selectedMonth: 0,
+      selectedDay: 0,
+
+
 
       // Aggiunti per memorizzare i dati ricevuti dal backend
       availableDays: [] as { day: number; available: boolean }[],
@@ -61,41 +61,62 @@ export default defineComponent({
 
   },
   mounted() {
-   
+
     this.serviceIds = this.$route.query.services as any;
-    
+
     this.getServices();
     this.getCurrentYear();
     this.getMonths();
     this.checkDay();
+    this.checkTime();
 
 
+  },
+  watch: {
+    selectedYear() {
+      this.getMonths();
+      this.checkDay();
+      this.checkTime();
+      console.log("hai cambiato l'anno");
+    },
+    selectedMonth() {
+      this.checkDay();
+      this.checkTime();
+      console.log("hai cambiato il mese");
+
+    },
+    selectedDay() {
+      this.checkTime();
+      console.log("hai cambiato il giorno ");
+    }
   },
   methods: {
     async getServices() {
       try {
-      
-        const response = await axios.get("/api/service/select", {params: {id: this.serviceIds }});
-       
+
+
+        const response = await axios.get("/api/service/select", { params: { id: this.serviceIds } });
+
+
         this.serviceData = response.data;
-        
+
+
       } catch (error) {
         console.error("Errore nel recupero dei servizi:", error);
       }
     },
     async getCurrentYear() {
       const today = new Date();
-      this.cYear = today.getFullYear();
-      this.cMonth = today.getMonth() + 1;
-      
+      this.selectedYear = today.getFullYear();
+      this.selectedMonth = today.getMonth() + 1;
+
 
     },
     async getMonths() {
       this.avMonth = [];
-      for (let i = this.cMonth; i <= 12; i++)
-      {
+      for (let i = this.selectedMonth; i <= 12; i++) {
         this.avMonth.push(i);
-        
+
       }
 
 
@@ -104,11 +125,10 @@ export default defineComponent({
       // dai in input al backend anno-mese e in output riceverai tutti i giorni assieme alla disponibilita in booleano   
       this.availableDays = [];
       try {
-      
-        const response = await axios.get(`/api/booking/checkDayAvailable/${this.cYear}-${this.cMonth}`);
 
-       
-        this.availableDays = response.data;
+        const response = await axios.get(`/api/booking/checkDayAvailable/${this.selectedYear}-${this.selectedMonth}`);
+
+        this.availableDays = response.data.daysAvailable.filter((d: any) => d.available === true);
         console.log(this.availableDays);
       } catch (error) {
         console.error("Errore nel recupero dei servizi:", error);
@@ -118,6 +138,18 @@ export default defineComponent({
     },
     async checkTime() {
       // GET: ?date=aaaa-mm-gg&services=1,2,3,..., gli do questo in richiesta get, e ricevo JSON ({timeSlot : hh:mm, available : true/false})
+      this.availableTimes = [];
+
+      const response = await axios.get('/api/booking/checkTimeAvailable', {
+        params: {
+          date: `${this.selectedYear}-${this.selectedMonth}-${this.selectedDay}`,
+          services: this.serviceIds
+        }
+      });
+      this.availableTimes = response.data.filter((t: any) => t.available === true);
+
+
+
 
     },
     async submit() {
@@ -137,27 +169,13 @@ export default defineComponent({
 
 
 
-   
+
 
 
 
 
   }
-})
-
-
-
-
-
-
-
-  ;
-
-
-
-// --- 5. INVIO PRENOTAZIONE ---
-
-
+});
 
 
 
@@ -180,7 +198,7 @@ export default defineComponent({
               <h3 class="s-title">{{ service.Title }}</h3>
               <p class="s-desc">{{ service.Description }}</p>
               <div class="s-footer">
-                <span class="s-price">{{ service.Price + "€"}}</span>
+                <span class="s-price">{{ service.Price + "€" }}</span>
               </div>
               <div class="service-footer">
                 <i class="clock-icon">🕒</i>
@@ -219,8 +237,8 @@ export default defineComponent({
           <div class="Calendar">
             <label>Anno</label>
             <select name="Anno">
-              <option>{{ cYear }}</option>
-              <option>{{ cYear + 1 }}</option>
+              <option>{{ selectedYear }}</option>
+              <option>{{ selectedYear + 1 }}</option>
             </select>
 
             <label>Mese</label>
@@ -231,7 +249,7 @@ export default defineComponent({
 
             <label>Giorno</label>
             <select>
-              <option v-for="days in availableDays" :key="days.day" >{{ days.day }}</option>
+              <option v-for="days in availableDays" :key="days.day">{{ days.day }}</option>
 
             </select>
 
@@ -241,27 +259,7 @@ export default defineComponent({
             <label for="orari">Scegli una fascia oraria:</label>
 
             <select name="fascia-oraria" id="orari">
-              <option value="08:30-09:00">08:30 - 09:00</option>
-              <option value="09:00-09:30">09:00 - 09:30</option>
-              <option value="09:30-10:00">09:30 - 10:00</option>
-              <option value="10:00-10:30">10:00 - 10:30</option>
-              <option value="10:30-11:00">10:30 - 11:00</option>
-              <option value="11:00-11:30">11:00 - 11:30</option>
-              <option value="11:30-12:00">11:30 - 12:00</option>
-              <option value="12:00-12:30">12:00 - 12:30</option>
-              <option value="12:30-13:00">12:30 - 13:00</option>
-              <option value="13:00-13:30">13:00 - 13:30</option>
-              <option value="13:30-14:00">13:30 - 14:00</option>
-              <option value="14:00-14:30">14:00 - 14:30</option>
-              <option value="14:30-15:00">14:30 - 15:00</option>
-              <option value="15:00-15:30">15:00 - 15:30</option>
-              <option value="15:30-16:00">15:30 - 16:00</option>
-              <option value="16:00-16:30">16:00 - 16:30</option>
-              <option value="16:30-17:00">16:30 - 17:00</option>
-              <option value="17:00-17:30">17:00 - 17:30</option>
-              <option value="17:30-18:00">17:30 - 18:00</option>
-              <option value="18:00-18:30">18:00 - 18:30</option>
-              <option value="18:30-19:00">18:30 - 19:00</option>
+              <option v-for="timeSlot in availableTimes" :key="timeSlot.timeSlot">{{ timeSlot.timeSlot }}</option>
             </select>
 
           </div>
