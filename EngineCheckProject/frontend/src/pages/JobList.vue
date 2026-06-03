@@ -1,46 +1,77 @@
-<script setup lang="ts">
-import { ref, /*computed*/ } from 'vue';
-import { useRouter } from 'vue-router';
+<script lang="ts">
+import { defineComponent } from 'vue';
+import axios from 'axios'; import { errorMessages } from 'vue/compiler-sfc';
+7
 
-const router = useRouter();
 
-// --- DATI DIPENDENTE (Mock) ---
-const employeeName = ref('Mario Rossi');
-const badgeNumber = ref('BDG-8854');
+interface Job {
+  Job_ID: number;
+  Service_ID: number;
+  JobService_Status: string;
+  Model: string;
+  Vehicle_Type: string;
+  License_Plate: string;
+  Date_Time: string;
+  Title: string;
+  Description: string;
+  Minutes: number;
+  CustomerEmail: string;
+  CustomerPhone: string;
+}
 
-// --- DATI LAVORI (Mock come da immagine) ---
-const jobs = ref([
-  {
-    id: 155,
-    status: 'da fare',
-    startTime: '11:00',
-    task: 'Pneumatici',
-    estimated: '30 min',
-    plate: 'AB 123DR'
+export default defineComponent({
+  data() {
+    return {
+      employeeName: '',
+      badgeNumber: '',
+      jobs: [] as Job[],
+      selectedJobId: null as number | null,
+      errorMessage: '',
+
+
+    }
   },
-  {
-    id: 275,
-    status: 'in corso',
-    startTime: '9:00',
-    task: 'cambio batteria',
-    estimated: '15 min',
-    plate: 'CR 123BQ'
+  mounted() {
+
+  },
+  methods: {
+    async getJobs() {
+      try {
+        const response = await axios.get('/api/job/listEmployeeJobs');
+        this.jobs = response.data;
+
+      } catch (error) {
+        console.error(error);
+      }
+    },
+
+    async setStatusJob() {
+      if (!this.selectedJobId) {
+        this.errorMessage = "Nessun lavoro selezionato"
+        return;
+      }
+      this.errorMessage = '';
+    },
+    async logOut() {
+      await axios.get('/api/auth/logout');
+      this.$router.push('/login-employee');
+    },
+
+
   }
-]);
+}
+)
 
-// IDs dei lavori selezionati
-const selectedJobIds = ref<number[]>([]);
 
-// --- LOGICA AZIONI ---
 const handleAction = (action: string) => {
   if (selectedJobIds.value.length === 0) {
     alert("Seleziona almeno un lavoro dalla tabella.");
     return;
   }
-  
+
   const ids = selectedJobIds.value.join(', ');
-  
-  switch(action) {
+
+  switch (action) {
     case 'start':
       alert(`Lavoro avviato per ID: ${ids}`);
       // Qui chiameresti l'API per aggiornare lo stato a "in corso"
@@ -56,16 +87,13 @@ const handleAction = (action: string) => {
   }
 };
 
-const handleLogout = () => {
-  // Logica di logout
-  router.push('/login-user'); // O la pagina di login corretta
-};
+
 </script>
 
 <template>
   <div class="page-container">
     <div class="dashboard-layout">
-      
+
       <aside class="sidebar-card">
         <div class="user-info">
           <h2 class="user-name">{{ employeeName }}</h2>
@@ -75,23 +103,24 @@ const handleLogout = () => {
         <hr class="divider" />
 
         <div class="actions-section">
+          <p v-if="errorMessage" style="color: red; font-size: 13px;">{{ errorMessage }}</p>
           <h3 class="actions-title">Azioni</h3>
-          
-          <button class="btn-action" @click="handleAction('start')">
+
+          <button class="btn-action" @click="setStatusJob('start')">
             <span class="icon">›</span> Inizia lavoro
           </button>
 
-          <button class="btn-action" @click="handleAction('finish')">
+          <button class="btn-action" @click="setStatusJob('finish')">
             <span class="icon">✓</span> Termina lavoro
           </button>
 
-          <button class="btn-action" @click="handleAction('suspend')">
+          <button class="btn-action" @click="setStatusJob('suspend')">
             <span class="icon">⊗</span> Sospendi lavoro
           </button>
         </div>
 
         <div class="logout-wrapper">
-          <button class="btn-logout" @click="handleLogout">
+          <button class="btn-logout" @click="logOut">
             ← Logout
           </button>
         </div>
@@ -112,20 +141,16 @@ const handleLogout = () => {
               </tr>
             </thead>
             <tbody>
-              <tr v-for="job in jobs" :key="job.id" :class="{'selected-row': selectedJobIds.includes(job.id)}">
-                <td>{{ job.id }}</td>
-                <td>{{ job.status }}</td>
-                <td>{{ job.startTime }}</td>
-                <td>{{ job.task }}</td>
-                <td>{{ job.estimated }}</td>
-                <td>{{ job.plate }}</td>
+              <tr v-for="job in jobs" :key="job.Job_ID" :class="{ 'selected-row': selectedJobId === job.Job_ID }">
+                <td>{{ job.Job_ID }}</td>
+                <td>{{ job.JobService_Status }}</td>
+                <td>{{ job.Date_Time }}</td>
+                <td>{{ job.Title }}</td>
+                <td>{{ job.Minutes }}</td>
+                <td>{{ job.License_Plate }}</td>
                 <td class="text-center">
-                  <input 
-                    type="checkbox" 
-                    :value="job.id" 
-                    v-model="selectedJobIds" 
-                    class="custom-checkbox"
-                  />
+                  <input type="radio" name="jobSelect" :value="job.Job_ID" v-model="selectedJobId"
+                    class="custom-checkbox" />
                 </td>
               </tr>
             </tbody>
@@ -140,7 +165,8 @@ const handleLogout = () => {
 <style scoped>
 .page-container {
   background-color: #f0f6fc;
-  min-height: 85vh; /* Lascia spazio a header/footer */
+  min-height: 85vh;
+  /* Lascia spazio a header/footer */
   padding: 40px 20px;
   font-family: 'Segoe UI', sans-serif;
 }
@@ -158,8 +184,9 @@ const handleLogout = () => {
   background-color: white;
   width: 300px;
   padding: 30px;
-  border-radius: 8px; /* Angoli leggermente arrotondati */
-  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+  border-radius: 8px;
+  /* Angoli leggermente arrotondati */
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
   flex-shrink: 0;
   display: flex;
   flex-direction: column;
@@ -203,7 +230,8 @@ const handleLogout = () => {
 
 .btn-action {
   width: 100%;
-  background-color: #e0e0e0; /* Grigio chiaro come immagine */
+  background-color: #e0e0e0;
+  /* Grigio chiaro come immagine */
   border: 1px solid #ccc;
   padding: 12px;
   margin-bottom: 10px;
@@ -233,7 +261,8 @@ const handleLogout = () => {
 
 .btn-logout {
   width: 100%;
-  background-color: #d9534f; /* Rosso spento */
+  background-color: #d9534f;
+  /* Rosso spento */
   color: white;
   border: none;
   padding: 10px;
@@ -249,12 +278,13 @@ const handleLogout = () => {
 /* --- TABELLA --- */
 .main-table-card {
   flex-grow: 1;
-  background-color: white; /* Sfondo bianco per la tabella */
+  background-color: white;
+  /* Sfondo bianco per la tabella */
   /* Se vuoi l'effetto "tabella volante" senza card dietro, rimuovi background, padding e shadow qui */
-  padding: 0; 
+  padding: 0;
   border-radius: 8px;
   overflow: hidden;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
 }
 
 .table-responsive {
@@ -270,7 +300,8 @@ const handleLogout = () => {
 }
 
 .jobs-table th {
-  background-color: #e6e6e6; /* Intestazione grigia */
+  background-color: #e6e6e6;
+  /* Intestazione grigia */
   font-weight: 700;
   padding: 12px;
   border: 1px solid #ccc;
@@ -283,7 +314,9 @@ const handleLogout = () => {
   vertical-align: middle;
 }
 
-.text-center { text-align: center; }
+.text-center {
+  text-align: center;
+}
 
 /* Checkbox Blu */
 .custom-checkbox {
@@ -303,6 +336,7 @@ const handleLogout = () => {
   .dashboard-layout {
     flex-direction: column;
   }
+
   .sidebar-card {
     width: 100%;
     min-height: auto;
