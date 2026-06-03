@@ -32,12 +32,13 @@ interface Service {
 
 export default defineComponent({
   data() {
+    const today = new Date();
     return {
       serviceIds: [] as number[],
       serviceData: [] as Service[],
       avMonth: [] as number[],
-      selectedYear: 0,
-      selectedMonth: 0,
+      selectedYear: today.getFullYear() ,
+      selectedMonth: today.getMonth() + 1,
       selectedDay: 0,
 
 
@@ -60,15 +61,15 @@ export default defineComponent({
     };
 
   },
-  mounted() {
+  async mounted() {
 
     this.serviceIds = this.$route.query.services as any;
 
     this.getServices();
-    this.getCurrentYear();
-    this.getMonths();
-    this.checkDay();
-    this.checkTime();
+    //await this.getCurrentYear();
+    await this.getMonths();
+    await this.checkDay();
+    //this.checkTime();
 
 
   },
@@ -105,6 +106,7 @@ export default defineComponent({
         console.error("Errore nel recupero dei servizi:", error);
       }
     },
+    /*
     async getCurrentYear() {
       const today = new Date();
       this.selectedYear = today.getFullYear();
@@ -112,6 +114,7 @@ export default defineComponent({
 
 
     },
+*/
     async getMonths() {
       this.avMonth = [];
       for (let i = this.selectedMonth; i <= 12; i++) {
@@ -236,20 +239,20 @@ export default defineComponent({
 
           <div class="Calendar">
             <label>Anno</label>
-            <select name="Anno">
-              <option>{{ selectedYear }}</option>
-              <option>{{ selectedYear + 1 }}</option>
+            <select :v-model ="selectedYear">
+              <option :v-model ="selectedYear">{{ selectedYear }}</option>
+              <option :v-model ="selectedYear">{{ selectedYear + 1 }}</option>
             </select>
 
             <label>Mese</label>
-            <select>
-              <option v-for="(month, index) in avMonth" :key="index">{{ month }}</option>
+            <select :v-model ="selectedMonth">
+              <option  v-for="(month, index) in avMonth" :key="index" :v-model ="month">{{ month }} </option>
 
             </select>
 
             <label>Giorno</label>
-            <select>
-              <option v-for="days in availableDays" :key="days.day">{{ days.day }}</option>
+            <select :v-model ="selectedDay">
+              <option  v-for="days in availableDays" :key="days.day" :v-model ="days">{{ days.day }}</option>
 
             </select>
 
