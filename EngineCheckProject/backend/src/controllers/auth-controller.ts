@@ -5,6 +5,7 @@ import { setUser, unsetUser, User } from "../utils/auth.js";
 import {
   validateUserNotLoggedIn,
   errorHandler,
+  validateUserLoggedIn,
 } from "../utils/auth-helpers.js";
 import { connection } from "../utils/db.js";
 
@@ -169,6 +170,15 @@ export const loginEmployee = async (req: Request, res: Response) => {
     setUser(req, res, userJwtPayload);
 
     res.json({ message: "Successo: Login Ok", firstName: userData.First_Name, lastName: userData.Last_Name, badgeNumber: userData.ID_Badge_Number });
+  } catch (error) {
+    errorHandler(req, res, error);
+  }
+};
+
+export const whoami = async (req: Request, res: Response) => {
+    try {
+      const user = validateUserLoggedIn(req, res);
+      res.status(200).json({ role: user.role });
   } catch (error) {
     errorHandler(req, res, error);
   }

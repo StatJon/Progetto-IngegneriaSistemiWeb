@@ -1,94 +1,42 @@
 <script lang="ts">
-import { defineComponent/*, ref*/ } from 'vue';
+import { defineComponent } from 'vue';
 import axios from 'axios';
-//import { useRouter } from 'vue-router';
 
 export default defineComponent({
 
   data() {
     return {
-      badgeNumber: 0,
+      badgeNumber: '',
       password: "",
-      errorMessage: "", //testo da mostrare all'utente se il login fallisce
-      isLoading: false, //flag per evitare richieste mentre se ne sta già eseguendo una
+      errorMessage: "",
     }
   },
-  mounted() {
-
-  },
   methods: {
-    async handleEmployeeLogin() {
+    async submitEmployeeLogin() {
       this.errorMessage = "";
-      this.isLoading = false;
       try {
-        await axios.post('/api/auth/loginEmployee', {
+        const response = await axios.post('/api/auth/loginEmployee', {
           BadgeNumber: this.badgeNumber,
           Password: this.password
         });
+        sessionStorage.setItem('firstName', response.data.firstName)
+        sessionStorage.setItem('lastName', response.data.lastName)
+        sessionStorage.setItem('badgeNumber', response.data.badgeNumber)
         this.$router.push('/jobs');
       } catch (error: any) {
         if (error.response?.status === 400) {
-          this.errorMessage = "Credenziali errate."
+          this.errorMessage = "Credenziali errate, si prega di riprovare"
         } else {
-          this.errorMessage = "Errore del server.";
+          this.errorMessage = "Errore del server";
         }
-      } finally {
-        this.isLoading = false;
       }
-
     },
-
     goToUserLogin() {
       this.$router.push('/login-user')
     }
-
   }
-
 })
 
-/*
-// Stati del form (nota: badgeNumber al posto di email)
-const badgeNumber = ref('');
-const password = ref('');
-const errorMessage = ref('');
-const isLoading = ref(false);
-
-const router = useRouter();
-
-// Funzione di Login Dipendente
-const handleEmployeeLogin = async () => {
-  errorMessage.value = '';
-  isLoading.value = true;
-  router.push('/jobs'); 
-
-  // try {
-  //   // Chiama l'endpoint specifico per i dipendenti
-  //   const response = await axios.post('http://localhost:3000/api/auth/employee-login', {
-  //     badgeNumber: badgeNumber.value,
-  //     password: password.value
-  //   });
-
-  //   if (response.data.success) {
-  //     // Reindirizza alla dashboard dipendenti (es. pannello di controllo)
-  //     router.push('/jobs'); 
-  //   }
-  // } catch (error: any) {
-  //   if (error.response && error.response.status === 401) {
-  //     errorMessage.value = 'Numero badge o password errati.';
-  //   } else {
-  //     errorMessage.value = 'Errore del server.';
-  //   }
-  // } finally {
-  //   isLoading.value = false;
-  // }
-};
-
-// Navigazione per tornare al Login Utente
-const goToUserLogin = () => {
-  router.push('/login-user'); // Assumiamo che '/login' sia la rotta utente
-};
-
-*/
 </script>
 
 <template>
@@ -116,8 +64,8 @@ const goToUserLogin = () => {
 
       <p v-if="errorMessage" class="error-text">{{ errorMessage }}</p>
 
-      <button class="btn-primary" @click="handleEmployeeLogin" :disabled="isLoading">
-        {{ isLoading ? 'Accesso in corso...' : 'Sign In' }}
+      <button class="btn-primary" @click="submitEmployeeLogin">
+        Accedi
       </button>
 
     </div>
