@@ -40,6 +40,7 @@ export default defineComponent({
       selectedYear: today.getFullYear() ,
       selectedMonth: today.getMonth() + 1,
       selectedDay: 0,
+      currentYear: today.getFullYear() ,
 
 
 
@@ -239,20 +240,20 @@ export default defineComponent({
 
           <div class="Calendar">
             <label>Anno</label>
-            <select :v-model ="selectedYear">
-              <option :v-model ="selectedYear">{{ selectedYear }}</option>
-              <option :v-model ="selectedYear">{{ selectedYear + 1 }}</option>
+            <select v-model ="selectedYear">
+              <option :value ="currentYear">{{ currentYear }}</option>
+              <option :value ="currentYear +1">{{ currentYear + 1 }}</option>
             </select>
 
             <label>Mese</label>
-            <select :v-model ="selectedMonth">
-              <option  v-for="(month, index) in avMonth" :key="index" :v-model ="month">{{ month }} </option>
+            <select v-model ="selectedMonth">
+              <option  v-for="(month, index) in avMonth" :key="index" :value ="month">{{ month }} </option>
 
             </select>
 
             <label>Giorno</label>
-            <select :v-model ="selectedDay">
-              <option  v-for="days in availableDays" :key="days.day" :v-model ="days">{{ days.day }}</option>
+            <select v-model ="selectedDay">
+              <option  v-for="days in availableDays" :key="days.day" :value ="days">{{ days.day }}</option>
 
             </select>
 
