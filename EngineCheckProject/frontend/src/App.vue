@@ -1,10 +1,80 @@
-<script setup lang="ts">
-import { RouterView } from 'vue-router'
+<script lang="ts">
+import { defineComponent } from 'vue';
+import axios from 'axios';
+
+export default defineComponent({
+  data() {
+    return {
+      role: '',
+      navIcon: '',
+      navText: '',
+    }
+  },
+  async mounted() {
+    await this.refreshNav();
+  },
+  watch: {
+    async $route() {
+      await this.refreshNav();
+    }
+  },
+  methods: {
+    async getRole() {
+      try {
+        const response = await axios.get('/api/auth/whoami');
+        this.role = response.data.role;
+      } catch (error) {
+        this.role = '';
+      }
+    },
+    getNavIconAndText() {
+      switch (this.role) {
+        case 'Customer':
+          this.navIcon = 'person';
+          this.navText = 'Profilo';
+          break;
+        case 'Worker':
+          this.navIcon = 'laptop_car';
+          this.navText = 'Lista Lavori';
+          break;
+        case 'Admin':
+          this.navIcon = 'admin_panel_settings';
+          this.navText = 'Admin';
+          break;
+        default:
+          this.navIcon = 'login';
+          this.navText = 'Login';
+          break;
+      }
+    },
+    selectUserRoute() {
+      switch (this.role) {
+        case 'Customer':
+          this.$router.push('/user-dashboard');
+          break;
+        case 'Worker':
+          this.$router.push('/jobs');
+          break;
+        case 'Admin':
+          this.$router.push('/admin-jobs');
+          break;
+        default:
+          this.$router.push('/login-user');
+          break;
+      }
+    },
+    async refreshNav() {
+      await this.getRole();
+      this.getNavIconAndText();
+    },
+  }
+})
+
 </script>
 
 <template>
   <div class="app-layout">
-    
+
     <header class="site-header">
       <div class="container navbar">
         <div class="logo">
@@ -23,21 +93,21 @@ import { RouterView } from 'vue-router'
             <span class="material-symbols-outlined icon">call</span>
             Contatti
           </a>
-          
+
           <router-link to="/booking-motorcycle" class="nav-item">
             <span class="material-symbols-outlined icon">two_wheeler</span>
             Prenotazione per Moto
           </router-link>
-          
+
           <router-link to="/booking-car" class="nav-item">
             <span class="material-symbols-outlined icon">directions_car</span>
             Prenotazione per Auto
           </router-link>
 
-          <router-link to="/login-user" class="nav-item highlight">
-            <span class="material-symbols-outlined icon">login</span>
-            Log In
-          </router-link>
+          <button @click="selectUserRoute" class="nav-item highlight">
+            <span class="material-symbols-outlined icon">{{ navIcon }}</span>
+            {{ navText }}
+          </button>
         </nav>
       </div>
     </header>
@@ -66,7 +136,8 @@ body {
 .app-layout {
   display: flex;
   flex-direction: column;
-  min-height: 100vh; /* Occupa almeno tutta l'altezza dello schermo */
+  min-height: 100vh;
+  /* Occupa almeno tutta l'altezza dello schermo */
 }
 
 /* Header */
@@ -85,7 +156,8 @@ body {
 }
 
 .logo-img {
-  height: 40px; /* Dimensione fissa per il logo */
+  height: 40px;
+  /* Dimensione fissa per il logo */
 }
 
 .nav-links {
@@ -107,7 +179,7 @@ body {
 
 /* MAIN CONTENT: Si espande per riempire lo spazio vuoto */
 .main-content {
-  flex: 1; 
+  flex: 1;
   display: flex;
   flex-direction: column;
 }
@@ -118,7 +190,8 @@ body {
   color: rgb(141, 141, 141);
   text-align: center;
   padding: 20px;
-  margin-top: auto; /* Spinge il footer in basso se il contenuto è breve */
+  margin-top: auto;
+  /* Spinge il footer in basso se il contenuto è breve */
 }
 
 /* Transizioni */
@@ -126,6 +199,7 @@ body {
 .fade-leave-active {
   transition: opacity 0.2s ease;
 }
+
 .fade-enter-from,
 .fade-leave-to {
   opacity: 0;
