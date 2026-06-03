@@ -27,14 +27,20 @@ export default defineComponent({
       jobs: [] as Job[],
       selectedJobId: null as number | null,
       errorMessage: '',
-
-
     }
   },
   mounted() {
 
   },
   methods: {
+  
+    getEmployeeNameAndBadge(){
+      const firstName = sessionStorage.getItem('firstName');
+      const lastName = sessionStorage.getItem('lastName');
+      this.employeeName = `${firstName} ${lastName}`.trim();
+      this.badgeNumber = sessionStorage.getItem('badgeNumber') || "";
+    }
+
     async getJobs() {
       try {
         const response = await axios.get('/api/job/listEmployeeJobs');
@@ -52,12 +58,11 @@ export default defineComponent({
       }
       this.errorMessage = '';
     },
-    async logOut() {
+    async logout() {
       await axios.get('/api/auth/logout');
+      sessionStorage.clear()
       this.$router.push('/login-employee');
     },
-
-
   }
 }
 )

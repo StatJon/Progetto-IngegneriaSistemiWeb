@@ -6,7 +6,7 @@ const router: Router = Router()
 router.get("/api/customer/customerPage", customerController.customerPage)
 /*
 Richiede: JWT Cliente
-Ritorna : JSON : ({ Date, Time, Model, License_Plaete, Services})
+Ritorna : JSON : ({ JobId, Date, Time, Model, License_Plate, Services})
 Necessario per pagina utente di overview dei lavori prenotati
 */
 

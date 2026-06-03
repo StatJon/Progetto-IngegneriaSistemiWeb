@@ -115,7 +115,7 @@ export const loginCustomer = async (req: Request, res: Response) => {
     };
     setUser(req, res, userJwtPayload);
 
-    res.json({ message: "Successo: Login effettuato correttamente" });
+    res.json({ message: "Successo: Login Ok", firstName: userData.First_Name, lastName: userData.lastName });
   } catch (error) {
     errorHandler(req, res, error);
   }
@@ -168,7 +168,7 @@ export const loginEmployee = async (req: Request, res: Response) => {
     };
     setUser(req, res, userJwtPayload);
 
-    res.json({ message: "Successo: Login effettuato correttamente" });
+    res.json({ message: "Successo: Login Ok", firstName: userData.First_Name, lastName: userData.Last_Name, badgeNumber: userData.ID_Badge_Number });
   } catch (error) {
     errorHandler(req, res, error);
   }

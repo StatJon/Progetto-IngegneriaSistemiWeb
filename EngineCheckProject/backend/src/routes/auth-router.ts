@@ -12,14 +12,14 @@ Ritorna: Assegna JWT Token, messaggio di conferma
 router.post("/api/auth/loginCustomer", authController.loginCustomer)
 /*
 Richiede: POST: JSON: { Email, Password }
-Ritorna: Assegna JWT Token, messaggio di conferma
+Ritorna: Assegna JWT Token, JSON {"Successo: Login Ok", firstName, lastName}
 */
 // post json: 
 
 router.post("/api/auth/loginEmployee", authController.loginEmployee)
 /*
 Richiede: POST: JSON: { BadgeNumber, Password }
-Ritorna: Assegna JWT Token, messaggio di conferma
+Ritorna: Assegna JWT Token, JSON {"Successo: Login Ok", firstName, lastName, badgeNumber}
 Nota: Nel JWT viene inserito anche il ruolo worker/admin automaticamente
 */
 

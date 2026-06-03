@@ -11,6 +11,7 @@ export const customerPage = async (req: Request, res: Response) => {
     const [results] = await connection.execute(
       `
         SELECT 
+        j.Job_ID,
         DATE(j.Date_Time) AS Date,
         TIME(j.Date_Time) AS Time,
         j.Model,

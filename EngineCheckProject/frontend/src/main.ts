@@ -2,6 +2,9 @@ import { createApp } from 'vue'
 import { createRouter, createWebHistory, type RouteRecordRaw } from 'vue-router'
 import './style.css'
 import App from './App.vue'
+import axios from 'axios'
+
+axios.defaults.withCredentials = true //Per passaggio automatico JWT a backend nelle richieste
 
 // Importazione pagine
 //import TestBackend from './pages/TestBackend.vue'
