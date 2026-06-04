@@ -118,6 +118,17 @@ export default defineComponent({
           </button>
 
         </div>
+        <div>
+          <h3> Assegna Dipendente</h3>
+          <label>Nome Dipendente</label>
+          <select class="input-group">
+            <option>Dipendente</option>
+          </select >
+          <button class="btn-action" @click="">
+            <span class="icon">+</span> Assegna Lavoro
+          </button>
+
+        </div>
 
         <div class="bottom-buttons">
           <button class="btn-blue" @click="goToEmployeeTable">
@@ -128,6 +139,10 @@ export default defineComponent({
             ← Logout
           </button>
         </div>
+
+
+
+
       </aside>
 
       <main class="main-table-card">
@@ -176,6 +191,7 @@ export default defineComponent({
   font-family: 'Segoe UI', sans-serif;
 }
 
+
 .dashboard-layout {
   display: flex;
   gap: 30px;
@@ -197,7 +213,15 @@ export default defineComponent({
   min-height: 550px;
   /* Un po' più alta per contenere i nuovi bottoni */
 }
+.input-group {
+  width: 100%;
+  background-color: white;
+  border: 1px solid #ccc;
+  padding: 12px;
+  margin-bottom: 10px;
+  border-radius: 6px;
 
+}
 .user-info {
   text-align: center;
   margin-bottom: 20px;
