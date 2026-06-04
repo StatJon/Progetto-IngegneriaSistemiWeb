@@ -38,6 +38,9 @@ export default defineComponent({
   async mounted() {
     this.getEmployeeNameAndBadge();
     await this.getJobs();
+    await this.getEmployees();
+
+  
   },
   methods: {
     getEmployeeNameAndBadge() {
@@ -81,12 +84,22 @@ export default defineComponent({
         this.errorMessage = "Nessun lavoro selezionato"
         return;
       }
+
+      if (!this.selectedEmployee) {
+        this.errorMessage = "Nessun dipendente selezionato"
+        return;
+      }
       
        await axios.post('api/admin/setEmployeeJob', {Job_ID: this.selectedJobId.Job_ID , Service_ID:this.selectedJobId.Service_ID ,
          EMPLOYEE_Badge_Number: this.selectedEmployee.ID_Badge_Number });
 
-     //const response = await axios.get('api/admin/listWorkerEmployees')
+     
       
+
+    },
+    async getEmployees(){
+      const response = await axios.get('api/admin/listWorkerEmployees');
+      this.employees = response.data;
 
     },
 
