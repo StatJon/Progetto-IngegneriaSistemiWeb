@@ -85,7 +85,7 @@ export const loginCustomer = async (req: Request, res: Response) => {
 
     //Ricerca email
     const [results] = await connection.execute(
-      "SELECT ID_Customer, Email, Password FROM CUSTOMER WHERE Email=?",
+      "SELECT ID_Customer, Email, First_Name, Last_Name, Password FROM CUSTOMER WHERE Email=?",
       [Email]
     );
 
@@ -116,7 +116,7 @@ export const loginCustomer = async (req: Request, res: Response) => {
     };
     setUser(req, res, userJwtPayload);
 
-    res.json({ message: "Successo: Login Ok", firstName: userData.First_Name, lastName: userData.lastName });
+    res.json({ message: "Successo: Login Ok", firstName: userData.First_Name, lastName: userData.Last_Name });
   } catch (error) {
     errorHandler(req, res, error);
   }
@@ -139,7 +139,7 @@ export const loginEmployee = async (req: Request, res: Response) => {
 
     //Ricerca BadgeNumber
     const [results] = await connection.execute(
-      "SELECT ID_Badge_Number, Password, Role FROM EMPLOYEE WHERE ID_Badge_Number = ?",
+      "SELECT ID_Badge_Number, First_Name, Last_Name, Password, Role FROM EMPLOYEE WHERE ID_Badge_Number = ?",
       [BadgeNumber]
     );
 
