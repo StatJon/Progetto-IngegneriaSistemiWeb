@@ -24,7 +24,7 @@ import MotorcycleBookingConfirmation from './pages/MotorcycleBookingConfirmation
 import EditBooking from './pages/EditBooking.vue'
 import FinalConfirmation from './pages/FinalConfirmation.vue'
 import AddEmployee from './pages/AddEmployee.vue'
-//import NotFound from './pages/NotFound.vue'
+import NotFound from './pages/NotFound.vue'
 
 // Definizione Rotte
 const routes: Array<RouteRecordRaw> = [
@@ -44,11 +44,8 @@ const routes: Array<RouteRecordRaw> = [
   { path: '/booking-edit/:id', component: EditBooking, name: 'EditBooking' },
   { path: '/booking-final-confirmation', component: FinalConfirmation, name: 'FinalConfirmation' },
   { path: '/add-employee', component: AddEmployee, name: 'AddEmployee' },
-  { path: '/testing', component:Test1, name: 'Test1'}
-
-
-
- // { path: '/:pathMatch(.*)*', component: NotFound, name: 'NotFound' }
+  { path: '/testing', component:Test1, name: 'Test1'},
+  { path: '/:pathMatch(.*)*', component: NotFound, name: 'NotFound' }
 ]
 
 const router = createRouter({
