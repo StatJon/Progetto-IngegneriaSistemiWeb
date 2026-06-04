@@ -17,6 +17,12 @@ interface Job {
   CustomerPhone: string;
 }
 
+interface Employee {
+  ID_Badge_Number: number;
+  First_Name: string;
+  Last_Name: string;
+}
+
 export default defineComponent({
   data() {
     return {
@@ -25,6 +31,8 @@ export default defineComponent({
       jobs: [] as Job[],
       selectedJobId: null as Job | null,
       errorMessage: '',
+      employees: [] as Employee[],
+      selectedEmployee: null as Employee | null,
     }
   },
   async mounted() {
@@ -73,6 +81,13 @@ export default defineComponent({
         this.errorMessage = "Nessun lavoro selezionato"
         return;
       }
+      
+       await axios.post('api/admin/setEmployeeJob', {Job_ID: this.selectedJobId.Job_ID , Service_ID:this.selectedJobId.Service_ID ,
+         EMPLOYEE_Badge_Number: this.selectedEmployee.ID_Badge_Number });
+
+     //const response = await axios.get('api/admin/listWorkerEmployees')
+      
+
     },
 
     goToEmployeeTable() {
@@ -121,10 +136,10 @@ export default defineComponent({
         <div>
           <h3> Assegna Dipendente</h3>
           <label>Nome Dipendente</label>
-          <select class="input-group">
-            <option>Dipendente</option>
+          <select  v-model ="selectedEmployee" class="input-group">
+            <option  v-for="(employee, index) in employees " :key="index" :value ="employee">{{ employee.First_Name }} {{ employee.Last_Name }}</option>
           </select >
-          <button class="btn-action" @click="">
+          <button class="btn-action" @click="setEmployeeJob">
             <span class="icon">+</span> Assegna Lavoro
           </button>
 
