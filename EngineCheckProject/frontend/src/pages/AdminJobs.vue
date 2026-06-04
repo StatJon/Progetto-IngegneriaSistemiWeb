@@ -28,11 +28,11 @@ interface Employee {
 export default defineComponent({
   data() {
     return {
+      errorMessage: '',
       employeeName: '',
       badgeNumber: '',
       jobs: [] as Job[],
       selectedJobId: null as Job | null,
-      errorMessage: '',
       employees: [] as Employee[],
       selectedEmployee: null as Employee | null,
     }
@@ -183,6 +183,7 @@ export default defineComponent({
           <table class="jobs-table">
             <thead>
               <tr>
+                <th class="text-center">Selezione</th>
                 <th>ID Lavoro</th>
                 <th>Stato</th>
                 <th>Dipendente Assegnato</th>
@@ -191,12 +192,15 @@ export default defineComponent({
                 <th>Tempo stimato</th>
                 <th>Targa Veicolo</th>
                 <th>Veicolo</th>
-                <th class="text-center">Selezione</th>
+                <th>Telefono</th>
               </tr>
             </thead>
             <tbody>
               <tr v-for="job in jobs" :key="`${job.Job_ID}-${job.Service_ID}`" :class="{ 'selected-row': selectedJobId === job }">
-                <td>{{ job.Job_ID }}</td>
+                <td class="text-center">
+                  <input type="radio" name="jobSelect" :value="job" v-model="selectedJobId" class="custom-checkbox" />
+                </td>
+                <td>{{ job.Job_ID }}-{{ job.Service_ID }}</td>
                 <td>{{ job.JobService_Status }}</td>
                 <td>{{ job.Worker_Name }} {{ job.Worker_Last_Name }}</td>
                 <td>{{ job.Date_Time }}</td>
@@ -204,9 +208,7 @@ export default defineComponent({
                 <td>{{ job.Minutes }}</td>
                 <td>{{ job.License_Plate }}</td>
                 <td>{{ job.Model }}</td>
-                <td class="text-center">
-                  <input type="radio" name="jobSelect" :value="job" v-model="selectedJobId" class="custom-checkbox" />
-                </td>
+                <td>{{ job.CustomerPhone }}</td>
               </tr>
             </tbody>
           </table>

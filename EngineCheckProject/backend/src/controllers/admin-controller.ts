@@ -70,10 +70,10 @@ export const registerEmployee = async (req: Request, res: Response) => {
     validateAdmin(req, res);
 
     //Recupera dati
-    const { First_Name, Last_Name, Password } = req.body;
+    const { First_Name, Last_Name, Password, Role } = req.body;
 
     //Controllo Campi mancanti
-    if (!First_Name || !Last_Name || !Password) {
+    if (!First_Name || !Last_Name || !Password || !Role) {
       res.status(400).json({ message: "Compilare tutti i campi obbligatori" });
       return;
     }
@@ -83,10 +83,9 @@ export const registerEmployee = async (req: Request, res: Response) => {
 
     //INSERT
     //Nota: const [insertResult] serve per estrarre l'ID creato da DB AUTO_INCREMENT
-    //Nota: default nuovoEmployee.role == worker
     await connection.execute(
       "INSERT INTO EMPLOYEE (First_Name, Last_Name, Password, Role) VALUES (?, ?, ?)",
-      [First_Name, Last_Name, passwordHash, "Worker"],
+      [First_Name, Last_Name, passwordHash, Role],
     );
 
     res.status(201).json({

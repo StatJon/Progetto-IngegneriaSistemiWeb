@@ -30,9 +30,9 @@ Assegna un Employee ad un Job e cambia lo stato in Assigned
 
 router.post("/api/admin/registerEmployee", adminController.registerEmployee)
 /*
-Richiede: POST JSON { First_Name, Last_Name, Password }
+Richiede: POST JSON { First_Name, Last_Name, Password, Role }
 Ritorna : JSON { message, first_name, last_name}
-//Inserisce un nuovo employee in DB
+Inserisce un nuovo employee in DB
 */
 
 router.post("/api/admin/removeEmployee", adminController.removeEmployee)

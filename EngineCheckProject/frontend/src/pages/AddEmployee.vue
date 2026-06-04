@@ -5,18 +5,38 @@ import axios from 'axios';
 export default defineComponent({
   data() {
     return {
-
+      errorMessage: '',
+      firstName: '',
+      lastName: '',
+      password: '',
+      role: 'Worker',
     }
   },
   mounted() {
 
   },
   methods: {
-
+    async addEmployee() {
+      this.errorMessage = '';
+      try {
+        if (!this.firstName || !this.lastName || !this.password || !this.role) {
+          this.errorMessage = "Tutti i campi sono obbligatori";
+          return;
+        }
+        await axios.post('/api/admin/registerEmployee', {
+          First_Name: this.firstName,
+          Last_Name: this.lastName,
+          Password: this.password,
+          Role: this.role
+        })
+        this.$router.push('/admin-employees')
+      } catch (error: any) {
+        this.errorMessage = error.response.data.message;
+      }
+    },
   }
 }
 )
-
 
 </script>
 
@@ -25,24 +45,26 @@ export default defineComponent({
     <main class="main-content">
       <div class="Info-card">
 
+        <p v-if="errorMessage" style="color: red; font-size: 13px;">{{ errorMessage }}</p>
+
         <div class="form-group">
           <label>Nome del dipendente</label>
-          <input type="text" placeholder="Inserisci il nome" />
+          <input type="text" v-model="firstName" placeholder="Mario" />
         </div>
 
         <div class="form-group">
           <label>Cognome del dipendente</label>
-          <input type="text" placeholder="Inserisci il cognome" />
+          <input type="text" v-model="lastName" placeholder="Rossi" />
         </div>
 
         <div class="form-group">
           <label>Password </label>
-          <input type="password" placeholder="Digitare la password" />
+          <input type="password" v-model="password" placeholder="PasswordBella" />
         </div>
 
         <div class="form-group">
           <label>Ruolo</label>
-          <select name="fascia-oraria" id="orari">
+          <select v-model="role" name="fascia-oraria" id="orari">
             <optgroup label="Ruoli">
               <option value="Worker">Worker</option>
               <option value="Admin">Admin</option>
@@ -50,12 +72,8 @@ export default defineComponent({
           </select>
         </div>
 
-
-
       </div>
-
-
-      <button class="btn-signin" @click="">Aggiungi Dipendente </button>
+      <button class="btn-signin" @click="addEmployee">Aggiungi Dipendente </button>
     </main>
 
     <footer class="footer">
