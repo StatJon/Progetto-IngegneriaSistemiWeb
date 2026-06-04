@@ -60,26 +60,26 @@ export default defineComponent({
       }
     
       this.errorMessage = '';
-       let jobStatus = "";
+       let jobStatus = '';
 
 
       switch(action){
         case 'start':
-          jobStatus = " Working";
+          jobStatus = 'Working';
           break;
 
         case 'finish':
-           jobStatus = " Completed";
+           jobStatus = 'Completed';
           break;
 
         case 'suspend':
-           jobStatus = " Assigned";
+           jobStatus = 'Assigned';
 
           break;
 
       }
       await axios.post('/api/job/setStatusJobService', {Job_ID: this.selectedJobId.Job_ID , Service_ID: this.selectedJobId.Service_ID , Job_Status: jobStatus  });
-
+        await this.getJobs();
     },
     async logout() {
       await axios.get('/api/auth/logout');
@@ -87,6 +87,7 @@ export default defineComponent({
       this.$router.push('/login-employee');
     },
   }
+ 
 }
 )
 
