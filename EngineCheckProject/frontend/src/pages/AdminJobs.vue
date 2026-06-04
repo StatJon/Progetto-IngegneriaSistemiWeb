@@ -1,124 +1,130 @@
-<script setup lang="ts">
-import { ref } from 'vue';
-import { useRouter } from 'vue-router';
+<script lang="ts">
+import { defineComponent } from 'vue';
+import axios from 'axios';
 
-const router = useRouter();
+interface Job {
+  Job_ID: number;
+  Service_ID: number;
+  JobService_Status: string;
+  Model: string;
+  Vehicle_Type: string;
+  License_Plate: string;
+  Date_Time: string;
+  Title: string;
+  Description: string;
+  Minutes: number;
+  CustomerEmail: string;
+  CustomerPhone: string;
+}
 
-// --- DATI ADMIN (Mock) ---
-const adminName = ref('Admin User');
-const badgeNumber = ref('ADM-001');
-
-// --- DATI LAVORI (Mock) ---
-// In un caso reale, qui vedresti TUTTI i lavori di tutti i dipendenti
-const jobs = ref([
-  {
-    id: 155,
-    status: 'da fare',
-    startTime: '11:00',
-    task: 'Pneumatici',
-    estimated: '30 min',
-    plate: 'AB 123DR'
+export default defineComponent({
+  data() {
+    return {
+      employeeName: '',
+      badgeNumber: '',
+      jobs: [] as Job[],
+      selectedJobId: null as Job | null,
+      errorMessage: '',
+    }
   },
-  {
-    id: 275,
-    status: 'in corso',
-    startTime: '09:00',
-    task: 'Cambio batteria',
-    estimated: '15 min',
-    plate: 'CR 123BQ'
+  async mounted() {
+    this.getEmployeeNameAndBadge();
+    await this.getJobs();
   },
-  {
-    id: 301,
-    status: 'sospeso',
-    startTime: '14:30',
-    task: 'Revisione Motore',
-    estimated: '4h',
-    plate: 'ZZ 999 AA'
-  }
-]);
-
-// IDs selezionati
-const selectedJobIds = ref<number[]>([]);
-
-// --- LOGICA AZIONI ---
-const handleAction = (action: string) => {
-  if (selectedJobIds.value.length === 0) {
-    alert("Seleziona almeno un lavoro dalla tabella.");
-    return;
-  }
-  
-  const ids = selectedJobIds.value.join(', ');
-
-  switch(action) {
-    case 'start':
-      alert(`Admin: Lavoro forzato INIZIO per ID: ${ids}`);
-      break;
-    case 'finish':
-      alert(`Admin: Lavoro forzato FINE per ID: ${ids}`);
-      break;
-    case 'suspend':
-      alert(`Admin: Lavoro SOSPESO per ID: ${ids}`);
-      break;
-    case 'cancel':
-      if(confirm(`Sei sicuro di voler CANCELLARE definitivamente i lavori: ${ids}?`)) {
-        // Logica di cancellazione
-        jobs.value = jobs.value.filter(j => !selectedJobIds.value.includes(j.id));
-        selectedJobIds.value = [];
-        alert("Lavori cancellati.");
+  methods: {
+    getEmployeeNameAndBadge() {
+      const firstName = sessionStorage.getItem('firstName');
+      const lastName = sessionStorage.getItem('lastName');
+      this.employeeName = `${firstName} ${lastName}`.trim();
+      this.badgeNumber = sessionStorage.getItem('badgeNumber') || "";
+    },
+    async getJobs() {
+      try {
+        const response = await axios.get('/api/job/listEmployeeJobs');
+        this.jobs = response.data;
+      } catch (error) {
+        console.error(error);
       }
-      break;
+    },
+    async setStatusJob(action: string) {
+      if (!this.selectedJobId) {
+        this.errorMessage = "Nessun lavoro selezionato"
+        return;
+      }
+      this.errorMessage = '';
+      let jobStatus = '';
+      switch (action) {
+        case 'unassign':
+          jobStatus = 'Pending';
+          break;
+        case 'delete':
+          jobStatus = 'Cancelled';
+          break;
+        case 'finish':
+          jobStatus = 'Completed';
+          break;
+      }
+      await axios.post('/api/job/setStatusJobService', { Job_ID: this.selectedJobId.Job_ID, Service_ID: this.selectedJobId.Service_ID, Job_Status: jobStatus });
+      await this.getJobs();
+    },
+
+    async setEmployeeJob() {
+      if (!this.selectedJobId) {
+        this.errorMessage = "Nessun lavoro selezionato"
+        return;
+      }
+    },
+
+    goToEmployeeTable() {
+      this.$router.push('/admin-employees');
+    },
+
+    async logout() {
+      await axios.get('/api/auth/logout');
+      sessionStorage.clear()
+      this.$router.push('/login-employee');
+    },
   }
-};
-
-const goToEmployeesList = () => {
-  // Rotta ipotetica per la gestione dei dipendenti
-  router.push('/admin-employees'); 
-  alert("Navigazione verso lista dipendenti...");
-};
-
-const handleLogout = () => {
-  router.push('/login-user');
-};
+}
+)
 </script>
 
 <template>
   <div class="page-container">
     <div class="dashboard-layout">
-      
+
       <aside class="sidebar-card">
         <div class="user-info">
-          <h2 class="user-name">{{ adminName }}</h2>
+          <h2 class="user-name">{{ employeeName }}</h2>
           <p class="user-badge">Numero Badge: {{ badgeNumber }}</p>
         </div>
 
         <hr class="divider" />
 
         <div class="actions-section">
+          <p v-if="errorMessage" style="color: red; font-size: 13px;">{{ errorMessage }}</p>
           <h3 class="actions-title">Azioni</h3>
-          
-          <button class="btn-action" @click="handleAction('start')">
-            <span class="icon">›</span> Inizia lavoro
+
+          <button class="btn-action" @click="setStatusJob('unassign')">
+            <span class="icon">›</span> Rimuovi assegnazione lavoratore
           </button>
 
-          <button class="btn-action" @click="handleAction('finish')">
-            <span class="icon">✓</span> Termina lavoro
+          <button class="btn-action" @click="setStatusJob('delete')">
+            <span class="icon">✓</span> Elimina lavoro
           </button>
 
-          <button class="btn-action" @click="handleAction('suspend')">
-            <span class="icon">⊗</span> Sospendi lavoro
+          <button class="btn-action" @click="setStatusJob('finish')">
+            <span class="icon">⊗</span> Termina lavoro
           </button>
-          
-          <button class="btn-action" @click="handleAction('cancel')">
-            <span class="icon">✕</span> Cancella lavoro
-          </button>
+
         </div>
 
         <div class="bottom-buttons">
-          <button class="btn-blue" @click="goToEmployeesList">
+          <button class="btn-blue" @click="goToEmployeeTable">
             ← Passa a dipendenti
           </button>
-          
-          <button class="btn-logout" @click="handleLogout">
+
+          <button class="btn-logout" @click="logout">
             ← Logout
           </button>
         </div>
@@ -135,24 +141,21 @@ const handleLogout = () => {
                 <th>Lavoro da effettuare</th>
                 <th>Tempo stimato</th>
                 <th>Targa Veicolo</th>
+                <th>Veicolo</th>
                 <th class="text-center">Selezione</th>
               </tr>
             </thead>
             <tbody>
-              <tr v-for="job in jobs" :key="job.id" :class="{'selected-row': selectedJobIds.includes(job.id)}">
-                <td>{{ job.id }}</td>
-                <td><span class="status-badge">{{ job.status }}</span></td>
-                <td>{{ job.startTime }}</td>
-                <td>{{ job.task }}</td>
-                <td>{{ job.estimated }}</td>
-                <td>{{ job.plate }}</td>
+              <tr v-for="job in jobs" :key="job.Job_ID" :class="{ 'selected-row': selectedJobId === job }">
+                <td>{{ job.Job_ID }}</td>
+                <td>{{ job.JobService_Status }}</td>
+                <td>{{ job.Date_Time }}</td>
+                <td>{{ job.Title }}</td>
+                <td>{{ job.Minutes }}</td>
+                <td>{{ job.License_Plate }}</td>
+                <td>{{ job.Model }}</td>
                 <td class="text-center">
-                  <input 
-                    type="checkbox" 
-                    :value="job.id" 
-                    v-model="selectedJobIds" 
-                    class="custom-checkbox"
-                  />
+                  <input type="radio" name="jobSelect" :value="job" v-model="selectedJobId" class="custom-checkbox" />
                 </td>
               </tr>
             </tbody>
@@ -187,20 +190,48 @@ const handleLogout = () => {
   width: 300px;
   padding: 30px;
   border-radius: 8px;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
   flex-shrink: 0;
   display: flex;
   flex-direction: column;
-  min-height: 550px; /* Un po' più alta per contenere i nuovi bottoni */
+  min-height: 550px;
+  /* Un po' più alta per contenere i nuovi bottoni */
 }
 
-.user-info { text-align: center; margin-bottom: 20px; }
-.user-name { font-size: 22px; font-weight: 700; margin: 0 0 5px 0; color: #333; }
-.user-badge { font-size: 14px; color: #666; margin: 0; }
-.divider { border: 0; border-top: 1px solid #eee; margin: 20px 0; }
+.user-info {
+  text-align: center;
+  margin-bottom: 20px;
+}
 
-.actions-section { flex-grow: 1; }
-.actions-title { font-size: 18px; font-weight: 700; margin-bottom: 15px; text-align: center; }
+.user-name {
+  font-size: 22px;
+  font-weight: 700;
+  margin: 0 0 5px 0;
+  color: #333;
+}
+
+.user-badge {
+  font-size: 14px;
+  color: #666;
+  margin: 0;
+}
+
+.divider {
+  border: 0;
+  border-top: 1px solid #eee;
+  margin: 20px 0;
+}
+
+.actions-section {
+  flex-grow: 1;
+}
+
+.actions-title {
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 15px;
+  text-align: center;
+}
 
 /* Bottoni Azione (Grigi) */
 .btn-action {
@@ -218,8 +249,15 @@ const handleLogout = () => {
   gap: 10px;
   transition: background 0.2s;
 }
-.btn-action:hover { background-color: #d0d0d0; }
-.icon { font-weight: bold; font-size: 16px; }
+
+.btn-action:hover {
+  background-color: #d0d0d0;
+}
+
+.icon {
+  font-weight: bold;
+  font-size: 16px;
+}
 
 /* Bottoni in basso */
 .bottom-buttons {
@@ -231,7 +269,8 @@ const handleLogout = () => {
 
 .btn-blue {
   width: 100%;
-  background-color: #0084ff; /* Blu accesso */
+  background-color: #0084ff;
+  /* Blu accesso */
   color: white;
   border: none;
   padding: 10px;
@@ -239,11 +278,15 @@ const handleLogout = () => {
   font-weight: 600;
   cursor: pointer;
 }
-.btn-blue:hover { background-color: #006bcf; }
+
+.btn-blue:hover {
+  background-color: #006bcf;
+}
 
 .btn-logout {
   width: 100%;
-  background-color: #d9534f; /* Rosso */
+  background-color: #d9534f;
+  /* Rosso */
   color: white;
   border: none;
   padding: 10px;
@@ -251,19 +294,25 @@ const handleLogout = () => {
   font-weight: 600;
   cursor: pointer;
 }
-.btn-logout:hover { background-color: #c9302c; }
+
+.btn-logout:hover {
+  background-color: #c9302c;
+}
 
 /* --- TABELLA --- */
 .main-table-card {
   flex-grow: 1;
   background-color: white;
-  padding: 0; 
+  padding: 0;
   border-radius: 8px;
   overflow: hidden;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
 }
 
-.table-responsive { width: 100%; overflow-x: auto; }
+.table-responsive {
+  width: 100%;
+  overflow-x: auto;
+}
 
 .jobs-table {
   width: 100%;
@@ -286,13 +335,30 @@ const handleLogout = () => {
   vertical-align: middle;
 }
 
-.text-center { text-align: center; }
-.custom-checkbox { width: 18px; height: 18px; accent-color: #0084ff; cursor: pointer; }
-.selected-row { background-color: #f0f8ff; }
+.text-center {
+  text-align: center;
+}
+
+.custom-checkbox {
+  width: 18px;
+  height: 18px;
+  accent-color: #0084ff;
+  cursor: pointer;
+}
+
+.selected-row {
+  background-color: #f0f8ff;
+}
 
 /* Responsive */
 @media (max-width: 900px) {
-  .dashboard-layout { flex-direction: column; }
-  .sidebar-card { width: 100%; min-height: auto; }
+  .dashboard-layout {
+    flex-direction: column;
+  }
+
+  .sidebar-card {
+    width: 100%;
+    min-height: auto;
+  }
 }
 </style>

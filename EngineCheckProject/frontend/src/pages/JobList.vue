@@ -2,8 +2,6 @@
 import { defineComponent } from 'vue';
 import axios from 'axios';
 
-
-
 interface Job {
   Job_ID: number;
   Service_ID: number;
@@ -29,57 +27,45 @@ export default defineComponent({
       errorMessage: '',
     }
   },
-   async mounted() {
+  async mounted() {
     this.getEmployeeNameAndBadge();
     await this.getJobs();
-
   },
   methods: {
-  
-    getEmployeeNameAndBadge(){
+    getEmployeeNameAndBadge() {
       const firstName = sessionStorage.getItem('firstName');
       const lastName = sessionStorage.getItem('lastName');
       this.employeeName = `${firstName} ${lastName}`.trim();
       this.badgeNumber = sessionStorage.getItem('badgeNumber') || "";
     },
-
     async getJobs() {
       try {
         const response = await axios.get('/api/job/listEmployeeJobs');
         this.jobs = response.data;
-
       } catch (error) {
         console.error(error);
       }
     },
-
-    async setStatusJob(action : string) {
+    async setStatusJob(action: string) {
       if (!this.selectedJobId) {
         this.errorMessage = "Nessun lavoro selezionato"
         return;
       }
-    
       this.errorMessage = '';
-       let jobStatus = '';
-
-
-      switch(action){
+      let jobStatus = '';
+      switch (action) {
         case 'start':
           jobStatus = 'Working';
           break;
-
         case 'finish':
-           jobStatus = 'Completed';
+          jobStatus = 'Completed';
           break;
-
         case 'suspend':
-           jobStatus = 'Assigned';
-
+          jobStatus = 'Assigned';
           break;
-
       }
-      await axios.post('/api/job/setStatusJobService', {Job_ID: this.selectedJobId.Job_ID , Service_ID: this.selectedJobId.Service_ID , Job_Status: jobStatus  });
-        await this.getJobs();
+      await axios.post('/api/job/setStatusJobService', { Job_ID: this.selectedJobId.Job_ID, Service_ID: this.selectedJobId.Service_ID, Job_Status: jobStatus });
+      await this.getJobs();
     },
     async logout() {
       await axios.get('/api/auth/logout');
@@ -87,12 +73,8 @@ export default defineComponent({
       this.$router.push('/login-employee');
     },
   }
- 
 }
 )
-
-
-
 </script>
 
 <template>
@@ -153,9 +135,9 @@ export default defineComponent({
                 <td>{{ job.Title }}</td>
                 <td>{{ job.Minutes }}</td>
                 <td>{{ job.License_Plate }}</td>
+                <td>{{ job.Model }}</td>
                 <td class="text-center">
-                  <input type="radio" name="jobSelect" :value="job" v-model="selectedJobId"
-                    class="custom-checkbox" />
+                  <input type="radio" name="jobSelect" :value="job" v-model="selectedJobId" class="custom-checkbox" />
                 </td>
               </tr>
             </tbody>
