@@ -13,6 +13,8 @@ interface Job {
   Title: string;
   Description: string;
   Minutes: number;
+  Worker_Name: string;
+  Worker_Last_Name: string;
   CustomerEmail: string;
   CustomerPhone: string;
 }
@@ -40,7 +42,7 @@ export default defineComponent({
     await this.getJobs();
     await this.getEmployees();
 
-  
+
   },
   methods: {
     getEmployeeNameAndBadge() {
@@ -51,66 +53,82 @@ export default defineComponent({
     },
     async getJobs() {
       try {
-        const response = await axios.get('/api/job/listEmployeeJobs');
+        const response = await axios.get('/api/job/listAllJobs');
         this.jobs = response.data;
-      } catch (error) {
-        console.error(error);
+      } catch (error: any) {
+        this.errorMessage = error.response.data.message
+      }
+    },
+    async getEmployees() {
+      try {
+        const response = await axios.get('/api/admin/listWorkerEmployees');
+        this.employees = response.data;
+      } catch (error: any) {
+        this.errorMessage = error.response.data.message;
       }
     },
     async setStatusJob(action: string) {
-      if (!this.selectedJobId) {
-        this.errorMessage = "Nessun lavoro selezionato"
-        return;
-      }
       this.errorMessage = '';
-      let jobStatus = '';
-      switch (action) {
-        case 'unassign':
-          jobStatus = 'Pending';
-          break;
-        case 'delete':
-          jobStatus = 'Cancelled';
-          break;
-        case 'finish':
-          jobStatus = 'Completed';
-          break;
+      try {
+        if (!this.selectedJobId) {
+          this.errorMessage = "Nessun lavoro selezionato"
+          return;
+        }
+        let jobStatus = '';
+        switch (action) {
+          case 'unassign':
+            jobStatus = 'Pending';
+            break;
+          case 'delete':
+            jobStatus = 'Cancelled';
+            break;
+          case 'finish':
+            jobStatus = 'Completed';
+            break;
+        }
+        await axios.post('/api/job/setStatusJobService', {
+          Job_ID: this.selectedJobId.Job_ID,
+          Service_ID: this.selectedJobId.Service_ID,
+          Job_Status: jobStatus
+        });
+        await this.getJobs();
+      } catch (error: any) {
+        this.errorMessage = error.response.data.message
       }
-      await axios.post('/api/job/setStatusJobService', { Job_ID: this.selectedJobId.Job_ID, Service_ID: this.selectedJobId.Service_ID, Job_Status: jobStatus });
-      await this.getJobs();
     },
-
     async setEmployeeJob() {
-      if (!this.selectedJobId) {
-        this.errorMessage = "Nessun lavoro selezionato"
-        return;
+      this.errorMessage = '';
+      try {
+        if (!this.selectedJobId) {
+          this.errorMessage = "Nessun lavoro selezionato"
+          return;
+        }
+        if (!this.selectedEmployee) {
+          this.errorMessage = "Nessun dipendente selezionato"
+          return;
+        }
+        await axios.post('/api/admin/setEmployeeJob', {
+          Job_ID: this.selectedJobId.Job_ID,
+          Service_ID: this.selectedJobId.Service_ID,
+          EMPLOYEE_Badge_Number: this.selectedEmployee.ID_Badge_Number
+        });
+        await this.getJobs();
+      } catch (error: any) {
+        this.errorMessage = error.response.data.message
       }
-
-      if (!this.selectedEmployee) {
-        this.errorMessage = "Nessun dipendente selezionato"
-        return;
-      }
-      
-       await axios.post('api/admin/setEmployeeJob', {Job_ID: this.selectedJobId.Job_ID , Service_ID:this.selectedJobId.Service_ID ,
-         EMPLOYEE_Badge_Number: this.selectedEmployee.ID_Badge_Number });
-
-     
-      
-
     },
-    async getEmployees(){
-      const response = await axios.get('api/admin/listWorkerEmployees');
-      this.employees = response.data;
-
-    },
-
     goToEmployeeTable() {
       this.$router.push('/admin-employees');
     },
-
     async logout() {
-      await axios.get('/api/auth/logout');
-      sessionStorage.clear()
-      this.$router.push('/login-employee');
+      this.errorMessage = '';
+      try {
+        await axios.get('/api/auth/logout');
+        sessionStorage.clear()
+        this.$router.push('/login-employee');
+      } catch (error: any) {
+        this.errorMessage = error.response.data.message
+      }
     },
   }
 }
@@ -120,59 +138,46 @@ export default defineComponent({
 <template>
   <div class="page-container">
     <div class="dashboard-layout">
-
       <aside class="sidebar-card">
         <div class="user-info">
           <h2 class="user-name">{{ employeeName }}</h2>
           <p class="user-badge">Numero Badge: {{ badgeNumber }}</p>
         </div>
-
         <hr class="divider" />
-
         <div class="actions-section">
           <p v-if="errorMessage" style="color: red; font-size: 13px;">{{ errorMessage }}</p>
           <h3 class="actions-title">Azioni</h3>
-
           <button class="btn-action" @click="setStatusJob('unassign')">
             <span class="icon">›</span> Rimuovi assegnazione lavoratore
           </button>
-
           <button class="btn-action" @click="setStatusJob('delete')">
             <span class="icon">✓</span> Elimina lavoro
           </button>
-
           <button class="btn-action" @click="setStatusJob('finish')">
             <span class="icon">⊗</span> Termina lavoro
           </button>
-
         </div>
         <div>
           <h3> Assegna Dipendente</h3>
           <label>Nome Dipendente</label>
-          <select  v-model ="selectedEmployee" class="input-group">
-            <option  v-for="(employee, index) in employees " :key="index" :value ="employee">{{ employee.First_Name }} {{ employee.Last_Name }}</option>
-          </select >
+          <select v-model="selectedEmployee" class="input-group">
+            <option v-for="employee in employees" :key="employee.ID_Badge_Number" :value="employee">
+              {{ employee.First_Name }} {{ employee.Last_Name }}
+            </option>
+          </select>
           <button class="btn-action" @click="setEmployeeJob">
             <span class="icon">+</span> Assegna Lavoro
           </button>
-
         </div>
-
         <div class="bottom-buttons">
           <button class="btn-blue" @click="goToEmployeeTable">
             ← Passa a dipendenti
           </button>
-
           <button class="btn-logout" @click="logout">
             ← Logout
           </button>
         </div>
-
-
-
-
       </aside>
-
       <main class="main-table-card">
         <div class="table-responsive">
           <table class="jobs-table">
@@ -180,6 +185,7 @@ export default defineComponent({
               <tr>
                 <th>ID Lavoro</th>
                 <th>Stato</th>
+                <th>Dipendente Assegnato</th>
                 <th>Data-Ora Inizio previsto</th>
                 <th>Lavoro da effettuare</th>
                 <th>Tempo stimato</th>
@@ -189,9 +195,10 @@ export default defineComponent({
               </tr>
             </thead>
             <tbody>
-              <tr v-for="job in jobs" :key="job.Job_ID" :class="{ 'selected-row': selectedJobId === job }">
+              <tr v-for="job in jobs" :key="`${job.Job_ID}-${job.Service_ID}`" :class="{ 'selected-row': selectedJobId === job }">
                 <td>{{ job.Job_ID }}</td>
                 <td>{{ job.JobService_Status }}</td>
+                <td>{{ job.Worker_Name }} {{ job.Worker_Last_Name }}</td>
                 <td>{{ job.Date_Time }}</td>
                 <td>{{ job.Title }}</td>
                 <td>{{ job.Minutes }}</td>
@@ -205,7 +212,6 @@ export default defineComponent({
           </table>
         </div>
       </main>
-
     </div>
   </div>
 </template>
@@ -218,7 +224,6 @@ export default defineComponent({
   padding: 40px 20px;
   font-family: 'Segoe UI', sans-serif;
 }
-
 
 .dashboard-layout {
   display: flex;
@@ -241,6 +246,7 @@ export default defineComponent({
   min-height: 550px;
   /* Un po' più alta per contenere i nuovi bottoni */
 }
+
 .input-group {
   width: 100%;
   background-color: white;
@@ -250,6 +256,7 @@ export default defineComponent({
   border-radius: 6px;
 
 }
+
 .user-info {
   text-align: center;
   margin-bottom: 20px;

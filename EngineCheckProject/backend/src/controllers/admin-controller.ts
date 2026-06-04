@@ -32,21 +32,36 @@ export const listWorkerEmployees = async (req: Request, res: Response) => {
 };
 
 export const setEmployeeJob = async (req: Request, res: Response) => {
-try{
-  validateAdmin(req, res);
-const { Job_ID, Service_ID, EMPLOYEE_Badge_Number } = req.body;
-await connection.execute(
+  try {
+    validateAdmin(req, res);
+    const { Job_ID, Service_ID, EMPLOYEE_Badge_Number } = req.body;
+
+    const [checkRows]: any = await connection.execute(
+      `SELECT JobService_Status FROM JOB_SERVICE
+       WHERE JOB_Job_ID = ? AND SERVICE_Service_ID = ?`,
+      [Job_ID, Service_ID],
+    );
+
+    if (checkRows.length === 0) {
+      return res.status(404).json({ message: "Errore: Nessun lavoro trovato"})
+    }
+
+    const statusToCheck = checkRows[0].JobService_Status;
+    if (['Working', 'Completed', 'Cancelled'].includes(statusToCheck)){
+      return res.status(409).json({ message: "Errore: Lavoro in stato non modificabile"})
+    }
+
+    await connection.execute(
       `UPDATE JOB_SERVICE
        SET EMPLOYEE_Badge_Number = ?, 
        JobService_Status = 'Assigned'
        WHERE JOB_Job_ID = ? AND SERVICE_Service_ID = ?`,
-      [EMPLOYEE_Badge_Number, Job_ID, Service_ID]
-)
-res.status(200).json({ message : "Successo: Lavoro assegnato"})
-}catch(error){
-  errorHandler(req, res, error);
-}
-
+      [EMPLOYEE_Badge_Number, Job_ID, Service_ID],
+    );
+    res.status(200).json({ message: "Successo: Lavoro assegnato" });
+  } catch (error) {
+    errorHandler(req, res, error);
+  }
 };
 
 export const registerEmployee = async (req: Request, res: Response) => {
