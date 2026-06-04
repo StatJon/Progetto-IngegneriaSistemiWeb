@@ -1,7 +1,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
-import axios from 'axios'; import { errorMessages } from 'vue/compiler-sfc';
-7
+import axios from 'axios';
+
 
 
 interface Job {
@@ -25,11 +25,13 @@ export default defineComponent({
       employeeName: '',
       badgeNumber: '',
       jobs: [] as Job[],
-      selectedJobId: null as number | null,
+      selectedJobId: null as Job | null,
       errorMessage: '',
     }
   },
-  mounted() {
+   async mounted() {
+    this.getEmployeeNameAndBadge();
+    await this.getJobs();
 
   },
   methods: {
@@ -51,12 +53,33 @@ export default defineComponent({
       }
     },
 
-    async setStatusJob() {
+    async setStatusJob(action : string) {
       if (!this.selectedJobId) {
         this.errorMessage = "Nessun lavoro selezionato"
         return;
       }
+    
       this.errorMessage = '';
+       let jobStatus = "";
+
+
+      switch(action){
+        case 'start':
+          jobStatus = " Working";
+          break;
+
+        case 'finish':
+           jobStatus = " Completed";
+          break;
+
+        case 'suspend':
+           jobStatus = " Assigned";
+
+          break;
+
+      }
+      await axios.post('/api/job/setStatusJobService', {Job_ID: this.selectedJobId.Job_ID , Service_ID: this.selectedJobId.Service_ID , Job_Status: jobStatus  });
+
     },
     async logout() {
       await axios.get('/api/auth/logout');
@@ -67,30 +90,6 @@ export default defineComponent({
 }
 )
 
-
-const handleAction = (action: string) => {
-  if (selectedJobIds.value.length === 0) {
-    alert("Seleziona almeno un lavoro dalla tabella.");
-    return;
-  }
-
-  const ids = selectedJobIds.value.join(', ');
-
-  switch (action) {
-    case 'start':
-      alert(`Lavoro avviato per ID: ${ids}`);
-      // Qui chiameresti l'API per aggiornare lo stato a "in corso"
-      break;
-    case 'finish':
-      alert(`Lavoro terminato per ID: ${ids}`);
-      // Qui chiameresti l'API per completare il lavoro
-      // E magari rimuoverlo dalla lista
-      break;
-    case 'suspend':
-      alert(`Lavoro sospeso per ID: ${ids}`);
-      break;
-  }
-};
 
 
 </script>
@@ -125,7 +124,7 @@ const handleAction = (action: string) => {
         </div>
 
         <div class="logout-wrapper">
-          <button class="btn-logout" @click="logOut">
+          <button class="btn-logout" @click="logout()">
             ← Logout
           </button>
         </div>
@@ -146,7 +145,7 @@ const handleAction = (action: string) => {
               </tr>
             </thead>
             <tbody>
-              <tr v-for="job in jobs" :key="job.Job_ID" :class="{ 'selected-row': selectedJobId === job.Job_ID }">
+              <tr v-for="job in jobs" :key="job.Job_ID" :class="{ 'selected-row': selectedJobId === job }">
                 <td>{{ job.Job_ID }}</td>
                 <td>{{ job.JobService_Status }}</td>
                 <td>{{ job.Date_Time }}</td>
@@ -154,7 +153,7 @@ const handleAction = (action: string) => {
                 <td>{{ job.Minutes }}</td>
                 <td>{{ job.License_Plate }}</td>
                 <td class="text-center">
-                  <input type="radio" name="jobSelect" :value="job.Job_ID" v-model="selectedJobId"
+                  <input type="radio" name="jobSelect" :value="job" v-model="selectedJobId"
                     class="custom-checkbox" />
                 </td>
               </tr>
