@@ -43,7 +43,7 @@ const routes: Array<RouteRecordRaw> = [
   { path: '/booking-motorcycle-confirm', component: MotorcycleBookingConfirmation, name: 'MotoBookingConfirm' },
   { path: '/booking-edit/:id', component: EditBooking, name: 'EditBooking' },
   { path: '/booking-final-confirmation', component: FinalConfirmation, name: 'FinalConfirmation' },
-  { path: '/Add-Employee', component: AddEmployee, name: 'AddEmployee' },
+  { path: '/add-employee', component: AddEmployee, name: 'AddEmployee' },
   { path: '/testing', component:Test1, name: 'Test1'}
 
 

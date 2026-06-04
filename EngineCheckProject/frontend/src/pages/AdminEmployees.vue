@@ -1,116 +1,100 @@
-<script setup lang="ts">
-import { ref } from 'vue';
-import { useRouter } from 'vue-router';
+<script lang="ts">
+import { defineComponent } from 'vue';
+import axios from 'axios';
 
-const router = useRouter();
+interface Employee {
+  ID_Badge_Number: number;
+  First_Name: string;
+  Last_Name: string;
+}
 
-// --- DATI ADMIN ---
-const adminName = ref('Admin User');
-const badgeNumber = ref('ADM-001');
-
-// --- DATI DIPENDENTI (Mock) ---
-// Ho sostituito i dati dei lavori con quelli dei dipendenti per coerenza con i bottoni
-const employees = ref([
-  {
-    id: 1,
-    firstName: 'Mario',
-    lastName: 'Rossi',
-    badge: 'BDG-101',
-    role: 'Meccanico Senior',
-    status: 'Attivo'
+export default defineComponent({
+  data() {
+    return {
+      employeeName: '',
+      badgeNumber: '',
+      errorMessage: '',
+      employees: [] as Employee[],
+      selectedEmployee: null as Employee | null,
+    }
   },
-  {
-    id: 2,
-    firstName: 'Luigi',
-    lastName: 'Verdi',
-    badge: 'BDG-102',
-    role: 'Elettrauto',
-    status: 'In Ferie'
+
+  async mounted() {
+    this.getEmployeeNameAndBadge();
+    await this.getEmployees;
   },
-  {
-    id: 3,
-    firstName: 'Giovanni',
-    lastName: 'Bianchi',
-    badge: 'BDG-103',
-    role: 'Gommista',
-    status: 'Attivo'
-  }
-]);
 
-// IDs selezionati
-const selectedEmpIds = ref<number[]>([]);
-
-// --- LOGICA AZIONI ---
-const handleAction = (action: string) => {
-  if (action === 'remove' && selectedEmpIds.value.length === 0) {
-    alert("Seleziona almeno un dipendente da rimuovere.");
-    return;
-  }
-
-  switch(action) {
-    case 'add':
-      // Qui apriresti un modale o andresti a una pagina di creazione
-      const newName = prompt("Inserisci nome del nuovo dipendente:");
-      if (newName) {
-        employees.value.push({
-          id: Date.now(),
-          firstName: newName,
-          lastName: 'Nuovo',
-          badge: `BDG-${Math.floor(Math.random()*1000)}`,
-          role: 'Apprendista',
-          status: 'Attivo'
-        });
+  methods: {
+    getEmployeeNameAndBadge() {
+      const firstName = sessionStorage.getItem('firstName');
+      const lastName = sessionStorage.getItem('lastName');
+      this.employeeName = `${firstName} ${lastName}`.trim();
+      this.badgeNumber = sessionStorage.getItem('badgeNumber') || "";
+    },
+    async getEmployees() {
+      try {
+        const response = await axios.get('api/admin/listAllEmployee');
+        this.employees = response.data;
+      } catch (error) {
+        console.error(error);
       }
-      break;
-      
-    case 'remove':
-      if(confirm(`Sei sicuro di voler rimuovere ${selectedEmpIds.value.length} dipendenti?`)) {
-        employees.value = employees.value.filter(e => !selectedEmpIds.value.includes(e.id));
-        selectedEmpIds.value = [];
+    },
+    goToAddEmployee() {
+      this.$router.push('/add-employee');
+    },
+    async removeEmployee() {
+      if (!this.selectedEmployee) {
+        this.errorMessage = "Nessun dipendente selezionato"
+        return;
       }
-      break;
+      this.errorMessage = '';
+      await axios.post('/api/admin/removeEmployee', { ID_Badge_Number: this.selectedEmployee.ID_Badge_Number })
+      await this.getEmployees();
+    },
+    goToJobsTable() {
+      this.$router.push('/admin-jobs');
+    },
+    async logout() {
+      await axios.get('/api/auth/logout');
+      sessionStorage.clear()
+      this.$router.push('/login-employee');
+    },
   }
-};
-
-const goToJobsList = () => {
-  router.push('/admin-jobs'); // Torna alla dashboard lavori
-};
-
-const handleLogout = () => {
-  router.push('/login-user');
-};
+}
+)
 </script>
 
 <template>
   <div class="page-container">
     <div class="dashboard-layout">
-      
+
       <aside class="sidebar-card">
         <div class="user-info">
-          <h2 class="user-name">{{ adminName }}</h2>
+          <h2 class="user-name">{{ employeeName }}</h2>
           <p class="user-badge">Numero Badge: {{ badgeNumber }}</p>
         </div>
 
         <hr class="divider" />
 
         <div class="actions-section">
+          <p v-if="errorMessage" style="color: red; font-size: 13px;">{{ errorMessage }}</p>
           <h3 class="actions-title">Azioni</h3>
-          
-          <button class="btn-action" @click="handleAction('add')">
+
+          <button class="btn-action" @click="goToAddEmployee">
             <span class="icon">›</span> Aggiungi dipendente
           </button>
 
-          <button class="btn-action" @click="handleAction('remove')">
+          <button class="btn-action" @click="removeEmployee">
             <span class="icon">✓</span> Rimuovi dipendente
           </button>
         </div>
 
         <div class="bottom-buttons">
-          <button class="btn-blue" @click="goToJobsList">
+          <button class="btn-blue" @click="goToJobsTable">
             ← Passa a lavori
           </button>
-          
-          <button class="btn-logout" @click="handleLogout">
+
+          <button class="btn-logout" @click="logout">
             ← Logout
           </button>
         </div>
@@ -121,31 +105,20 @@ const handleLogout = () => {
           <table class="data-table">
             <thead>
               <tr>
-                <th>ID</th>
+                <th>Badge ID</th>
                 <th>Nome</th>
                 <th>Cognome</th>
-                <th>Badge</th>
-                <th>Ruolo</th>
-                <th>Stato</th>
                 <th class="text-center">Selezione</th>
               </tr>
             </thead>
             <tbody>
-              <tr v-for="emp in employees" :key="emp.id" :class="{'selected-row': selectedEmpIds.includes(emp.id)}">
-                <td>{{ emp.id }}</td>
-                <td>{{ emp.firstName }}</td>
-                <td>{{ emp.lastName }}</td>
-                <td>{{ emp.badge }}</td>
-                <td>{{ emp.role }}</td>
-                <td><span class="status-badge" :class="emp.status === 'Attivo' ? 'green' : 'orange'">{{ emp.status }}</span></td>
-                <td class="text-center">
-                  <input 
-                    type="checkbox" 
-                    :value="emp.id" 
-                    v-model="selectedEmpIds" 
-                    class="custom-checkbox"
-                  />
-                </td>
+              <tr v-for="employee in employees" :key="employee.ID_Badge_Number"
+                :class="{ 'selected-row': selectedEmployee === employee }">
+                <td>{{ employee.ID_Badge_Number }}</td>
+                <td>{{ employee.First_Name }}</td>
+                <td>{{ employee.Last_Name }}</td>
+                <input type="radio" :value="employee.ID_Badge_Number" v-model="selectedEmployee"
+                  class="custom-checkbox" />
               </tr>
             </tbody>
           </table>
@@ -179,20 +152,47 @@ const handleLogout = () => {
   width: 300px;
   padding: 30px;
   border-radius: 8px;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
   flex-shrink: 0;
   display: flex;
   flex-direction: column;
   min-height: 500px;
 }
 
-.user-info { text-align: center; margin-bottom: 20px; }
-.user-name { font-size: 22px; font-weight: 700; margin: 0 0 5px 0; color: #333; }
-.user-badge { font-size: 14px; color: #666; margin: 0; }
-.divider { border: 0; border-top: 1px solid #eee; margin: 20px 0; }
+.user-info {
+  text-align: center;
+  margin-bottom: 20px;
+}
 
-.actions-section { flex-grow: 1; }
-.actions-title { font-size: 18px; font-weight: 700; margin-bottom: 15px; text-align: center; }
+.user-name {
+  font-size: 22px;
+  font-weight: 700;
+  margin: 0 0 5px 0;
+  color: #333;
+}
+
+.user-badge {
+  font-size: 14px;
+  color: #666;
+  margin: 0;
+}
+
+.divider {
+  border: 0;
+  border-top: 1px solid #eee;
+  margin: 20px 0;
+}
+
+.actions-section {
+  flex-grow: 1;
+}
+
+.actions-title {
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 15px;
+  text-align: center;
+}
 
 /* Bottoni Azione */
 .btn-action {
@@ -210,8 +210,15 @@ const handleLogout = () => {
   gap: 10px;
   transition: background 0.2s;
 }
-.btn-action:hover { background-color: #d0d0d0; }
-.icon { font-weight: bold; font-size: 16px; }
+
+.btn-action:hover {
+  background-color: #d0d0d0;
+}
+
+.icon {
+  font-weight: bold;
+  font-size: 16px;
+}
 
 /* Bottoni in basso */
 .bottom-buttons {
@@ -231,7 +238,10 @@ const handleLogout = () => {
   font-weight: 600;
   cursor: pointer;
 }
-.btn-blue:hover { background-color: #006bcf; }
+
+.btn-blue:hover {
+  background-color: #006bcf;
+}
 
 .btn-logout {
   width: 100%;
@@ -243,19 +253,25 @@ const handleLogout = () => {
   font-weight: 600;
   cursor: pointer;
 }
-.btn-logout:hover { background-color: #c9302c; }
+
+.btn-logout:hover {
+  background-color: #c9302c;
+}
 
 /* --- TABELLA --- */
 .main-table-card {
   flex-grow: 1;
   background-color: white;
-  padding: 0; 
+  padding: 0;
   border-radius: 8px;
   overflow: hidden;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
 }
 
-.table-responsive { width: 100%; overflow-x: auto; }
+.table-responsive {
+  width: 100%;
+  overflow-x: auto;
+}
 
 .data-table {
   width: 100%;
@@ -278,9 +294,20 @@ const handleLogout = () => {
   vertical-align: middle;
 }
 
-.text-center { text-align: center; }
-.custom-checkbox { width: 18px; height: 18px; accent-color: #0084ff; cursor: pointer; }
-.selected-row { background-color: #f0f8ff; }
+.text-center {
+  text-align: center;
+}
+
+.custom-checkbox {
+  width: 18px;
+  height: 18px;
+  accent-color: #0084ff;
+  cursor: pointer;
+}
+
+.selected-row {
+  background-color: #f0f8ff;
+}
 
 /* Badge stato */
 .status-badge {
@@ -289,12 +316,26 @@ const handleLogout = () => {
   font-weight: 600;
   font-size: 11px;
 }
-.status-badge.green { background-color: #d4edda; color: #155724; }
-.status-badge.orange { background-color: #fff3cd; color: #856404; }
+
+.status-badge.green {
+  background-color: #d4edda;
+  color: #155724;
+}
+
+.status-badge.orange {
+  background-color: #fff3cd;
+  color: #856404;
+}
 
 /* Responsive */
 @media (max-width: 900px) {
-  .dashboard-layout { flex-direction: column; }
-  .sidebar-card { width: 100%; min-height: auto; }
+  .dashboard-layout {
+    flex-direction: column;
+  }
+
+  .sidebar-card {
+    width: 100%;
+    min-height: auto;
+  }
 }
 </style>
