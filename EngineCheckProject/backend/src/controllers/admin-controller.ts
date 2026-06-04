@@ -31,6 +31,24 @@ export const listWorkerEmployees = async (req: Request, res: Response) => {
   }
 };
 
+export const setEmployeeJob = async (req: Request, res: Response) => {
+try{
+  validateAdmin(req, res);
+const { Job_ID, Service_ID, EMPLOYEE_Badge_Number } = req.body;
+await connection.execute(
+      `UPDATE JOB_SERVICE
+       SET EMPLOYEE_Badge_Number = ?, 
+       JobService_Status = 'Assigned'
+       WHERE JOB_Job_ID = ? AND SERVICE_Service_ID = ?`,
+      [EMPLOYEE_Badge_Number, Job_ID, Service_ID]
+)
+res.status(200).json({ message : "Successo: Lavoro assegnato"})
+}catch(error){
+  errorHandler(req, res, error);
+}
+
+};
+
 export const registerEmployee = async (req: Request, res: Response) => {
   try {
     //Controllo Login

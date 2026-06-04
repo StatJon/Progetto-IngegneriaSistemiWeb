@@ -21,6 +21,13 @@ Ritorna : JSON {ID_Badge_Number, First_Name, Last_Name, Role}
 Elenca tutti i dipendenti attivi ('Worker')
 */
 
+router.post("/api/admin/setEmployeeJob", adminController.setEmployeeJob)
+/*
+Richiede: JSON { Job_ID, Service_ID, EMPLOYEE_Badge_Number }
+Ritorna: messaggio di conferma
+Assegna un Employee ad un Job e cambia lo stato in Assigned
+*/
+
 router.post("/api/admin/registerEmployee", adminController.registerEmployee)
 /*
 Richiede: POST JSON { First_Name, Last_Name, Password }
