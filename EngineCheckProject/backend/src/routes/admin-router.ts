@@ -14,6 +14,13 @@ Ritorna : JSON {ID_Badge_Number, First_Name, Last_Name, Role}
 Elenca tutti i dipendenti, per pagina tabella dipendenti
 */
 
+router.get("/api/admin/listWorkerEmployees", adminController.listWorkerEmployees)
+/*
+Richiede: nulla
+Ritorna : JSON {ID_Badge_Number, First_Name, Last_Name, Role}
+Elenca tutti i dipendenti attivi ('Worker')
+*/
+
 router.post("/api/admin/registerEmployee", adminController.registerEmployee)
 /*
 Richiede: POST JSON { First_Name, Last_Name, Password }

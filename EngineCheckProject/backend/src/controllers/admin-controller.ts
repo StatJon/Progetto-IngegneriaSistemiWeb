@@ -1,9 +1,6 @@
 import bcrypt from "bcrypt";
 import { Request, Response } from "express";
-import {
-  validateAdmin,
-  errorHandler,
-} from "../utils/auth-helpers.js";
+import { validateAdmin, errorHandler } from "../utils/auth-helpers.js";
 import { connection } from "../utils/db.js";
 
 export const listAllEmployees = async (req: Request, res: Response) => {
@@ -11,7 +8,21 @@ export const listAllEmployees = async (req: Request, res: Response) => {
     validateAdmin(req, res);
     const [employeeList] = (await connection.execute(
       "SELECT ID_Badge_Number, First_Name, Last_Name, Role FROM EMPLOYEE",
-      []
+      [],
+    )) as any;
+
+    res.status(200).json(employeeList);
+  } catch (error) {
+    errorHandler(req, res, error);
+  }
+};
+
+export const listWorkerEmployees = async (req: Request, res: Response) => {
+  try {
+    validateAdmin(req, res);
+    const [employeeList] = (await connection.execute(
+      "SELECT ID_Badge_Number, First_Name, Last_Name, Role FROM EMPLOYEE WHERE Role = 'Worker'",
+      [],
     )) as any;
 
     res.status(200).json(employeeList);
@@ -42,16 +53,14 @@ export const registerEmployee = async (req: Request, res: Response) => {
     //Nota: default nuovoEmployee.role == worker
     await connection.execute(
       "INSERT INTO EMPLOYEE (First_Name, Last_Name, Password, Role) VALUES (?, ?, ?)",
-      [First_Name, Last_Name, passwordHash, "Worker"]
+      [First_Name, Last_Name, passwordHash, "Worker"],
     );
 
-    res
-      .status(201)
-      .json({
-        message: "Successo: Registrazione effettuata con successo",
-        first_name : First_Name,
-        last_name : Last_Name,
-      });
+    res.status(201).json({
+      message: "Successo: Registrazione effettuata con successo",
+      first_name: First_Name,
+      last_name: Last_Name,
+    });
   } catch (error) {
     errorHandler(req, res, error);
   }
@@ -65,7 +74,7 @@ export const removeEmployee = async (req: Request, res: Response) => {
 
     const [employeeRaw] = (await connection.execute(
       "SELECT First_Name, Last_Name, Role FROM EMPLOYEE WHERE ID_Badge_Number = ?",
-      [ID_Badge_Number]
+      [ID_Badge_Number],
     )) as any;
 
     const employee = employeeRaw[0];
@@ -83,14 +92,14 @@ export const removeEmployee = async (req: Request, res: Response) => {
       SET Role = 'Inactive'
       WHERE ID_Badge_Number = ?
       `,
-      [ID_Badge_Number]
+      [ID_Badge_Number],
     );
 
     res.status(200).json({
       message: "Successo, Dipendente rimosso",
       badge: ID_Badge_Number,
-      first_name : employee.First_Name,
-      last_name : employee.Last_Name,
+      first_name: employee.First_Name,
+      last_name: employee.Last_Name,
     });
   } catch (error) {
     errorHandler(req, res, error);
