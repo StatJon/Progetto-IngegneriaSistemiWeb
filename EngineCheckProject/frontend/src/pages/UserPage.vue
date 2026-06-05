@@ -32,8 +32,9 @@ export default defineComponent({
         this.errorMessage = "Nessuna prenotazione presente, prenota ora!"
       }
     },
-    goToJobDetails(jobId: number) {
-      this.$router.push(`/booking-edit/${jobId}`)
+   async goToJobDetails(jobId: number) {
+      //this.$router.push(`/booking-edit/${jobId}`)
+       await axios.get(`/api/customer/jobDelete/${jobId}`)
     },
     async logout() {
       await axios.get('/api/auth/logout');
