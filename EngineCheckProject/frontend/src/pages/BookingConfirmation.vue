@@ -1,22 +1,13 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
-
 import axios from 'axios';
-
-interface Service {
-  Service_ID: number;
-  Minutes: number;
-  Title: string;
-  Description: string;
-  Price: number;
-  Vehicle_Type: 'car' | 'motorcycle';
-  Category: 'maintenance' | 'repair' | 'tyres';
-}
+import type { Service } from '../types';
 
 export default defineComponent({
   data() {
     const today = new Date();
     return {
+      errorMessage: '',
       serviceIds: [] as number[],
       serviceData: [] as Service[],
       avMonth: [] as number[],
@@ -25,12 +16,8 @@ export default defineComponent({
       selectedDay: 0,
       currentYear: today.getFullYear(),
 
-
-
-      // Aggiunti per memorizzare i dati ricevuti dal backend
       availableDays: [] as { day: number; available: boolean }[],
       availableTimes: [] as { timeSlot: string; available: boolean }[],
-
 
       bookingForm: {
         vehicleType: '',
@@ -41,9 +28,7 @@ export default defineComponent({
         day: '',
         timeSlot: ''
       }
-
     };
-
   },
   async mounted() {
 
@@ -78,42 +63,31 @@ export default defineComponent({
   methods: {
     async getServices() {
       try {
-
-
         const response = await axios.get("/api/service/select", { params: { id: this.serviceIds } });
-
-
         this.serviceData = response.data;
-
-
-      } catch (error) {
-        console.error("Errore nel recupero dei servizi:", error);
+      } catch (error: any) {
+        this.errorMessage = error.response.data.message
       }
     },
-
     async getMonths() {
       this.avMonth = [];
-      for (let i = this.selectedMonth; i <= 12; i++) {
-        this.avMonth.push(i);
-
+      try {
+        for (let i = this.selectedMonth; i <= 12; i++) {
+          this.avMonth.push(i);
+        }
+      } catch (error: any) {
+        this.errorMessage = error.response.data.message
       }
-
-
     },
     async checkDay() {
-      // dai in input al backend anno-mese e in output riceverai tutti i giorni assieme alla disponibilita in booleano   
       this.availableDays = [];
       try {
-
         const response = await axios.get(`/api/booking/checkDayAvailable/${this.selectedYear}-${this.selectedMonth}`);
-
         this.availableDays = response.data.daysAvailable.filter((d: any) => d.available === true);
         console.log(this.availableDays);
-      } catch (error) {
-        console.error("Errore nel recupero dei servizi:", error);
+      } catch (error: any) {
+        this.errorMessage = error.response.data.message
       }
-
-
     },
     async checkTime() {
       // GET: ?date=aaaa-mm-gg&services=1,2,3,..., gli do questo in richiesta get, e ricevo JSON ({timeSlot : hh:mm, available : true/false})
@@ -126,47 +100,27 @@ export default defineComponent({
         }
       });
       this.availableTimes = response.data.filter((t: any) => t.available === true);
-
-
-
-
     },
     async submit() {
-      // salva le variabili nel form bookingForm 
-      // e io devo darli come input POST JSON {Model, Vehicle_Type, License_Plate, Date_Time, Customer_ID, ServicesArray,}
-      // in output compare il messaggio di conferma (va tutto bene)
+      const dataSet = `${this.selectedYear}-${String(this.selectedMonth).padStart(2, '0')}-${String(this.selectedDay).padStart(2, '0')} ${this.availableTimes}:00`
 
+      const response = await axios.get('/api/auth/whoamiCustomer');
+      const customerId = response.data;
 
-      let dataSet =`${this.selectedYear}-${String(this.selectedMonth).padStart(2, '0')}-
-                    ${String(this.selectedDay).padStart(2, '0')} ${this.availableTimes}:00`
-
-      await axios.post('api/booking/saveBooking', {Model:this.bookingForm.vehicleModel ,
-         Vehicle_Type: this.bookingForm.vehicleType , License_Plate: this.bookingForm.vehiclePlate ,
-         Data_Time: dataSet , Customer_ID: "da aggiungere" , ServicesArray:this.serviceIds });
-
-
-
+      await axios.post('api/booking/saveBooking', {
+        Model: this.bookingForm.vehicleModel,
+        Vehicle_Type: this.bookingForm.vehicleType,
+        License_Plate: this.bookingForm.vehiclePlate,
+        Data_Time: dataSet,
+        Customer_ID: customerId,
+        ServicesArray: this.serviceIds
+      });
     },
     async goBack() {
-      // tasto per tornare nella pagina precedente , senza salvare le cose
       this.$router.back();
     }
-
-
-
-
-
-
-
-
-
-
   }
 });
-
-
-
-
 </script>
 
 <template>

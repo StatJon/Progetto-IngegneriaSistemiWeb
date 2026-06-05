@@ -22,7 +22,7 @@ export default defineComponent({
                 const response = await axios.get(`/api/service/${this.vehicleFilter}`);
                 this.services = response.data;
             } catch (error: any) {
-                console.error(error)
+                this.errorMessage = error.response.data.message
             }
         },
         toggleService(id: number) {
@@ -35,13 +35,12 @@ export default defineComponent({
         },
         confirmSelection() {
             this.errorMessage = '';
-            if (this.selectedServices.length === 0){
+            if (this.selectedServices.length === 0) {
                 this.errorMessage = "Errore: Seleziona almeno un servizio"
-                return;                
+                return;
             }
-            const nextPath = this.vehicleFilter === 'car' ? '/booking-car-confirm' : '/booking-motorcycle-confirm';
             this.$router.push({
-                path: nextPath,
+                path: '/booking-confirm',
                 query: { services: this.selectedServices.join(',') }
             });
         }
@@ -53,19 +52,18 @@ export default defineComponent({
         }
     }
 })
-
-
 </script>
 
 <template>
     <div class="page-container">
-        <h1 class="page-title">Selezionare i servizi per {{ vehicleFilter === 'car' ? 'auto' : 'moto' }} da prenotare</h1>
+        <h1 class="page-title">Selezionare i servizi per {{ vehicleFilter === 'car' ? 'auto' : 'moto' }} da prenotare
+        </h1>
 
         <div class="services-grid">
             <div class="service-column">
                 <h2 class="column-title">Manutenzione {{ vehicleFilter === 'car' ? 'auto' : 'moto' }} </h2>
-                <div v-for="service in services.filter(s => s.Category === 'maintenance')" :key="service.Service_ID" class="service-card"
-                    :class="{ 'selected': selectedServices.includes(service.Service_ID) }"
+                <div v-for="service in services.filter(s => s.Category === 'maintenance')" :key="service.Service_ID"
+                    class="service-card" :class="{ 'selected': selectedServices.includes(service.Service_ID) }"
                     @click="toggleService(service.Service_ID)">
                     <div class="card-header">
                         <div class="checkbox-custom">
@@ -84,8 +82,8 @@ export default defineComponent({
 
             <div class="service-column">
                 <h2 class="column-title">Pneumatici</h2>
-                <div v-for="service in services.filter(s => s.Category === 'tyres')" :key="service.Service_ID" class="service-card"
-                    :class="{ 'selected': selectedServices.includes(service.Service_ID) }"
+                <div v-for="service in services.filter(s => s.Category === 'tyres')" :key="service.Service_ID"
+                    class="service-card" :class="{ 'selected': selectedServices.includes(service.Service_ID) }"
                     @click="toggleService(service.Service_ID)">
                     <div class="card-header">
                         <div class="checkbox-custom">
@@ -103,8 +101,8 @@ export default defineComponent({
 
             <div class="service-column">
                 <h2 class="column-title">Riparazioni / Cura</h2>
-                <div v-for="service in services.filter(s => s.Category === 'repair')" :key="service.Service_ID" class="service-card"
-                    :class="{ 'selected': selectedServices.includes(service.Service_ID) }"
+                <div v-for="service in services.filter(s => s.Category === 'repair')" :key="service.Service_ID"
+                    class="service-card" :class="{ 'selected': selectedServices.includes(service.Service_ID) }"
                     @click="toggleService(service.Service_ID)">
                     <div class="card-header">
                         <div class="checkbox-custom">

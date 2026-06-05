@@ -18,10 +18,7 @@ import JobList from './pages/JobList.vue'
 import AdminJobs from './pages/AdminJobs.vue'
 import AdminEmployees from './pages/AdminEmployees.vue'
 import ServiceBooking from './pages/ServiceBooking.vue'
-//import CarServiceBooking from './pages/CarServiceBooking.vue'
-import CarBookingConfirmation from './pages/CarBookingConfirmation.vue'
-//import MotorcycleServiceBooking from './pages/MotorcycleServiceBooking.vue'
-import MotorcycleBookingConfirmation from './pages/MotorcycleBookingConfirmation.vue'
+import BookingConfirmation from './pages/BookingConfirmation.vue'
 import EditBooking from './pages/EditBooking.vue'
 import FinalConfirmation from './pages/FinalConfirmation.vue'
 import AddEmployee from './pages/AddEmployee.vue'
@@ -39,10 +36,7 @@ const routes: Array<RouteRecordRaw> = [
   { path: '/admin-jobs', component: AdminJobs, name: 'AdminJobs' },
   { path: '/admin-employees', component: AdminEmployees, name: 'AdminEmployees' },
   { path: '/booking/:vehicleType', component: ServiceBooking, name: 'Booking'},
-  //{ path: '/booking-car', component: CarServiceBooking, name: 'CarBooking' },
-  { path: '/booking-car-confirm', component: CarBookingConfirmation, name: 'CarBookingConfirm' },
-  //{ path: '/booking-motorcycle', component: MotorcycleServiceBooking, name: 'MotoBooking' },
-  { path: '/booking-motorcycle-confirm', component: MotorcycleBookingConfirmation, name: 'MotoBookingConfirm' },
+  { path: '/booking-confirm', component: BookingConfirmation, name: 'Confirmation'},
   { path: '/booking-edit/:id', component: EditBooking, name: 'EditBooking' },
   { path: '/booking-final-confirmation', component: FinalConfirmation, name: 'FinalConfirmation' },
   { path: '/add-employee', component: AddEmployee, name: 'AddEmployee' },
