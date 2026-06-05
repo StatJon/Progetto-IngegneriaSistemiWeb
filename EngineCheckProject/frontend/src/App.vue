@@ -50,17 +50,17 @@ export default defineComponent({
     selectUserRoute() {
       switch (this.role) {
         case 'Customer':
-          this.$router.push('/user-dashboard');
-          break;
+          return '/user-dashboard';
+          
         case 'Worker':
-          this.$router.push('/jobs');
-          break;
+          return '/jobs';
+          
         case 'Admin':
-          this.$router.push('/admin-jobs');
-          break;
+          return '/admin-jobs';
+          
         default:
-          this.$router.push('/login-user');
-          break;
+          return '/login-user';
+         
       }
     },
     async refreshNav() {
@@ -104,10 +104,12 @@ export default defineComponent({
             Prenotazione per Auto
           </router-link>
 
-          <button @click="selectUserRoute" class="nav-item highlight">
+         
+          
+           <router-link  :to= "selectUserRoute()" class="nav-item highlight">
             <span class="material-symbols-outlined icon">{{ navIcon }}</span>
             {{ navText }}
-          </button>
+          </router-link>
         </nav>
       </div>
     </header>
