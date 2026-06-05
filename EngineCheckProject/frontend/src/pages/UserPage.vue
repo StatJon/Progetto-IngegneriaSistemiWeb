@@ -47,7 +47,7 @@ export default defineComponent({
 <template>
   <div class="page-container">
 
-    <h1 class="welcome-title">Benvenuto/a “{{ userName }}”</h1>
+    <h1 class="welcome-title">Benvenuto/a {{ userName }}</h1>
 
     <div class="bookings-list">
 
