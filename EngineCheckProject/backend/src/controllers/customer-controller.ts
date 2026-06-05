@@ -9,7 +9,7 @@ export const customerPage = async (req: Request, res: Response) => {
       `
         SELECT 
         j.Job_ID,
-        j.Date_Time
+        j.Date_Time,
         j.Model,
         j.License_Plate,
         GROUP_CONCAT(s.Title SEPARATOR ', ') AS Services
@@ -33,7 +33,7 @@ export const jobDetails = async (req: Request, res: Response) => {
     const [results] = (await connection.execute(
       `
         SELECT 
-        j.Date_Time
+        j.Date_Time,
         j.Model,
         j.License_Plate,
         s.Title,

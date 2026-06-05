@@ -29,8 +29,7 @@ export interface Service {
 
 export interface Booking {
   Job_ID: number,
-  Date: string,
-  Time: string,
+  Date_Time: string,
   Model: string,
   License_Plate: string,
   Services: string,

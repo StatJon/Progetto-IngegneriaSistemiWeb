@@ -27,6 +27,7 @@ export default defineComponent({
       try {
         const response = await axios.get("/api/customer/customerPage");
         this.bookings = response.data;
+        console.log (this.bookings);
       } catch (error) {
         this.errorMessage = "Nessuna prenotazione presente, prenota ora!"
       }
@@ -66,10 +67,10 @@ export default defineComponent({
 
         <div class="card-info">
           <h3 class="booking-header">
-            {{ helperFormatDate(booking.Date) }}, {{ helperFormatDate(booking.Time) }} {{ booking.Model }}, {{ booking.License_Plate }}
+            {{ helperFormatDate(booking.Date_Time) }} | {{ booking.Model }} ({{ booking.License_Plate }})
           </h3>
           <p class="booking-details">
-            {{ booking.Time }}, {{ booking.Services }}
+             {{ booking.Services }}
           </p>
         </div>
 
@@ -99,7 +100,7 @@ export default defineComponent({
           <line x1="15" y1="9" x2="9" y2="15"></line>
           <line x1="9" y1="9" x2="15" y2="15"></line>
         </svg>
-        LogOut
+        Logout
       </button>
     </div>
 
