@@ -7,7 +7,6 @@ import axios from 'axios'
 axios.defaults.withCredentials = true //Necessario per passaggio automatico JWT a backend nelle richieste
 
 // Importazione pagine
-import Test1 from './pages/Test1.vue'
 import HomePage from './pages/HomePage.vue'
 import UserLogin from './pages/UserLogin.vue'
 import EmployeeLogin from './pages/EmployeeLogin.vue'
@@ -18,7 +17,6 @@ import AdminJobs from './pages/AdminJobs.vue'
 import AdminEmployees from './pages/AdminEmployees.vue'
 import ServiceBooking from './pages/ServiceBooking.vue'
 import BookingConfirmation from './pages/BookingConfirmation.vue'
-import EditBooking from './pages/EditBooking.vue'
 import FinalConfirmation from './pages/FinalConfirmation.vue'
 import AddEmployee from './pages/AddEmployee.vue'
 import NotFound from './pages/NotFound.vue'
@@ -35,10 +33,8 @@ const routes: Array<RouteRecordRaw> = [
   { path: '/admin-employees', component: AdminEmployees, name: 'AdminEmployees' },
   { path: '/booking/:vehicleType', component: ServiceBooking, name: 'Booking'},
   { path: '/booking-confirm', component: BookingConfirmation, name: 'Confirmation'},
-  { path: '/booking-edit/:id', component: EditBooking, name: 'EditBooking' },
   { path: '/booking-final-confirmation', component: FinalConfirmation, name: 'FinalConfirmation' },
   { path: '/add-employee', component: AddEmployee, name: 'AddEmployee' },
-  { path: '/testing', component:Test1, name: 'Test1'},
   { path: '/:pathMatch(.*)*', component: NotFound, name: 'NotFound' }
 ]
 
