@@ -28,24 +28,32 @@ export default defineComponent({
       try {
         const response = await axios.get("/api/customer/customerPage");
         this.bookings = response.data;
-        if (this.bookings.length === 0){
+        if (this.bookings.length === 0) {
           this.errorMessage = "Nessuna prenotazione presente, prenota ora!"
         }
       } catch (error: any) {
         this.errorMessage = error.response.data.message
       }
     },
-   async deleteBooking(jobId: number) {
-      //this.$router.push(`/booking-edit/${jobId}`)
-       await axios.get(`/api/customer/jobDelete/${jobId}`)
+    async deleteBooking(jobId: number) {
+      try {
+        await axios.delete(`/api/customer/jobDelete/${jobId}`)
+        
+        await this.getUserJobs();
+
+      } catch (error: any) {
+        this.errorMessage = error.response.data.message
+      }
+
     },
+
     async logout() {
       this.errorMessage = '';
       try {
-      await axios.get('/api/auth/logout');
-      sessionStorage.clear();
-      this.$router.push('/')
-      }catch(error: any){
+        await axios.get('/api/auth/logout');
+        sessionStorage.clear();
+        this.$router.push('/')
+      } catch (error: any) {
         this.errorMessage = error.response.data.message
       }
     },
@@ -71,9 +79,9 @@ export default defineComponent({
 
     <div class="bookings-list">
 
-<div v-if="errorMessage" style="text-align: center; color: #666; font-size: 18px; margin-top: 60px; width: 100%;">
-  {{ errorMessage }}
-</div>
+      <div v-if="errorMessage" style="text-align: center; color: #666; font-size: 18px; margin-top: 60px; width: 100%;">
+        {{ errorMessage }}
+      </div>
 
       <div v-for="booking in bookings" :key="booking.Job_ID" class="booking-card">
 
@@ -82,7 +90,7 @@ export default defineComponent({
             {{ helperFormatDate(booking.Date_Time) }} | {{ booking.Model }} ({{ booking.License_Plate }})
           </h3>
           <p class="booking-details">
-             {{ booking.Services }}
+            {{ booking.Services }}
           </p>
         </div>
 
