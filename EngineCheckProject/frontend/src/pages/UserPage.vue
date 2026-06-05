@@ -24,12 +24,15 @@ export default defineComponent({
     },
 
     async getUserJobs() {
+      this.errorMessage = '';
       try {
         const response = await axios.get("/api/customer/customerPage");
         this.bookings = response.data;
-        console.log (this.bookings);
-      } catch (error) {
-        this.errorMessage = "Nessuna prenotazione presente, prenota ora!"
+        if (this.bookings.length === 0){
+          this.errorMessage = "Nessuna prenotazione presente, prenota ora!"
+        }
+      } catch (error: any) {
+        this.errorMessage = error.response.data.message
       }
     },
    async deleteBooking(jobId: number) {
@@ -37,11 +40,15 @@ export default defineComponent({
        await axios.get(`/api/customer/jobDelete/${jobId}`)
     },
     async logout() {
+      this.errorMessage = '';
+      try {
       await axios.get('/api/auth/logout');
       sessionStorage.clear();
       this.$router.push('/')
+      }catch(error: any){
+        this.errorMessage = error.response.data.message
+      }
     },
-
 
     helperFormatDate(dateString: string): string {
       const date = new Date(dateString);
@@ -63,6 +70,10 @@ export default defineComponent({
     <h1 class="welcome-title">Benvenuto/a {{ userName }}</h1>
 
     <div class="bookings-list">
+
+<div v-if="errorMessage" style="text-align: center; color: #666; font-size: 18px; margin-top: 60px; width: 100%;">
+  {{ errorMessage }}
+</div>
 
       <div v-for="booking in bookings" :key="booking.Job_ID" class="booking-card">
 
