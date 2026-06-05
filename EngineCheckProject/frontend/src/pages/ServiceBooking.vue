@@ -130,10 +130,8 @@ export default defineComponent({
     </div>
 </template>
 <style scoped>
-/* CONTAINER GENERALE */
 .page-container {
     background-color: #f0f6fc;
-    /* Colore sfondo azzurrino */
     min-height: 100vh;
     padding: 40px 20px;
     display: flex;
@@ -150,17 +148,16 @@ export default defineComponent({
     color: #000;
 }
 
-/* GRIGLIA */
+
 .services-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    /* 3 colonne uguali */
     gap: 20px;
     width: 100%;
     max-width: 1200px;
 }
 
-/* Responsive: diventa 1 colonna su cellulare */
+
 @media (max-width: 900px) {
     .services-grid {
         grid-template-columns: 1fr;
@@ -175,12 +172,9 @@ export default defineComponent({
     color: #000;
 }
 
-/* STILE CARD */
 .service-card {
     background-color: white;
-    /* Sfondo bianco */
     border: 1px solid #c0c0c0;
-    /* Bordo grigio */
     border-radius: 8px;
     padding: 15px;
     margin-bottom: 20px;
@@ -192,20 +186,20 @@ export default defineComponent({
     position: relative;
 }
 
-/* Hover sulla card */
+
 .service-card:hover {
     border-color: #0084ff;
     box-shadow: 0 4px 10px rgba(0, 132, 255, 0.1);
 }
 
-/* Stato SELEZIONATO */
+
 .service-card.selected {
     border: 2px solid #0084ff;
     /* Bordo blu */
     background-color: #ffffff;
 }
 
-/* HEADER CARD (Checkbox + Prezzo) */
+
 .card-header {
     display: flex;
     justify-content: space-between;
@@ -213,12 +207,11 @@ export default defineComponent({
     margin-bottom: 12px;
 }
 
-/* Checkbox personalizzato */
+
 .checkbox-custom {
     width: 24px;
     height: 24px;
     background-color: #c0c0c0;
-    /* Grigio spento */
     border-radius: 4px;
     display: flex;
     align-items: center;
@@ -231,17 +224,14 @@ export default defineComponent({
 
 .service-card.selected .checkbox-custom {
     background-color: #0084ff;
-    /* Blu acceso quando selezionato */
 }
 
-/* Prezzo */
 .price-tag {
     font-weight: bold;
     font-size: 14px;
     color: #333;
 }
 
-/* TESTI */
 .service-title {
     font-size: 16px;
     font-weight: 600;
@@ -255,10 +245,8 @@ export default defineComponent({
     line-height: 1.4;
     margin-bottom: 15px;
     flex-grow: 1;
-    /* Spinge il footer in basso */
 }
 
-/* FOOTER (Orologio + Durata) */
 .service-footer {
     display: flex;
     align-items: center;
@@ -268,7 +256,6 @@ export default defineComponent({
     font-weight: 500;
 }
 
-/* BARRA DELLE AZIONI (Bottone blu in fondo) */
 .action-bar {
     margin-top: 40px;
     text-align: center;
@@ -276,7 +263,6 @@ export default defineComponent({
 
 .btn-confirm {
     background-color: #0084ff;
-    /* Blu brillante */
     color: white;
     border: none;
     border-radius: 6px;

@@ -92,7 +92,7 @@ export default defineComponent({
 </template>
 
 <style scoped>
-/* STILI CONDIVISI (Uguali alle altre pagine per coerenza) */
+
 .main-container {
   display: flex;
   flex-direction: column;

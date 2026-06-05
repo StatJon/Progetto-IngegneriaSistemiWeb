@@ -89,7 +89,6 @@ export default defineComponent({
 </template>
 
 <style scoped>
-/* STILI IDENTICI AL LOGIN UTENTE */
 .main-container {
   display: flex;
   flex-direction: column;
@@ -173,7 +172,6 @@ export default defineComponent({
   background-color: #000;
 }
 
-/* STILE BOTTONE LOGIN UTENTE (Bottom) */
 .user-login-section {
   margin-top: 30px;
 }
@@ -200,6 +198,5 @@ export default defineComponent({
 
 .icon-arrow {
   font-size: 1.2em;
-  /* Freccia leggermente più grande */
 }
 </style>

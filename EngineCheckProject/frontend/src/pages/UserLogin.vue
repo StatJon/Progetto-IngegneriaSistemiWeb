@@ -78,20 +78,17 @@ export default defineComponent({
 </template>
 
 <style scoped>
-/* CONTENITORE PRINCIPALE */
+
 .main-container {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   min-height: 80vh;
-  /* Occupa buona parte dello schermo verticale */
   background-color: #f0f6fc;
-  /* Sfondo azzurrino chiaro */
   padding: 20px;
 }
 
-/* CARD BIANCA */
 .login-card {
   background-color: white;
   padding: 40px;
@@ -103,7 +100,7 @@ export default defineComponent({
   text-align: center;
 }
 
-/* ICONA */
+
 .icon-wrapper {
   margin-bottom: 25px;
   color: #24292f;
@@ -111,7 +108,7 @@ export default defineComponent({
   justify-content: center;
 }
 
-/* INPUT */
+
 .form-group {
   text-align: left;
   margin-bottom: 20px;
@@ -145,19 +142,17 @@ export default defineComponent({
   box-shadow: 0 0 0 3px rgba(9, 105, 218, 0.1);
 }
 
-/* MESSAGGI ERRORE */
 .error-text {
   color: #cf222e;
   font-size: 13px;
   margin-bottom: 15px;
 }
 
-/* BOTTONI PRINCIPALI */
+
 .btn-primary {
   width: 100%;
   padding: 12px;
   background-color: #24292f;
-  /* Grigio scuro/Nero */
   color: white;
   font-weight: 600;
   border: none;
@@ -187,7 +182,7 @@ export default defineComponent({
   background-color: #f6f8fa;
 }
 
-/* BOTTONE DIPENDENTE */
+
 .employee-section {
   margin-top: 30px;
 }

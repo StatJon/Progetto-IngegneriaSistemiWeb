@@ -131,7 +131,7 @@ export default defineComponent({
 </template>
 
 <style scoped>
-/* STILI GENERALI (Identici a AdminDashboard) */
+
 .page-container {
   background-color: #f0f6fc;
   min-height: 85vh;
@@ -147,7 +147,7 @@ export default defineComponent({
   align-items: flex-start;
 }
 
-/* --- SIDEBAR --- */
+
 .sidebar-card {
   background-color: white;
   width: 300px;
@@ -195,7 +195,7 @@ export default defineComponent({
   text-align: center;
 }
 
-/* Bottoni Azione */
+
 .btn-action {
   width: 100%;
   background-color: #e0e0e0;
@@ -221,7 +221,7 @@ export default defineComponent({
   font-size: 16px;
 }
 
-/* Bottoni in basso */
+
 .bottom-buttons {
   margin-top: 30px;
   display: flex;
@@ -259,7 +259,7 @@ export default defineComponent({
   background-color: #c9302c;
 }
 
-/* --- TABELLA --- */
+
 .main-table-card {
   flex-grow: 1;
   background-color: white;
@@ -310,7 +310,7 @@ export default defineComponent({
   background-color: #f0f8ff;
 }
 
-/* Badge stato */
+
 .status-badge {
   padding: 4px 8px;
   border-radius: 4px;
@@ -328,7 +328,7 @@ export default defineComponent({
   color: #856404;
 }
 
-/* Responsive */
+
 @media (max-width: 900px) {
   .dashboard-layout {
     flex-direction: column;

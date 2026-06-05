@@ -124,7 +124,7 @@ export default defineComponent({
 </template>
 
 <style>
-/* Reset base */
+
 body {
   margin: 0;
   font-family: 'Inter', sans-serif;
@@ -132,15 +132,14 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* LAYOUT FLEXBOX: Questo è il trucco per il footer */
+
 .app-layout {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  /* Occupa almeno tutta l'altezza dello schermo */
 }
 
-/* Header */
+
 .site-header {
   background-color: white;
   border-bottom: 1px solid #ddd;
@@ -157,7 +156,6 @@ body {
 
 .logo-img {
   height: 40px;
-  /* Dimensione fissa per il logo */
 }
 
 .nav-links {
@@ -177,24 +175,24 @@ body {
   font-weight: bold;
 }
 
-/* MAIN CONTENT: Si espande per riempire lo spazio vuoto */
+
 .main-content {
   flex: 1;
   display: flex;
   flex-direction: column;
 }
 
-/* FOOTER STYLES */
+
 .site-footer {
 
   color: rgb(141, 141, 141);
   text-align: center;
   padding: 20px;
   margin-top: auto;
-  /* Spinge il footer in basso se il contenuto è breve */
+
 }
 
-/* Transizioni */
+
 .fade-enter-active,
 .fade-leave-active {
   transition: opacity 0.2s ease;

@@ -128,10 +128,9 @@ export default defineComponent({
 </template>
 
 <style scoped>
-/* CONTAINER PRINCIPALE */
+
 .page-container {
   background-color: #f0f6fc;
-  /* Azzurrino chiaro */
   min-height: 85vh;
   padding: 40px 20px;
   font-family: 'Segoe UI', sans-serif;
@@ -140,55 +139,45 @@ export default defineComponent({
   align-items: center;
 }
 
-/* TITOLO */
+
 .welcome-title {
   font-size: 36px;
   font-weight: 800;
-  /* Molto grassetto come nell'immagine */
   margin-bottom: 40px;
   color: #000;
   text-align: center;
 }
 
-/* LISTA CARD */
+
 .bookings-list {
   width: 100%;
   max-width: 1000px;
-  /* Larghezza massima per non allargarsi troppo su desktop */
   display: flex;
   flex-direction: column;
   gap: 25px;
-  /* Spazio tra le card */
 }
 
-/* CARD PRENOTAZIONE */
+
 .booking-card {
   background-color: white;
   border-radius: 24px;
-  /* Angoli molto arrotondati (simili alla foto) */
   padding: 35px 40px;
   display: flex;
   justify-content: space-between;
-  /* Spinge testo a sx e bottone a dx */
   align-items: center;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02);
-  /* Ombra leggerissima */
   flex-wrap: wrap;
-  /* Per mobile */
   gap: 20px;
 }
 
-/* TESTI DENTRO LA CARD */
 .card-info {
   flex: 1;
-  /* Occupa tutto lo spazio disponibile */
   min-width: 250px;
 }
 
 .booking-header {
   font-size: 18px;
   font-weight: 800;
-  /* Titolo in grassetto */
   color: #000;
   margin: 0 0 15px 0;
 }
@@ -196,15 +185,12 @@ export default defineComponent({
 .booking-details {
   font-size: 15px;
   color: #444;
-  /* Grigio scuro per i dettagli */
   margin: 0;
   line-height: 1.5;
 }
 
-/* BOTTONE RIVEDI (Blu) */
 .btn-review {
   background-color: #0084ff;
-  /* Blu brillante */
   color: white;
   border: none;
   border-radius: 8px;
@@ -215,7 +201,6 @@ export default defineComponent({
   display: flex;
   align-items: center;
   white-space: nowrap;
-  /* Evita che il testo vada a capo */
   transition: background 0.2s;
 }
 
@@ -223,7 +208,7 @@ export default defineComponent({
   background-color: #006bcf;
 }
 
-/* BOTTONE LOGOUT (Centrato in basso) */
+
 .logout-container {
   margin-top: 60px;
   width: 100%;
@@ -237,7 +222,6 @@ export default defineComponent({
   border: none;
   border-radius: 8px;
   padding: 12px 60px;
-  /* Molto largo come nell'immagine */
   font-weight: 600;
   font-size: 15px;
   cursor: pointer;
@@ -250,7 +234,7 @@ export default defineComponent({
   background-color: #006bcf;
 }
 
-/* ADATTAMENTO MOBILE */
+
 @media (max-width: 768px) {
   .booking-card {
     flex-direction: column;
@@ -261,7 +245,6 @@ export default defineComponent({
     width: 100%;
     display: flex;
     justify-content: flex-end;
-    /* Allinea bottone a destra anche su mobile */
   }
 }
 </style>
