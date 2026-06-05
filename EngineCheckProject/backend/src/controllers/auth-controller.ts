@@ -184,6 +184,15 @@ export const whoami = async (req: Request, res: Response) => {
   }
 };
 
+export const whoamiCustomer = async (req: Request, res: Response) => {
+    try {
+      const user = validateUserLoggedIn(req, res);
+      res.status(200).json({ id: user.id });
+  } catch (error) {
+    errorHandler(req, res, error);
+  }
+};
+
 export const logout = async (req: Request, res: Response) => {
   try {
     //validateUserLoggedIn(req,res); //non necessario, se non c'era il JWT è comunque non loggato

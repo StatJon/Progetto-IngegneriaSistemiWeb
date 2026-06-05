@@ -29,6 +29,13 @@ Ritorna: JSON { role }
 Necessario quando il frontend deve conoscere il ruolo dell'utente per accedere a pagina utente/lavori/admin
 */
 
+router.get("/api/auth/whoamiCustomer", authController.whoamiCustomer)
+/*
+Richiede: Utente loggato, JWT
+Ritorna: JSON { id }
+Necessario quando il frontend deve conoscere il Customer_ID dell'utente per accedere ai propri lavori
+*/
+
 router.get("/api/auth/logout", authController.logout)
 /*
 Richiede: Nulla
