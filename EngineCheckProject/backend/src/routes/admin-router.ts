@@ -28,6 +28,13 @@ Ritorna: messaggio di conferma
 Assegna un Employee ad un Job e cambia lo stato in Assigned
 */
 
+router.post("/api/admin/unSetEmployeeJob", adminController.unSetEmployeeJob)
+/*
+Richiede: JSON { Job_ID, Service_ID }
+Ritorna: messaggio di conferma
+Rimuove l'Employee di un Job e cambia lo stato di Pending
+*/
+
 router.post("/api/admin/registerEmployee", adminController.registerEmployee)
 /*
 Richiede: POST JSON { First_Name, Last_Name, Password, Role }

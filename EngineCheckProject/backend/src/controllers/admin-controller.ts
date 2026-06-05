@@ -64,6 +64,39 @@ export const setEmployeeJob = async (req: Request, res: Response) => {
   }
 };
 
+export const unSetEmployeeJob = async (req: Request, res: Response) => {
+  try {
+    validateAdmin(req, res);
+    const { Job_ID, Service_ID } = req.body;
+
+    const [checkRows]: any = await connection.execute(
+      `SELECT JobService_Status FROM JOB_SERVICE
+       WHERE JOB_Job_ID = ? AND SERVICE_Service_ID = ?`,
+      [Job_ID, Service_ID],
+    );
+
+    if (checkRows.length === 0) {
+      return res.status(404).json({ message: "Errore: Nessun lavoro trovato"})
+    }
+
+    const statusToCheck = checkRows[0].JobService_Status;
+    if (['Working', 'Completed', 'Cancelled'].includes(statusToCheck)){
+      return res.status(409).json({ message: "Errore: Lavoro in stato non modificabile"})
+    }
+
+    await connection.execute(
+      `UPDATE JOB_SERVICE
+       SET EMPLOYEE_Badge_Number = NULL, 
+       JobService_Status = 'Pending'
+       WHERE JOB_Job_ID = ? AND SERVICE_Service_ID = ?`,
+      [Job_ID, Service_ID],
+    );
+    res.status(200).json({ message: "Successo: Lavoro de-assegnato" });
+  } catch (error) {
+    errorHandler(req, res, error);
+  }
+}
+
 export const registerEmployee = async (req: Request, res: Response) => {
   try {
     //Controllo Login
@@ -84,7 +117,7 @@ export const registerEmployee = async (req: Request, res: Response) => {
     //INSERT
     //Nota: const [insertResult] serve per estrarre l'ID creato da DB AUTO_INCREMENT
     await connection.execute(
-      "INSERT INTO EMPLOYEE (First_Name, Last_Name, Password, Role) VALUES (?, ?, ?)",
+      "INSERT INTO EMPLOYEE (First_Name, Last_Name, Password, Role) VALUES (?, ?, ?, ?)",
       [First_Name, Last_Name, passwordHash, Role],
     );
 
