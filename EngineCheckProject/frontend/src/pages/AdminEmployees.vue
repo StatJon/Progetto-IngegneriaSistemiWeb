@@ -1,12 +1,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import axios from 'axios';
-
-interface Employee {
-  ID_Badge_Number: number;
-  First_Name: string;
-  Last_Name: string;
-}
+import type { Employee } from '../types';
 
 export default defineComponent({
   data() {

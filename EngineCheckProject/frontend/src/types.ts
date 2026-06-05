@@ -2,21 +2,10 @@ export interface Testing {
  message: string;
 }
 
-export interface Pinco{
-  Service_ID: Number;
-  Estimated_Duration_Minutes: number;
-  Title: String;
-  Description: string;
-  Price : number;
-  Vehicle_Type : string;
-  Category : string;
-}
-
 export interface Employee {
-  badgeNumber: number;
-  firstName: string;
-  lastName: string;
-  password: string;
+  ID_Badge_Number: number;
+  First_Name: string;
+  Last_Name: string;
 }
 
 export interface Customer {
@@ -24,7 +13,7 @@ export interface Customer {
   firstName: string;
   lastName: string;
   password: string;
-  phone: string; // se usiamo anche il prefisso 
+  phone: string; 
 }
 
 export interface Service {
@@ -41,8 +30,7 @@ export interface Job {
   customerId: number;
   serviceId: number;
   employeeId: number;
-  status: 'pending' | 'in progress' | 'completed' | 'cancelled'; // metti piu campi come boolean , così filtra meglio , es : isCompleted = true; ,  isInProgress = true;
-  // se è cancellato , è poof andato e viene cancellato da sql
+  status: 'pending' | 'in progress' | 'completed' | 'cancelled';
   startTime: string;
   endTime: string;
 }

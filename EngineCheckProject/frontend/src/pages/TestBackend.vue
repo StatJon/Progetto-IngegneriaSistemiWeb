@@ -2,12 +2,6 @@
 import { defineComponent } from "vue";
 import axios from "axios";
 import type { Testing } from "../types";
-
-// Definisci l'interfaccia qui fuori o importala
-// interface TestBackend {
-//     id: number;
-//     // ...
-// }
  
 export default defineComponent({
     data() {
@@ -20,7 +14,6 @@ export default defineComponent({
         getTestBackend() {
             axios.get("/api/testing")
                 .then(response => {
-                    // Salva i dati nella variabile
                     this.testBackend = response.data;
                     alert(response.data);
                 })
@@ -31,7 +24,6 @@ export default defineComponent({
         }
     },
     mounted() {
-        // CORRETTO: Devi chiamare la funzione con le parentesi
         this.getTestBackend();
     }
 })

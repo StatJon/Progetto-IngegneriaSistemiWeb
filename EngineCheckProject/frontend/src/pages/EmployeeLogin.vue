@@ -22,7 +22,16 @@ export default defineComponent({
         sessionStorage.setItem('firstName', response.data.firstName)
         sessionStorage.setItem('lastName', response.data.lastName)
         sessionStorage.setItem('badgeNumber', response.data.badgeNumber)
-        this.$router.push('/jobs');
+
+        //Redirect Worker/Admin
+        const responseIdentity = await axios.get('/api/auth/whoami')
+        const role = responseIdentity.data.role
+        if (role === 'Admin') {
+          this.$router.push('/admin-jobs');
+        } else {
+          this.$router.push('/jobs');
+        }
+
       } catch (error: any) {
         if (error.response?.status === 400) {
           this.errorMessage = "Credenziali errate, si prega di riprovare"
