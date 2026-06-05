@@ -1,6 +1,6 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
-import type { Service, Booking } from '../types';
+import type { Job, Booking } from '../types';
 import axios from 'axios';
 
 
@@ -8,20 +8,25 @@ export default defineComponent({
     data() {
         return {
           errorMessage: '',
-          services : [] as Service [],
+          job : [] as Job [],
           selectedBooking : [] as Booking[],
+          jobId:''
 
         }
     },
     async mounted() {
-      this.getServises();
+        this.jobId = this.$route.query.id as any;
+
+       await this.getServices();
 
 
     },
     methods: {
-      async getServises(){
+      async getServices(){
         try{
-          const response = await axios.get('/api/booking/');
+          const response = await axios.get(`/api/customer/jobDetails/${this.jobId}`);
+          this.job = response.data;
+          console.log("cosa stai facendo")
           
 
         }catch(error: any){
@@ -55,7 +60,7 @@ export default defineComponent({
     <h1 class="page-title">Rivedi l’appuntamento</h1>
 
     <div class="details-card">
-      <h2 class="card-subtitle">{{ headerInfo }}</h2>
+      <h2 class="card-subtitle">{{ job. }}</h2>
 
       <div class="table-responsive">
         <table class="jobs-table">
@@ -70,24 +75,16 @@ export default defineComponent({
               <th class="text-center">Seleziona</th> </tr>
           </thead>
           <tbody>
-            <tr v-if="jobs.length === 0">
+            <tr v-if="jobId.length === 0">
               <td colspan="7" class="empty-state">Nessun lavoro presente in questa prenotazione.</td>
             </tr>
-            <tr v-else v-for="job in jobs" :key="job.id" :class="{ 'row-selected': selectedJobIds.includes(job.id) }">
-              <td>{{ job.id }}</td>
+            <tr v-else>
+              <td>{{ job.status}}</td>
               <td>{{ job.status }}</td>
               <td>{{ job.startTime }}</td>
               <td>{{ job.task }}</td>
               <td>{{ job.estimated }}</td>
               <td>{{ job.plate }}</td>
-              <td class="text-center">
-                <input 
-                  type="checkbox" 
-                  :value="job.id" 
-                  v-model="selectedJobIds" 
-                  class="custom-checkbox"
-                />
-              </td>
             </tr>
           </tbody>
         </table>
@@ -95,10 +92,11 @@ export default defineComponent({
     </div>
 
     <div class="action-container">
-      <button class="btn-cancel" @click="deleteBooking">
-        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:8px"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>
-        {{ buttonText }}
+      <button class="btn-booking" @click="deleteBooking">
+        <svg xmlns="http://www.w3.org/2000/Svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:8px"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>
+       Cancella Appuntamento
       </button>
+      <button class="btn-booking">Pagina precedente </button>
     </div>
 
   </div>
@@ -188,7 +186,7 @@ export default defineComponent({
   width: 100%;
 }
 
-.btn-cancel {
+.btn-booking {
   background-color: #0084ff;
   color: white;
   border: none;
@@ -203,7 +201,7 @@ export default defineComponent({
   transition: background 0.2s;
 }
 
-.btn-cancel:hover {
+.btn-booking:hover {
   background-color: #006bcf;
 }
 </style>

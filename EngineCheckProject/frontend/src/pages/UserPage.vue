@@ -35,8 +35,9 @@ export default defineComponent({
         this.errorMessage = error.response.data.message
       }
     },
-    goToJobDetails(jobId: number) {
-      this.$router.push(`/booking-edit/${jobId}`)
+   async goToJobDetails(jobId: number) {
+      //this.$router.push(`/booking-edit/${jobId}`)
+       await axios.get(`/api/customer/jobDelete/${jobId}`)
     },
     async logout() {
       this.errorMessage = '';
