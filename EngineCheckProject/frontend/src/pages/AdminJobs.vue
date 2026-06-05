@@ -62,11 +62,18 @@ export default defineComponent({
             jobStatus = 'Completed';
             break;
         }
-        await axios.post('/api/job/setStatusJobService', {
-          Job_ID: this.selectedJobId.Job_ID,
-          Service_ID: this.selectedJobId.Service_ID,
-          Job_Status: jobStatus
-        });
+        if (jobStatus === 'Pending') {
+          await axios.post('/api/admin/unSetEmployeeJob', {
+            Job_ID: this.selectedJobId.Job_ID,
+            Service_ID: this.selectedJobId.Service_ID,
+          });
+        } else {
+          await axios.post('/api/job/setStatusJobService', {
+            Job_ID: this.selectedJobId.Job_ID,
+            Service_ID: this.selectedJobId.Service_ID,
+            Job_Status: jobStatus
+          });
+        }
         await this.getJobs();
       } catch (error: any) {
         this.errorMessage = error.response.data.message
@@ -172,7 +179,8 @@ export default defineComponent({
               </tr>
             </thead>
             <tbody>
-              <tr v-for="job in jobs" :key="`${job.Job_ID}-${job.Service_ID}`" :class="{ 'selected-row': selectedJobId === job }">
+              <tr v-for="job in jobs" :key="`${job.Job_ID}-${job.Service_ID}`"
+                :class="{ 'selected-row': selectedJobId === job }">
                 <td class="text-center">
                   <input type="radio" name="jobSelect" :value="job" v-model="selectedJobId" class="custom-checkbox" />
                 </td>
