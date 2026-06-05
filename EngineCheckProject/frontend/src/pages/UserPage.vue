@@ -35,7 +35,7 @@ export default defineComponent({
         this.errorMessage = error.response.data.message
       }
     },
-   async goToJobDetails(jobId: number) {
+   async deleteBooking(jobId: number) {
       //this.$router.push(`/booking-edit/${jobId}`)
        await axios.get(`/api/customer/jobDelete/${jobId}`)
     },
@@ -87,7 +87,7 @@ export default defineComponent({
         </div>
 
         <div class="card-actions">
-          <button class="btn-review" @click="goToJobDetails(booking.Job_ID)">
+          <button class="btn-review" @click="deleteBooking(booking.Job_ID)">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
               stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
               style="margin-right:8px">
@@ -96,7 +96,7 @@ export default defineComponent({
               <line x1="8" y1="2" x2="8" y2="6"></line>
               <line x1="3" y1="10" x2="21" y2="10"></line>
             </svg>
-            Rivedi prenotazione
+            Cancella Prenotazione
           </button>
         </div>
 
