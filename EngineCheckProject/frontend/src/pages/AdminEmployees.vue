@@ -30,21 +30,25 @@ export default defineComponent({
       try {
         const response = await axios.get('api/admin/listAllEmployee');
         this.employees = response.data;
-      } catch (error) {
-        console.error(error);
+      } catch (error: any) {
+        this.errorMessage = error.response.data.message
       }
     },
     goToAddEmployee() {
       this.$router.push('/add-employee');
     },
     async removeEmployee() {
-      if (!this.selectedEmployee) {
-        this.errorMessage = "Nessun dipendente selezionato"
-        return;
+      try {
+        if (!this.selectedEmployee) {
+          this.errorMessage = "Nessun dipendente selezionato"
+          return;
+        }
+        this.errorMessage = '';
+        await axios.post('/api/admin/removeEmployee', { ID_Badge_Number: this.selectedEmployee.ID_Badge_Number })
+        await this.getEmployees();
+      } catch (error: any) {
+        this.errorMessage = error.response.data.message
       }
-      this.errorMessage = '';
-      await axios.post('/api/admin/removeEmployee', { ID_Badge_Number: this.selectedEmployee.ID_Badge_Number })
-      await this.getEmployees();
     },
     goToJobsTable() {
       this.$router.push('/admin-jobs');
@@ -113,9 +117,9 @@ export default defineComponent({
                 <td>{{ employee.First_Name }}</td>
                 <td>{{ employee.Last_Name }}</td>
                 <td>
-                <input type="radio" :value="employee.ID_Badge_Number" v-model="selectedEmployee"
-                  class="custom-checkbox" />
-                  </td>
+                  <input type="radio" :value="employee.ID_Badge_Number" v-model="selectedEmployee"
+                    class="custom-checkbox" />
+                </td>
               </tr>
             </tbody>
           </table>
