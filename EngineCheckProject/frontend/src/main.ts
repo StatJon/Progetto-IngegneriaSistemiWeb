@@ -27,20 +27,33 @@ const routes: Array<RouteRecordRaw> = [
   { path: '/login-user', component: UserLogin, name: 'UserLogin' },
   { path: '/login-employee', component: EmployeeLogin, name: 'EmployeeLogin' },
   { path: '/create-profile', component: CreateProfile, name: 'CreateProfile' },
-  { path: '/user-dashboard', component: UserPage, name: 'UserDashboard' },
-  { path: '/jobs', component: JobList, name: 'JobList' },
-  { path: '/admin-jobs', component: AdminJobs, name: 'AdminJobs' },
-  { path: '/admin-employees', component: AdminEmployees, name: 'AdminEmployees' },
-  { path: '/booking/:vehicleType', component: ServiceBooking, name: 'Booking'},
-  { path: '/booking-confirm', component: BookingConfirmation, name: 'Confirmation'},
-  { path: '/booking-final-confirmation', component: FinalConfirmation, name: 'FinalConfirmation' },
-  { path: '/add-employee', component: AddEmployee, name: 'AddEmployee' },
+  { path: '/user-dashboard', component: UserPage, meta: { requiresAuth: true }, name: 'UserDashboard' },
+  { path: '/jobs', component: JobList, meta: { requiresAuth: true }, name: 'JobList' },
+  { path: '/admin-jobs', component: AdminJobs, meta: { requiresAuth: true }, name: 'AdminJobs' },
+  { path: '/admin-employees', component: AdminEmployees, meta: { requiresAuth: true }, name: 'AdminEmployees' },
+  { path: '/booking/:vehicleType', component: ServiceBooking, meta: { requiresAuth: true }, name: 'Booking'},
+  { path: '/booking-confirm', component: BookingConfirmation, meta: { requiresAuth: true }, name: 'Confirmation'},
+  { path: '/booking-final-confirmation', component: FinalConfirmation, meta: { requiresAuth: true }, name: 'FinalConfirmation' },
+  { path: '/add-employee', component: AddEmployee, meta: { requiresAuth: true }, name: 'AddEmployee' },
   { path: '/:pathMatch(.*)*', component: NotFound, name: 'NotFound' }
 ]
 
 const router = createRouter({
   history: createWebHistory(),
   routes
+})
+
+router.beforeEach(async (to, _, next) =>{
+if (!to.meta.requiresAuth) {
+    next();
+    return;
+  }
+  try {
+    await axios.get('/api/auth/whoami');
+    next();
+  } catch {
+    next('/login-user');
+  }
 })
 
 createApp(App)

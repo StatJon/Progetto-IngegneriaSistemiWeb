@@ -10,11 +10,11 @@
         </p>
 
         <div style="display: flex; flex-direction: column; align-items: center; gap: 10px;">
-          <router-link to="/booking-car" class="btn btn-primary">
+          <router-link to="/booking/car" class="btn btn-primary">
             <span class="material-symbols-outlined icon">directions_car</span>
             Prenotazione per Auto
           </router-link>
-          <router-link to="/booking-motorcycle" class="btn btn-primary">
+          <router-link to="/booking/motorcycle" class="btn btn-primary">
             <span class="material-symbols-outlined icon">two_wheeler</span>
             Prenotazione per Moto
           </router-link>

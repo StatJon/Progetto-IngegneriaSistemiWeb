@@ -43,7 +43,7 @@ export default defineComponent({
           break;
         default:
           this.navIcon = 'login';
-          this.navText = 'Login';
+          this.navText = 'Login / Registrati';
           break;
       }
     },
@@ -103,8 +103,6 @@ export default defineComponent({
             <span class="material-symbols-outlined icon">directions_car</span>
             Prenotazione per Auto
           </router-link>
-
-         
           
            <router-link  :to= "selectUserRoute()" class="nav-item highlight">
             <span class="material-symbols-outlined icon">{{ navIcon }}</span>
