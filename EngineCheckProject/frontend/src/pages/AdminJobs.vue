@@ -61,6 +61,9 @@ export default defineComponent({
           case 'finish':
             jobStatus = 'Completed';
             break;
+            default:
+              this.errorMessage = "Erorre: Azione non valida";
+              return
         }
         if (jobStatus === 'Pending') {
           await axios.post('/api/admin/unSetEmployeeJob', {
@@ -75,6 +78,7 @@ export default defineComponent({
           });
         }
         await this.getJobs();
+        this.selectedJobId = null
       } catch (error: any) {
         this.errorMessage = error.response.data.message
       }
@@ -96,6 +100,7 @@ export default defineComponent({
           EMPLOYEE_Badge_Number: this.selectedEmployee.ID_Badge_Number
         });
         await this.getJobs();
+        this.selectedJobId = null
       } catch (error: any) {
         this.errorMessage = error.response.data.message
       }
@@ -113,6 +118,15 @@ export default defineComponent({
         this.errorMessage = error.response.data.message
       }
     },
+    formatDate(dateString: string): string {
+      const date = new Date(dateString);
+      const yyyy = date.getFullYear();
+      const mm = String(date.getMonth() + 1).padStart(2, '0');
+      const dd = String(date.getDate()).padStart(2, '0');
+      const hh = String(date.getHours()).padStart(2, '0');
+      const min = String(date.getMinutes()).padStart(2, '0');
+      return `${yyyy}-${mm}-${dd} ${hh}:${min}`;
+    }
   }
 }
 )
@@ -187,9 +201,9 @@ export default defineComponent({
                 <td>{{ job.Job_ID }}-{{ job.Service_ID }}</td>
                 <td>{{ job.JobService_Status }}</td>
                 <td>{{ job.Worker_Name }} {{ job.Worker_Last_Name }}</td>
-                <td>{{ job.Date_Time }}</td>
-                <td>{{ job.Title }}</td>
-                <td>{{ job.Minutes }}</td>
+                <td>{{ formatDate(job.Date_Time) }}</td>
+                <td>{{ job.Description }}</td>
+                <td>{{ job.Minutes }} minuti</td>
                 <td>{{ job.License_Plate }}</td>
                 <td>{{ job.Model }}</td>
                 <td>{{ job.CustomerPhone }}</td>
