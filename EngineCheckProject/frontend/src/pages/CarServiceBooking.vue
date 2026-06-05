@@ -21,7 +21,6 @@ export default defineComponent({
     };
   },
   computed: {
-    // Filtri basati sui vincoli CHECK del tuo database
     maintenanceServices() {
       return this.servicesCar.filter(s => s.Category === 'maintenance');
     },
@@ -35,7 +34,6 @@ export default defineComponent({
   methods: {
     async getServicesCar() {
       try {
-        // Questa chiamata ora punta al tuo router Express
         const response = await axios.get("/api/service/car");
         this.servicesCar = response.data;
       } catch (error) {

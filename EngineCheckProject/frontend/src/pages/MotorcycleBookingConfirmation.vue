@@ -1,24 +1,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
-// import { useRoute, useRouter } from 'vue-router';
+
 import axios from 'axios';
-
-/*todo
-  finire la richesta api del checkAvailable
-  riadattare le richieste nel template
-  menu a tendina orari va bene 
-
-
-*/
-
-
-
-// route = useRoute();
-//const router = useRouter();
-
-
-
-//const selectedServices = ref<any[]>([]);
 
 interface Service {
   Service_ID: number;

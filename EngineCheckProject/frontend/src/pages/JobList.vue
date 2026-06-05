@@ -1,21 +1,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import axios from 'axios';
-
-interface Job {
-  Job_ID: number;
-  Service_ID: number;
-  JobService_Status: string;
-  Model: string;
-  Vehicle_Type: string;
-  License_Plate: string;
-  Date_Time: string;
-  Title: string;
-  Description: string;
-  Minutes: number;
-  CustomerEmail: string;
-  CustomerPhone: string;
-}
+import type { Job } from '../types';
 
 export default defineComponent({
   data() {
