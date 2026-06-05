@@ -1,8 +1,5 @@
 import { Request, Response } from "express";
-import {
-  errorHandler,
-  validateCustomer,
-} from "../utils/auth-helpers.js";
+import { errorHandler, validateCustomer } from "../utils/auth-helpers.js";
 import { connection } from "../utils/db.js";
 
 export const customerPage = async (req: Request, res: Response) => {
@@ -12,8 +9,7 @@ export const customerPage = async (req: Request, res: Response) => {
       `
         SELECT 
         j.Job_ID,
-        DATE(j.Date_Time) AS Date,
-        TIME(j.Date_Time) AS Time,
+        j.Date_Time
         j.Model,
         j.License_Plate,
         GROUP_CONCAT(s.Title SEPARATOR ', ') AS Services
@@ -37,8 +33,7 @@ export const jobDetails = async (req: Request, res: Response) => {
     const [results] = (await connection.execute(
       `
         SELECT 
-        DATE(j.Date_Time) AS Date,
-        TIME(j.Date_Time) AS Time,
+        j.Date_Time
         j.Model,
         j.License_Plate,
         s.Title,
@@ -63,8 +58,7 @@ export const jobDetails = async (req: Request, res: Response) => {
     }
 
     const resultsFrontend = {
-      Date: results[0].Date,
-      Time: results[0].Time,
+      DateTime: results[0].Date_Time,
       Model: results[0].Model,
       License_Plate: results[0].License_Plate,
       ID_Customer: results[0].ID_Customer,
@@ -85,7 +79,7 @@ export const jobDelete = async (req: Request, res: Response) => {
       SELECT CUSTOMER_ID
       FROM JOB
       WHERE Job_ID = ?`,
-      [req.params.jobId]
+      [req.params.jobId],
     )) as any;
 
     if (rows.length === 0) {
@@ -93,18 +87,18 @@ export const jobDelete = async (req: Request, res: Response) => {
       return;
     }
 
-    if (rows[0].CUSTOMER_ID !== Number(user.id)){
-      res.status(403).json({ message : "Errore: utente errato"});
+    if (rows[0].CUSTOMER_ID !== Number(user.id)) {
+      res.status(403).json({ message: "Errore: utente errato" });
       return;
     }
-    
-    await connection.execute(
+
+    (await connection.execute(
       `
         DELETE FROM JOB
         WHERE Job_ID = ?
         `,
       [req.params.jobId],
-    ) as any;
+    )) as any;
     res
       .status(200)
       .json({ message: "Successo: Lavoro eliminato correttamente" });

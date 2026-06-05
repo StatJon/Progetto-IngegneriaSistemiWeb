@@ -16,7 +16,7 @@ export default defineComponent({
 
   async mounted() {
     this.getEmployeeNameAndBadge();
-    await this.getEmployees;
+    this.getEmployees;
   },
 
   methods: {
@@ -112,8 +112,10 @@ export default defineComponent({
                 <td>{{ employee.ID_Badge_Number }}</td>
                 <td>{{ employee.First_Name }}</td>
                 <td>{{ employee.Last_Name }}</td>
+                <td>
                 <input type="radio" :value="employee.ID_Badge_Number" v-model="selectedEmployee"
                   class="custom-checkbox" />
+                  </td>
               </tr>
             </tbody>
           </table>

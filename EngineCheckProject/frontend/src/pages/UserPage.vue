@@ -11,9 +11,9 @@ export default defineComponent({
       errorMessage: '',
     }
   },
-  mounted() {
+  async mounted() {
     this.getUserName()
-    this.getUserJobs()
+    await this.getUserJobs()
   },
   methods: {
 
