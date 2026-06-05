@@ -118,7 +118,7 @@ export default defineComponent({
         this.errorMessage = error.response.data.message
       }
     },
-    formatDate(dateString: string): string {
+    helperFormatDate(dateString: string): string {
       const date = new Date(dateString);
       const yyyy = date.getFullYear();
       const mm = String(date.getMonth() + 1).padStart(2, '0');
@@ -201,7 +201,7 @@ export default defineComponent({
                 <td>{{ job.Job_ID }}-{{ job.Service_ID }}</td>
                 <td>{{ job.JobService_Status }}</td>
                 <td>{{ job.Worker_Name }} {{ job.Worker_Last_Name }}</td>
-                <td>{{ formatDate(job.Date_Time) }}</td>
+                <td>{{ helperFormatDate(job.Date_Time) }}</td>
                 <td>{{ job.Description }}</td>
                 <td>{{ job.Minutes }} minuti</td>
                 <td>{{ job.License_Plate }}</td>

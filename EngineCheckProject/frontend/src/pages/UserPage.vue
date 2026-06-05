@@ -17,7 +17,7 @@ export default defineComponent({
   },
   methods: {
 
-    getUserName(){
+    getUserName() {
       const firstName = sessionStorage.getItem('firstName') || '';
       const lastName = sessionStorage.getItem('lastName') || '';
       this.userName = `${firstName} ${lastName}`.trim()
@@ -38,6 +38,17 @@ export default defineComponent({
       await axios.get('/api/auth/logout');
       sessionStorage.clear();
       this.$router.push('/')
+    },
+
+
+    helperFormatDate(dateString: string): string {
+      const date = new Date(dateString);
+      const yyyy = date.getFullYear();
+      const mm = String(date.getMonth() + 1).padStart(2, '0');
+      const dd = String(date.getDate()).padStart(2, '0');
+      const hh = String(date.getHours()).padStart(2, '0');
+      const min = String(date.getMinutes()).padStart(2, '0');
+      return `${yyyy}-${mm}-${dd} ${hh}:${min}`;
     }
   }
 }
@@ -55,7 +66,7 @@ export default defineComponent({
 
         <div class="card-info">
           <h3 class="booking-header">
-            {{ booking.Date }}, {{ booking.Model }}, {{ booking.License_Plate }}
+            {{ helperFormatDate(booking.Date) }}, {{ helperFormatDate(booking.Time) }} {{ booking.Model }}, {{ booking.License_Plate }}
           </h3>
           <p class="booking-details">
             {{ booking.Time }}, {{ booking.Services }}
