@@ -17,6 +17,7 @@ export default defineComponent({
     },
     methods: {
         async getServices() {
+            this.errorMessage = '';
             try {
                 this.vehicleFilter = this.$route.params.vehicleType as string
                 const response = await axios.get(`/api/service/${this.vehicleFilter}`);

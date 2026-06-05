@@ -1,20 +1,7 @@
-export interface Testing {
- message: string;
-}
-
 export interface Employee {
   ID_Badge_Number: number;
   First_Name: string;
   Last_Name: string;
-}
-
-//Da rifare-completare assieme a CreateProfile
-export interface Customer {
-  email: string;
-  firstName: string;
-  lastName: string;
-  password: string;
-  phone: string; 
 }
 
 export interface Service {

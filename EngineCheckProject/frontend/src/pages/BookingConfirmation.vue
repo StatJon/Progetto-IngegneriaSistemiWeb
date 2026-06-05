@@ -31,16 +31,10 @@ export default defineComponent({
     };
   },
   async mounted() {
-
     this.serviceIds = this.$route.query.services as any;
-
     this.getServices();
-    //await this.getCurrentYear();
     await this.getMonths();
     await this.checkDay();
-    //this.checkTime();
-
-
   },
   watch: {
     selectedYear() {
@@ -53,7 +47,6 @@ export default defineComponent({
       this.checkDay();
       this.checkTime();
       console.log("hai cambiato il mese");
-
     },
     selectedDay() {
       this.checkTime();
@@ -62,6 +55,7 @@ export default defineComponent({
   },
   methods: {
     async getServices() {
+      this.errorMessage = '';
       try {
         const response = await axios.get("/api/service/select", { params: { id: this.serviceIds } });
         this.serviceData = response.data;
@@ -71,6 +65,7 @@ export default defineComponent({
     },
     async getMonths() {
       this.avMonth = [];
+      this.errorMessage = '';
       try {
         for (let i = this.selectedMonth; i <= 12; i++) {
           this.avMonth.push(i);
@@ -81,6 +76,7 @@ export default defineComponent({
     },
     async checkDay() {
       this.availableDays = [];
+      this.errorMessage = '';
       try {
         const response = await axios.get(`/api/booking/checkDayAvailable/${this.selectedYear}-${this.selectedMonth}`);
         this.availableDays = response.data.daysAvailable.filter((d: any) => d.available === true);
@@ -93,28 +89,37 @@ export default defineComponent({
       // GET: ?date=aaaa-mm-gg&services=1,2,3,..., gli do questo in richiesta get, e ricevo JSON ({timeSlot : hh:mm, available : true/false})
       this.availableTimes = [];
 
-      const response = await axios.get('/api/booking/checkTimeAvailable', {
-        params: {
-          date: `${this.selectedYear}-${this.selectedMonth}-${this.selectedDay}`,
-          services: this.serviceIds
-        }
-      });
-      this.availableTimes = response.data.filter((t: any) => t.available === true);
+      try {
+        const response = await axios.get('/api/booking/checkTimeAvailable', {
+          params: {
+            date: `${this.selectedYear}-${this.selectedMonth}-${this.selectedDay}`,
+            services: this.serviceIds
+          }
+        });
+        this.availableTimes = response.data.filter((t: any) => t.available === true);
+      } catch (error: any) {
+        this.errorMessage = error.response.data.message
+      }
     },
     async submit() {
-      const dataSet = `${this.selectedYear}-${String(this.selectedMonth).padStart(2, '0')}-${String(this.selectedDay).padStart(2, '0')} ${this.availableTimes}:00`
+      this.errorMessage = '';
+      try {
+        const dataSet = `${this.selectedYear}-${String(this.selectedMonth).padStart(2, '0')}-${String(this.selectedDay).padStart(2, '0')} ${this.availableTimes}:00`
 
-      const response = await axios.get('/api/auth/whoamiCustomer');
-      const customerId = response.data;
+        const response = await axios.get('/api/auth/whoamiCustomer');
+        const customerId = response.data;
 
-      await axios.post('api/booking/saveBooking', {
-        Model: this.bookingForm.vehicleModel,
-        Vehicle_Type: this.bookingForm.vehicleType,
-        License_Plate: this.bookingForm.vehiclePlate,
-        Data_Time: dataSet,
-        Customer_ID: customerId,
-        ServicesArray: this.serviceIds
-      });
+        await axios.post('api/booking/saveBooking', {
+          Model: this.bookingForm.vehicleModel,
+          Vehicle_Type: this.bookingForm.vehicleType,
+          License_Plate: this.bookingForm.vehiclePlate,
+          Data_Time: dataSet,
+          Customer_ID: customerId,
+          ServicesArray: this.serviceIds
+        });
+      } catch (error: any) {
+        this.errorMessage = error.response.data.message
+      }
     },
     async goBack() {
       this.$router.back();

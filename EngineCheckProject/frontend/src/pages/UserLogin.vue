@@ -12,8 +12,8 @@ export default defineComponent({
   },
   methods: {
     async submitLogin() {
+      this.errorMessage = "";
       try {
-        this.errorMessage = "";
         const response = await axios.post("/api/auth/loginCustomer", {
           Email: this.email,
           Password: this.password,

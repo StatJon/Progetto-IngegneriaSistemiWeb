@@ -28,11 +28,13 @@ export default defineComponent({
       try {
         const response = await axios.get('/api/job/listEmployeeJobs');
         this.jobs = response.data;
-      } catch (error) {
-        console.error(error);
+      } catch (error: any) {
+        this.errorMessage = error.response.data.message
       }
     },
     async setStatusJob(action: string) {
+      this.errorMessage = '';
+      try {
       if (!this.selectedJobId) {
         this.errorMessage = "Nessun lavoro selezionato"
         return;
@@ -52,12 +54,19 @@ export default defineComponent({
       }
       await axios.post('/api/job/setStatusJobService', { Job_ID: this.selectedJobId.Job_ID, Service_ID: this.selectedJobId.Service_ID, Job_Status: jobStatus });
       await this.getJobs();
+    }catch(error: any){
+      this.errorMessage = error.response.data.message
+    }
     },
     async logout() {
+      try {
       await axios.get('/api/auth/logout');
       sessionStorage.clear()
       this.$router.push('/login-employee');
-    },
+    }catch(error: any){
+      this.errorMessage = error.response.data.message
+    }
+  },
   }
 }
 )

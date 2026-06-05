@@ -4,10 +4,9 @@ import './style.css'
 import App from './App.vue'
 import axios from 'axios'
 
-axios.defaults.withCredentials = true //Per passaggio automatico JWT a backend nelle richieste
+axios.defaults.withCredentials = true //Necessario per passaggio automatico JWT a backend nelle richieste
 
 // Importazione pagine
-//import TestBackend from './pages/TestBackend.vue'
 import Test1 from './pages/Test1.vue'
 import HomePage from './pages/HomePage.vue'
 import UserLogin from './pages/UserLogin.vue'
@@ -26,7 +25,6 @@ import NotFound from './pages/NotFound.vue'
 
 // Definizione Rotte
 const routes: Array<RouteRecordRaw> = [
-  //{ path: '/testing', component: TestBackend, name: 'TestBackend'},
   { path: '/', component: HomePage, name: 'Home' },
   { path: '/login-user', component: UserLogin, name: 'UserLogin' },
   { path: '/login-employee', component: EmployeeLogin, name: 'EmployeeLogin' },
