@@ -60,7 +60,7 @@ export default defineComponent({
     <h1 class="page-title">Rivedi l’appuntamento</h1>
 
     <div class="details-card">
-      <h2 class="card-subtitle">{{ job. }}</h2>
+      <h2 class="card-subtitle">{{ job }}</h2>
 
       <div class="table-responsive">
         <table class="jobs-table">
