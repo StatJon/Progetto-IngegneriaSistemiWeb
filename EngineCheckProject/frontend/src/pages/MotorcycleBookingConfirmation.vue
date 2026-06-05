@@ -20,10 +20,10 @@ export default defineComponent({
       serviceIds: [] as number[],
       serviceData: [] as Service[],
       avMonth: [] as number[],
-      selectedYear: today.getFullYear() ,
+      selectedYear: today.getFullYear(),
       selectedMonth: today.getMonth() + 1,
       selectedDay: 0,
-      currentYear: today.getFullYear() ,
+      currentYear: today.getFullYear(),
 
 
 
@@ -90,15 +90,7 @@ export default defineComponent({
         console.error("Errore nel recupero dei servizi:", error);
       }
     },
-    /*
-    async getCurrentYear() {
-      const today = new Date();
-      this.selectedYear = today.getFullYear();
-      this.selectedMonth = today.getMonth() + 1;
 
-
-    },
-*/
     async getMonths() {
       this.avMonth = [];
       for (let i = this.selectedMonth; i <= 12; i++) {
@@ -143,6 +135,14 @@ export default defineComponent({
       // salva le variabili nel form bookingForm 
       // e io devo darli come input POST JSON {Model, Vehicle_Type, License_Plate, Date_Time, Customer_ID, ServicesArray,}
       // in output compare il messaggio di conferma (va tutto bene)
+
+
+      let dataSet =`${this.selectedYear}-${String(this.selectedMonth).padStart(2, '0')}-
+                    ${String(this.selectedDay).padStart(2, '0')} ${this.availableTimes}:00`
+
+      await axios.post('api/booking/saveBooking', {Model:this.bookingForm.vehicleModel ,
+         Vehicle_Type: this.bookingForm.vehicleType , License_Plate: this.bookingForm.vehiclePlate ,
+         Data_Time: dataSet , Customer_ID: "da aggiungere" , ServicesArray:this.serviceIds });
 
 
 
@@ -223,20 +223,20 @@ export default defineComponent({
 
           <div class="Calendar">
             <label>Anno</label>
-            <select v-model ="selectedYear">
-              <option :value ="currentYear">{{ currentYear }}</option>
-              <option :value ="currentYear +1">{{ currentYear + 1 }}</option>
+            <select v-model="selectedYear">
+              <option :value="currentYear">{{ currentYear }}</option>
+              <option :value="currentYear + 1">{{ currentYear + 1 }}</option>
             </select>
 
             <label>Mese</label>
-            <select v-model ="selectedMonth">
-              <option  v-for="(month, index) in avMonth" :key="index" :value ="month">{{ month }} </option>
+            <select v-model="selectedMonth">
+              <option v-for="(month, index) in avMonth" :key="index" :value="month">{{ month }} </option>
 
             </select>
 
             <label>Giorno</label>
-            <select v-model ="selectedDay">
-              <option  v-for="days in availableDays" :key="days.day" :value ="days">{{ days.day }}</option>
+            <select v-model="selectedDay">
+              <option v-for="days in availableDays" :key="days.day" :value="days">{{ days.day }}</option>
 
             </select>
 
