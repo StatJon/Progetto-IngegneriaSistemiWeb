@@ -8,6 +8,7 @@ export interface Employee {
   Last_Name: string;
 }
 
+//Da rifare-completare assieme a CreateProfile
 export interface Customer {
   email: string;
   firstName: string;
@@ -17,13 +18,14 @@ export interface Customer {
 }
 
 export interface Service {
-  serviceId: number;
-  estimatedDuration: number;
-  title: string;
-  description: string;
-  price: number;
-  vehicleType: 'car' | 'motorcycle';
-}
+  Service_ID: number;
+  Minutes: number;
+  Title: string;
+  Description: string;
+  Price: number;
+  Vehicle_Type: 'car' | 'motorcycle';
+  Category: 'maintenance' | 'repair' | 'tyres';
+} 
 
 export interface Booking {
   Job_ID: number,

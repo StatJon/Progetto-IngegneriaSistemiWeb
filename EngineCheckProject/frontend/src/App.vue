@@ -94,12 +94,12 @@ export default defineComponent({
             Contatti
           </a>
 
-          <router-link to="/booking-motorcycle" class="nav-item">
+          <router-link to="/booking/motorcycle" class="nav-item">
             <span class="material-symbols-outlined icon">two_wheeler</span>
             Prenotazione per Moto
           </router-link>
 
-          <router-link to="/booking-car" class="nav-item">
+          <router-link to="/booking/car" class="nav-item">
             <span class="material-symbols-outlined icon">directions_car</span>
             Prenotazione per Auto
           </router-link>

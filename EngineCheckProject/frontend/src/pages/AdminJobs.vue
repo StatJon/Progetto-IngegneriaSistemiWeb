@@ -19,7 +19,6 @@ export default defineComponent({
     this.getEmployeeNameAndBadge();
     await this.getJobs();
     await this.getEmployees();
-
   },
   methods: {
     getEmployeeNameAndBadge() {
