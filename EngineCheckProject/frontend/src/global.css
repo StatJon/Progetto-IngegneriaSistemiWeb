@@ -518,7 +518,7 @@ label {
 }
 
 .btn-logout {
-  width: 100%;
+  width: 10%;
   background-color: var(--color-danger);
   color: white;
   border: none;
@@ -526,6 +526,7 @@ label {
   border-radius: var(--radius-md);
   font-weight: 600;
   font-family: var(--font-family);
+  text-align: center;
   cursor: pointer;
   transition: background-color 0.2s;
 }
@@ -803,6 +804,7 @@ label {
   max-width: 1000px;
   display: flex;
   flex-direction: column;
+  margin: auto;
   gap: 25px;
 }
 
