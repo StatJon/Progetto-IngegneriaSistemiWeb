@@ -88,19 +88,19 @@ export default defineComponent({
 .form-group label {
   display: block;
   margin-bottom: 0.8rem;
-  /* Aumentato lo spazio sotto la label */
+ 
   font-weight: 600;
   color: #000000;
 
-  /* --- MODIFICHE PER RENDERE LE LABEL PIÙ "LUNGHE" E VISIBILI --- */
+  
   letter-spacing: 0.5px;
-  /* Distanzia leggermente le lettere */
+  
   text-transform: uppercase;
-  /* Opzionale: rende il testo più imponente */
+  
   font-size: 0.85rem;
-  /* Leggermente più piccolo se maiuscolo, bilancia la lunghezza */
+  
   width: 100%;
-  /* Assicura che occupi tutta la riga */
+  
 }
 
 .Info-card {
@@ -110,11 +110,11 @@ export default defineComponent({
   box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
   width: 100%;
   max-width: 500px;
-  /* Ho allargato leggermente la card (da 450 a 500) per far stare le label lunghe su una riga */
+ 
   border: 1px solid #e2e8f0;
 }
 
-/* Altri stili invariati dal tuo codice originale */
+
 .page-container {
   display: flex;
   flex-direction: column;

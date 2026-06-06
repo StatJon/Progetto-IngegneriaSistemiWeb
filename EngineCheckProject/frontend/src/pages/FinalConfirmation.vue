@@ -32,32 +32,31 @@ export default defineComponent({
 <style scoped>
 /* SFONDO PAGINA */
 .page-container {
-  background-color: #f0f6fc; /* Azzurrino chiaro */
-  min-height: 85vh; /* Occupa quasi tutta l'altezza */
+  background-color: #f0f6fc; 
+  min-height: 85vh; 
   padding: 40px 20px;
   font-family: 'Segoe UI', sans-serif;
   display: flex;
   justify-content: center;
-  align-items: center; /* Centra perfettamente la card */
+  align-items: center; 
 }
 
 /* CARD BIANCA */
 .success-card {
   background-color: white;
-  border-radius: 24px; /* Angoli molto arrotondati come nell'immagine */
+  border-radius: 24px; 
   width: 100%;
-  max-width: 900px; /* Larghezza simile alla foto */
-  height: 500px; /* Altezza fissa per creare lo spazio vuoto */
+  max-width: 900px; 
+  height: 500px; 
   display: flex;
   flex-direction: column;
   align-items: center;
   padding: 40px;
-  /* Ombra leggera invece del bordo blu spesso, per un look più pulito come questa immagine */
   box-shadow: 0 4px 20px rgba(0,0,0,0.02); 
   position: relative;
 }
 
-/* TITOLO */
+
 .success-title {
   font-size: 36px; /* Grande e visibile */
   font-weight: 800; /* Molto grassetto */
@@ -67,24 +66,24 @@ export default defineComponent({
   text-align: center;
 }
 
-/* SPAZIATORE */
+
 .spacer {
-  flex-grow: 1; /* Occupa tutto lo spazio disponibile tra titolo e bottone */
+  flex-grow: 1; 
 }
 
 /* BOTTONE BLU */
 .btn-dashboard {
-  background-color: #0084ff; /* Blu brillante */
+  background-color: #0084ff;
   color: white;
   border: none;
   border-radius: 6px;
-  padding: 14px 30px; /* Un po' più grande */
+  padding: 14px 30px; 
   font-weight: 600;
   font-size: 16px;
   cursor: pointer;
   display: flex;
   align-items: center;
-  margin-bottom: 40px; /* Distanza dal fondo della card */
+  margin-bottom: 40px; 
   transition: background 0.2s;
 }
 

@@ -152,7 +152,6 @@ export default defineComponent({
 .page-container {
   background-color: #f0f6fc;
   min-height: 85vh;
-  /* Lascia spazio a header/footer */
   padding: 40px 20px;
   font-family: 'Segoe UI', sans-serif;
 }
@@ -165,7 +164,7 @@ export default defineComponent({
   align-items: flex-start;
 }
 
-/* --- SIDEBAR --- */
+
 .sidebar-card {
   background-color: white;
   width: 300px;
@@ -217,7 +216,6 @@ export default defineComponent({
 .btn-action {
   width: 100%;
   background-color: #e0e0e0;
-  /* Grigio chiaro come immagine */
   border: 1px solid #ccc;
   padding: 12px;
   margin-bottom: 10px;
@@ -240,7 +238,7 @@ export default defineComponent({
   font-size: 16px;
 }
 
-/* Bottone Rosso Logout */
+
 .logout-wrapper {
   margin-top: 30px;
 }
@@ -248,7 +246,6 @@ export default defineComponent({
 .btn-logout {
   width: 100%;
   background-color: #d9534f;
-  /* Rosso spento */
   color: white;
   border: none;
   padding: 10px;
@@ -261,12 +258,10 @@ export default defineComponent({
   background-color: #c9302c;
 }
 
-/* --- TABELLA --- */
+
 .main-table-card {
   flex-grow: 1;
   background-color: white;
-  /* Sfondo bianco per la tabella */
-  /* Se vuoi l'effetto "tabella volante" senza card dietro, rimuovi background, padding e shadow qui */
   padding: 0;
   border-radius: 8px;
   overflow: hidden;
@@ -287,7 +282,6 @@ export default defineComponent({
 
 .jobs-table th {
   background-color: #e6e6e6;
-  /* Intestazione grigia */
   font-weight: 700;
   padding: 12px;
   border: 1px solid #ccc;
@@ -304,7 +298,7 @@ export default defineComponent({
   text-align: center;
 }
 
-/* Checkbox Blu */
+
 .custom-checkbox {
   width: 18px;
   height: 18px;
@@ -312,12 +306,11 @@ export default defineComponent({
   cursor: pointer;
 }
 
-/* Evidenzia riga selezionata */
+
 .selected-row {
   background-color: #f0f8ff;
 }
 
-/* RESPONSIVE */
 @media (max-width: 800px) {
   .dashboard-layout {
     flex-direction: column;

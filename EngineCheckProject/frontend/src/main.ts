@@ -1,6 +1,7 @@
 import { createApp } from 'vue'
 import { createRouter, createWebHistory, type RouteRecordRaw } from 'vue-router'
-import './style.css'
+//import './style.css'
+import './global.css'
 import App from './App.vue'
 import axios from 'axios'
 

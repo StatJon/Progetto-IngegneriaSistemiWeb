@@ -256,7 +256,7 @@ export default defineComponent({
   align-items: flex-start;
 }
 
-/* COLONNA SINISTRA */
+
 .left-column {
   flex: 1;
   max-width: 400px;
@@ -330,7 +330,7 @@ export default defineComponent({
 }
 
 
-/* COLONNA DESTRA */
+
 .right-column {
   flex: 2;
 }
@@ -375,7 +375,7 @@ export default defineComponent({
   border-top: 1px solid #eee;
 }
 
-/* CALENDARIO */
+
 .calendar-wrapper {
   max-width: 350px;
   margin: 0 auto 30px auto;
@@ -432,7 +432,7 @@ export default defineComponent({
   color: white;
 }
 
-/* TIME SELECTOR */
+
 .time-selector {
   text-align: center;
   margin-bottom: 30px;
@@ -444,7 +444,6 @@ export default defineComponent({
   align-items: center;
   gap: 10px;
   background: #e0dcf5;
-  /* Colore viola chiaro tipo immagine */
   padding: 10px;
   border-radius: 12px;
   width: fit-content;
@@ -477,7 +476,7 @@ export default defineComponent({
   background-color: #006bcf;
 }
 
-/* Responsive */
+
 @media (max-width: 800px) {
   .layout-grid {
     flex-direction: column;
