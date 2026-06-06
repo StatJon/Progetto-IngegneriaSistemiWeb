@@ -408,7 +408,7 @@ label {
 }
 
 .btn-primary {
-  width: 30%;
+  width: 300px;
   padding: var(--space-md);
   background-color: var( --color-primary);
   color: white;
