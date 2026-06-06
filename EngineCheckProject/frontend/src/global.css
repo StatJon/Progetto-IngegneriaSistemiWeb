@@ -535,15 +535,15 @@ label {
 
 .btn-employee,
 .btn-user-login {
-  background-color: var(--color-surface);
+  width: 100%;
+  background-color: var(--color-dark);
   border: 1px solid var(--color-border);
-  color: var(--color-dark);
+  color: white;
   font-weight: 600;
   font-family: var(--font-family);
-  padding: 10px 24px;
+  padding: var(--space-md);
   border-radius: var(--radius-md);
   cursor: pointer;
-  display: flex;
   align-items: center;
   gap: var(--space-sm);
   box-shadow: var(--shadow-sm);
@@ -552,7 +552,7 @@ label {
 
 .btn-employee:hover,
 .btn-user-login:hover {
-  background-color: #f3f4f6;
+  background-color: black;
   border-color: #8c959f;
 }
 
