@@ -13,8 +13,27 @@ export default defineComponent({
       selectedJobId: null as Job | null,
       employees: [] as Employee[],
       selectedEmployee: null as Employee | null,
+
+      sortKey: '' as string,
+      sortAsc: true,
     }
   },
+
+  computed: {
+    sortedJobs(): Job[] {
+      if (!this.sortKey) {
+        return this.jobs;
+      }
+      const key = this.sortKey as keyof Job;
+      return [...this.jobs].sort((a, b) => {
+        const valA = String(a[key] ?? '');
+        const valB = String(b[key] ?? '');
+        const result = valA.localeCompare(valB, undefined, { numeric: true });
+        return this.sortAsc ? result : -result;
+      });
+    }
+  },
+
   async mounted() {
     this.getEmployeeNameAndBadge();
     await this.getJobs();
@@ -61,9 +80,9 @@ export default defineComponent({
           case 'finish':
             jobStatus = 'Completed';
             break;
-            default:
-              this.errorMessage = "Erorre: Azione non valida";
-              return
+          default:
+            this.errorMessage = "Erorre: Azione non valida";
+            return
         }
         if (jobStatus === 'Pending') {
           await axios.post('/api/admin/unSetEmployeeJob', {
@@ -126,6 +145,18 @@ export default defineComponent({
       const hh = String(date.getHours()).padStart(2, '0');
       const min = String(date.getMinutes()).padStart(2, '0');
       return `${yyyy}-${mm}-${dd} ${hh}:${min}`;
+    },
+    helperSortBy(key: string) {
+      if (this.sortKey === key) {
+        this.sortAsc = !this.sortAsc;
+      } else {
+        this.sortKey = key;
+        this.sortAsc = true;
+      }
+    },
+    helperSortArrow(key: string): string {
+      if (this.sortKey !== key) return '';
+      return this.sortAsc ? ' ▲' : ' ▼';
     }
   }
 }
@@ -181,19 +212,28 @@ export default defineComponent({
             <thead>
               <tr>
                 <th class="text-center">Selezione</th>
-                <th>ID Lavoro</th>
-                <th>Stato</th>
-                <th>Dipendente Assegnato</th>
-                <th>Data-Ora Inizio previsto</th>
-                <th>Lavoro da effettuare</th>
-                <th>Tempo stimato</th>
-                <th>Targa Veicolo</th>
-                <th>Veicolo</th>
-                <th>Telefono</th>
+                <th @click="helperSortBy('Job_ID')" style="cursor: pointer;">
+                  ID Lavoro{{ helperSortArrow('Job_ID') }}</th>
+                <th @click="helperSortBy('JobService_Status')" style="cursor: pointer;">
+                  Stato{{ helperSortArrow('JobService_Status') }}</th>
+                <th @click="helperSortBy('Worker_Name')" style="cursor: pointer;">
+                  Dipendente Assegnato{{ helperSortArrow('Worker_Name') }}</th>
+                <th @click="helperSortBy('Date_Time')" style="cursor: pointer;">
+                  Data-Ora Inizio previsto{{ helperSortArrow('Date_Time') }}</th>
+                <th @click="helperSortBy('Description')" style="cursor: pointer;">
+                  Lavoro da effettuare{{ helperSortArrow('Description') }}</th>
+                <th @click="helperSortBy('Minutes')" style="cursor: pointer;">
+                  Tempo stimato{{ helperSortArrow('Minutes') }}</th>
+                <th @click="helperSortBy('License_Plate')" style="cursor: pointer;">
+                  Targa Veicolo{{ helperSortArrow('License_Plate') }}</th>
+                <th @click="helperSortBy('Model')" style="cursor: pointer;">
+                  Veicolo{{ helperSortArrow('Model') }}</th>
+                <th @click="helperSortBy('CustomerPhone')" style="cursor: pointer;">
+                  Telefono{{ helperSortArrow('CustomerPhone') }}</th>
               </tr>
             </thead>
             <tbody>
-              <tr v-for="job in jobs" :key="`${job.Job_ID}-${job.Service_ID}`"
+              <tr v-for="job in sortedJobs" :key="`${job.Job_ID}-${job.Service_ID}`"
                 :class="{ 'selected-row': selectedJobId === job }">
                 <td class="text-center">
                   <input type="radio" name="jobSelect" :value="job" v-model="selectedJobId" class="custom-checkbox" />
@@ -217,7 +257,6 @@ export default defineComponent({
 </template>
 
 <style scoped>
-
 .page-container {
   background-color: #f0f6fc;
   min-height: 85vh;
