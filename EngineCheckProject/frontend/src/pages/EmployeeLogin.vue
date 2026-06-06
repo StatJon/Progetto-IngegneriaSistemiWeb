@@ -63,12 +63,12 @@ export default defineComponent({
 
       <div class="form-group">
         <label for="badge">Numero Badge</label>
-        <input id="badge" type="text" v-model="badgeNumber" placeholder="Value" />
+        <input id="badge" type="text" v-model="badgeNumber" placeholder="3" />
       </div>
 
       <div class="form-group">
         <label for="password">Password</label>
-        <input id="password" type="password" v-model="password" placeholder="Value" />
+        <input id="password" type="password" v-model="password" @keyup.enter="submitEmployeeLogin" placeholder="password" />
       </div>
 
       <p v-if="errorMessage" class="error-text">{{ errorMessage }}</p>

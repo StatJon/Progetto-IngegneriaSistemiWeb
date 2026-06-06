@@ -76,7 +76,7 @@ export const listEmployeeJobs = async (req: Request, res: Response) => {
         WHERE 
         (e.ID_Badge_Number = ? OR e.ID_Badge_Number IS NULL)
         AND 
-        (sj.JobService_Status IN ('Pending', 'Assigned', 'Working'))
+        (sj.JobService_Status IN ('Assigned', 'Working'))
         `,
       [user.id],
     );

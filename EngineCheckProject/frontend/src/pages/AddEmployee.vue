@@ -59,7 +59,7 @@ export default defineComponent({
 
         <div class="form-group">
           <label>Password </label>
-          <input type="password" v-model="password" placeholder="PasswordBella" />
+          <input type="password" v-model="password" @keyup.enter="addEmployee" placeholder="PasswordBella" />
         </div>
 
         <div class="form-group">
