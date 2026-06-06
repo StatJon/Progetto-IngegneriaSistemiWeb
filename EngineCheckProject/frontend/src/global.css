@@ -304,7 +304,8 @@ body {
   gap: var(--space-md);
 }
 
-.login-card {
+.login-card,
+.register-card {
   background-color: var(--color-surface);
   padding: var(--space-2xl);
   border-radius: var(--radius-lg);
@@ -534,7 +535,8 @@ label {
 }
 
 .btn-employee,
-.btn-user-login {
+.btn-user-login,
+.btn-create-user{
   width: 100%;
   background-color: var(--color-dark);
   border: 1px solid var(--color-border);
@@ -551,7 +553,8 @@ label {
 }
 
 .btn-employee:hover,
-.btn-user-login:hover {
+.btn-user-login:hover
+.btn-create-user:hover {
   background-color: black;
   border-color: #8c959f;
 }
