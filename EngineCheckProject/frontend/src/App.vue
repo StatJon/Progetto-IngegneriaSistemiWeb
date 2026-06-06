@@ -51,16 +51,16 @@ export default defineComponent({
       switch (this.role) {
         case 'Customer':
           return '/user-dashboard';
-          
+
         case 'Worker':
           return '/jobs';
-          
+
         case 'Admin':
           return '/admin-jobs';
-          
+
         default:
           return '/login-user';
-         
+
       }
     },
     async refreshNav() {
@@ -94,17 +94,17 @@ export default defineComponent({
             Contatti
           </a>
 
+          <router-link to="/booking/car" class="nav-item">
+            <span class="material-symbols-outlined icon">directions_car</span>
+            Prenotazione per Auto
+          </router-link>
+
           <router-link to="/booking/motorcycle" class="nav-item">
             <span class="material-symbols-outlined icon">two_wheeler</span>
             Prenotazione per Moto
           </router-link>
 
-          <router-link to="/booking/car" class="nav-item">
-            <span class="material-symbols-outlined icon">directions_car</span>
-            Prenotazione per Auto
-          </router-link>
-          
-           <router-link  :to= "selectUserRoute()" class="nav-item highlight">
+          <router-link :to="selectUserRoute()" class="nav-item highlight">
             <span class="material-symbols-outlined icon">{{ navIcon }}</span>
             {{ navText }}
           </router-link>
@@ -124,7 +124,6 @@ export default defineComponent({
 </template>
 
 <style>
-
 body {
   margin: 0;
   font-family: 'Inter', sans-serif;
@@ -189,7 +188,7 @@ body {
   text-align: center;
   padding: 20px;
   margin-top: auto;
-  background-color: white ;
+  background-color: white;
 
 }
 

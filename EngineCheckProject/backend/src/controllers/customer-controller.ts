@@ -16,7 +16,7 @@ export const customerPage = async (req: Request, res: Response) => {
         FROM JOB j
         JOIN JOB_SERVICE js ON j.Job_ID = js.JOB_Job_ID
         JOIN SERVICE s ON s.Service_ID = js.SERVICE_Service_ID
-        WHERE j.CUSTOMER_ID = ?
+        WHERE j.CUSTOMER_ID = ? AND js.JobService_Status IN ('Pending', 'Assigned', 'Working')
         GROUP BY j.job_ID
         `,
       [user.id],

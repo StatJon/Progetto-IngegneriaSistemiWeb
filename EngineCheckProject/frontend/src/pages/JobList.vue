@@ -149,6 +149,7 @@ export default defineComponent({
           <table class="jobs-table">
             <thead>
               <tr>
+                <th class="text-center">Selezione</th>
                 <th @click="helperSortBy('Job_ID')" style="cursor: pointer;">
                   ID Lavoro{{ helperSortArrow('Job_ID') }}</th>
                 <th @click="helperSortBy('JobService_Status')" style="cursor: pointer;">
