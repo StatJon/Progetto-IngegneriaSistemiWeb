@@ -13,6 +13,8 @@ export default defineComponent({
 
       serviceIds: [] as number[],
 
+      priceTotal: 0,
+
       vehicleType: '',
       vehiclePlate: '',
       vehicleModel: '',
@@ -28,13 +30,16 @@ export default defineComponent({
       availableTimes: [] as { timeSlot: string; available: boolean }[],
     };
   },
+
   async mounted() {
     this.serviceIds = (this.$route.query.services as string).split(',').map(Number);
     this.vehicleType = this.$route.query.vehicleType as any;
-    this.getServices();
+    await this.getServices();
+    this.getTotalPrice();
     await this.getMonths();
     await this.checkDay();
   },
+
   watch: {
     selectedYear() {
       if (this.selectedYear !== this.currentYear) {
@@ -45,18 +50,16 @@ export default defineComponent({
       this.getMonths();
       this.checkDay();
       this.checkTime();
-      //console.log("hai cambiato l'anno");
     },
     selectedMonth() {
       this.checkDay();
       this.checkTime();
-      //console.log("hai cambiato il mese");
     },
     selectedDay() {
       this.checkTime();
-      //console.log("hai cambiato il giorno ");
     }
   },
+
   methods: {
     async getServices() {
       this.errorMessage = '';
@@ -65,6 +68,12 @@ export default defineComponent({
         this.serviceData = response.data;
       } catch (error: any) {
         this.errorMessage = error.response.data.message
+      }
+    },
+    getTotalPrice() {
+      this.priceTotal = 0;
+      for (const service of this.serviceData) {
+        this.priceTotal += Number(service.Price)
       }
     },
     async getMonths() {
@@ -170,6 +179,11 @@ export default defineComponent({
           </div>
         </div>
 
+        <div class="s-footer">
+          <span class="price-tag">Totale:</span>
+          <span class="price-tag">{{ priceTotal.toFixed(2) }}€</span>
+        </div>
+
         <button class="btn-back" @click="goBack">
           ← Rivedi scelte
         </button>
@@ -231,4 +245,3 @@ export default defineComponent({
     </div>
   </div>
 </template>
-
