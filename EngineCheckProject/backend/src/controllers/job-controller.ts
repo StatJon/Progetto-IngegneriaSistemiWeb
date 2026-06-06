@@ -94,6 +94,23 @@ export const setStatusJobService = async (req: Request, res: Response) => {
   try{
     const user = validateEmployee(req,res);
     const {Job_ID, Service_ID, Job_Status} = req.body;
+
+    //Controlli
+    const [checkRows]: any = await connection.execute(
+      `SELECT JobService_Status FROM JOB_SERVICE
+       WHERE JOB_Job_ID = ? AND SERVICE_Service_ID = ?`,
+      [Job_ID, Service_ID],
+    );
+    if (checkRows.length === 0) {
+      res.status(404).json({ message: "Errore: Nessun lavoro trovato" });
+      return;
+    }
+    const statusToCheck = checkRows[0].JobService_Status;
+    if (['Completed', 'Cancelled'].includes(statusToCheck)) {
+      res.status(409).json({ message: "Errore: Lavoro in stato non modificabile" });
+      return;
+    }
+
     await connection.execute(
       `
       UPDATE JOB_SERVICE
@@ -113,6 +130,23 @@ export const setEmployeeJobService = async (req: Request, res: Response) => {
   try{
     const user = validateEmployee(req,res);
     const {Job_ID, Service_ID} = req.body;
+
+    //Controlli
+    const [checkRows]: any = await connection.execute(
+      `SELECT JobService_Status FROM JOB_SERVICE
+       WHERE JOB_Job_ID = ? AND SERVICE_Service_ID = ?`,
+      [Job_ID, Service_ID],
+    );
+    if (checkRows.length === 0) {
+      res.status(404).json({ message: "Errore: Nessun lavoro trovato" });
+      return;
+    }
+    const statusToCheck = checkRows[0].JobService_Status;
+    if (['Completed', 'Cancelled'].includes(statusToCheck)) {
+      res.status(409).json({ message: "Errore: Lavoro in stato non modificabile" });
+      return;
+    }
+
     await connection.execute(`
       UPDATE JOB_SERVICE
 
