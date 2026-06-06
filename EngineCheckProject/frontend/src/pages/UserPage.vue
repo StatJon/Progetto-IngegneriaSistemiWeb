@@ -79,7 +79,7 @@ export default defineComponent({
 
     <div class="bookings-list">
 
-      <div v-if="errorMessage" style="text-align: center; color: #666; font-size: 18px; margin-top: 60px; width: 100%;">
+      <div v-if="errorMessage" style="text-align: center; color: #666; font-size: 18px; margin-top: auto;width: 100%;">
         {{ errorMessage }}
       </div>
 
@@ -115,7 +115,7 @@ export default defineComponent({
       <button class="btn-logout" @click="logout">
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
           stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-          style="margin-right:8px">
+          style="margin-right:auto" >
           <circle cx="12" cy="12" r="10"></circle>
           <line x1="15" y1="9" x2="9" y2="15"></line>
           <line x1="9" y1="9" x2="15" y2="15"></line>
@@ -127,124 +127,3 @@ export default defineComponent({
   </div>
 </template>
 
-<style scoped>
-
-.page-container {
-  background-color: #f0f6fc;
-  min-height: 85vh;
-  padding: 40px 20px;
-  font-family: 'Segoe UI', sans-serif;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-
-.welcome-title {
-  font-size: 36px;
-  font-weight: 800;
-  margin-bottom: 40px;
-  color: #000;
-  text-align: center;
-}
-
-
-.bookings-list {
-  width: 100%;
-  max-width: 1000px;
-  display: flex;
-  flex-direction: column;
-  gap: 25px;
-}
-
-
-.booking-card {
-  background-color: white;
-  border-radius: 24px;
-  padding: 35px 40px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02);
-  flex-wrap: wrap;
-  gap: 20px;
-}
-
-.card-info {
-  flex: 1;
-  min-width: 250px;
-}
-
-.booking-header {
-  font-size: 18px;
-  font-weight: 800;
-  color: #000;
-  margin: 0 0 15px 0;
-}
-
-.booking-details {
-  font-size: 15px;
-  color: #444;
-  margin: 0;
-  line-height: 1.5;
-}
-
-.btn-review {
-  background-color: #0084ff;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  padding: 12px 25px;
-  font-weight: 600;
-  font-size: 14px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  white-space: nowrap;
-  transition: background 0.2s;
-}
-
-.btn-review:hover {
-  background-color: #006bcf;
-}
-
-
-.logout-container {
-  margin-top: 60px;
-  width: 100%;
-  display: flex;
-  justify-content: center;
-}
-
-.btn-logout {
-  background-color: #0084ff;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  padding: 12px 60px;
-  font-weight: 600;
-  font-size: 15px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  transition: background 0.2s;
-}
-
-.btn-logout:hover {
-  background-color: #006bcf;
-}
-
-
-@media (max-width: 768px) {
-  .booking-card {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  .card-actions {
-    width: 100%;
-    display: flex;
-    justify-content: flex-end;
-  }
-}
-</style>
