@@ -16,7 +16,7 @@ export default defineComponent({
 
   async mounted() {
     this.getEmployeeNameAndBadge();
-    this.getEmployees;
+    this.getEmployees();
   },
 
   methods: {
@@ -28,7 +28,7 @@ export default defineComponent({
     },
     async getEmployees() {
       try {
-        const response = await axios.get('api/admin/listAllEmployee');
+        const response = await axios.get('/api/admin/listAllEmployees');
         this.employees = response.data;
       } catch (error: any) {
         this.errorMessage = error.response.data.message
@@ -104,22 +104,23 @@ export default defineComponent({
           <table class="data-table">
             <thead>
               <tr>
+                <th class="text-center">Selezione</th>
                 <th>Badge ID</th>
                 <th>Nome</th>
                 <th>Cognome</th>
-                <th class="text-center">Selezione</th>
               </tr>
             </thead>
             <tbody>
               <tr v-for="employee in employees" :key="employee.ID_Badge_Number"
                 :class="{ 'selected-row': selectedEmployee === employee }">
-                <td>{{ employee.ID_Badge_Number }}</td>
-                <td>{{ employee.First_Name }}</td>
-                <td>{{ employee.Last_Name }}</td>
                 <td>
                   <input type="radio" :value="employee.ID_Badge_Number" v-model="selectedEmployee"
                     class="custom-checkbox" />
                 </td>
+                <td>{{ employee.ID_Badge_Number }}</td>
+                <td>{{ employee.First_Name }}</td>
+                <td>{{ employee.Last_Name }}</td>
+
               </tr>
             </tbody>
           </table>

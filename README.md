@@ -1,13 +1,16 @@
 # Istruzioni setup
 
-- Scaricare il git
+- Clonare la repository git `git clone https://github.com/StatJon/Progetto-IngegneriaSistemiWeb.git`
+- Tramite terminale, aggiornare le dipendenze backend da posizione ./EngineCheckProject/backend con comando `npm i`
+- Tramite terminale, aggiornare le dipendenze backend da posizione ./EngineCheckProject/backend con comando `npm i`
 - In XAMPP, avviare APACHE e MySQL
-- In MySql, eseguire in ordine le sequenti query
+- In XAMPP\MySql, eseguire in ordine le query alle seguenti directory:
     - ./EngineCheckProject/backend/sql/EngineCheck.sql
     - ./EngineCheckProject/backend/sql/EngineCheckDumpNew.sql
 - In ./EngineCheckProject/backend/ rinominare .env.example in .env
 - Tramite terminale, avviare il backend da posizione ./EngineCheckProject/backend con comando `npm run dev`
 - Tramite terminale, avviare il frontend da posizione ./EngineCheckProject/frontend con comando `npm run dev`
+- Accedere alla pagina tramite browser a `http://localhost:5173/`
 
 ---
 
@@ -28,7 +31,3 @@ Admin
 *Da pagina di login dipendente*
 - num.badge: 1
 - pass: pass123
-
-
-
-* Link: https://www.figma.com/design/a2vk6vfzNOL8sqM5RMt5GV/Progetto-web?node-id=0-1&t=eUldEwrBRyvkYhQ7-1

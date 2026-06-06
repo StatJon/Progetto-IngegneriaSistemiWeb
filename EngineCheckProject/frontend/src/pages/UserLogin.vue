@@ -57,7 +57,7 @@ export default defineComponent({
 
       <div class="form-group">
         <label for="password">Password</label>
-        <input id="password" type="password" v-model="password" placeholder="password" />
+        <input id="password" type="password" v-model="password" @keyup.enter="submitLogin" placeholder="password" />
       </div>
 
       <p v-if="errorMessage" class="error-text">{{ errorMessage }}</p>

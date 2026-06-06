@@ -1,8 +1,5 @@
 import { Request, Response } from "express";
-import {
-  errorHandler,
-  validateCustomer,
-} from "../utils/auth-helpers.js";
+import { errorHandler, validateCustomer } from "../utils/auth-helpers.js";
 import { connection } from "../utils/db.js";
 
 //CONFIG ORARI
@@ -10,22 +7,10 @@ const WORKDAY_START: string = "08:30";
 const WORKDAY_END: string = "19:00";
 const TIMESTEP_MINUTES: number = 30;
 
-//flow booking:
-
-//all'apertura pagina:
-//--get checkDayAvailable per evidenziare i giorni non festivi
-//alla selezione giorno:
-//--get checkTimeAvailability per ritornare gli orari da visualizzare in menu a tendina o "giornata piena"
-//alla conferma:
-//--post saveBooking per INSERT in DB
-
-//GET richiesto parametro URL /yearMonth in formato aaaa-mm es 2026-05
-//Restituisce giorni disponibili per il mese in questione in formato: json({yearMonth : yyyy-mm, daysAvailable : {day : day, available : bool})
 export const checkDayAvailable = async (req: Request, res: Response) => {
   try {
     //Recupero dati,
     const param = req.params.yearMonth;
-    //Controllo dati, dichiarazione senza assegnazione
     let targetYear: number;
     let targetMonth: number;
 
@@ -38,16 +23,14 @@ export const checkDayAvailable = async (req: Request, res: Response) => {
       targetYear = year;
       targetMonth = month;
     } else {
-      //Se c'è param -> prepara i campi
       const targetDate: any = param.split("-");
-      //Check formato corretto
       if (targetDate.length !== 2) {
         res
           .status(400)
           .json({ message: "Formato non valido, usare formato aaaa-mm" });
         return;
       }
-      //Parsing string-->number: parseInt(nomeArray[index], baseNumerica(10)), check dati
+      //Parsing e check
       const year: number = parseInt(targetDate[0], 10);
       const month: number = parseInt(targetDate[1], 10);
       if (isNaN(year) || isNaN(month) || month < 1 || month > 12) {
@@ -57,43 +40,26 @@ export const checkDayAvailable = async (req: Request, res: Response) => {
       targetYear = year;
       targetMonth = month;
     }
-    //Da qui usare: targetMonth, targetYear
-
     const calendarResults = []; //Elemento per stack giorni
     const daysOfMonth = new Date(targetYear, targetMonth, 0).getDate();
-
-    /*
-    Se c'è tempo, aggiunta giorni non prenotabili 
-    for, pseudocode:
-    Per ogni giorno del mese,
-    controlla se è passato,
-    controlla se è domenica (.getDay==0), 
-    controlla se è festività (WIP, se c'è tempo),
-    .push su calendarResults json.{day : day , available : false|true}
-    */
-
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
+    //Controllo giorni non prenotabili
     for (let day = 1; day <= daysOfMonth; day++) {
-      let available: boolean = true; //Dichiara campo per json dopo
-
+      let available: boolean = true;
       const dateToCheck = new Date(targetYear, targetMonth - 1, day);
       dateToCheck.setHours(0, 0, 0, 0);
-
       //check giorno passato
       if (dateToCheck < today) {
         available = false;
       }
-
       //check domenica
       if (dateToCheck.getDay() === 0) {
         available = false;
       }
-
       //check festività
-      //<--- DA FARE, se rimane tempo, richiede DB,CRUD,Pagina frontend --->
-
+      //Check non incluso richiede troppo tempo, (richiede DB,CRUD,Pagina frontend)
       calendarResults.push({
         day: day,
         available: available,
@@ -111,9 +77,8 @@ export const checkDayAvailable = async (req: Request, res: Response) => {
 };
 
 export const checkTimeAvailable = async (req: Request, res: Response) => {
-  // entra GET : ?date=2026-05-15&services=1,3,4
   try {
-    //CONTROLLI PRELIMINARI///
+    //Controlli preliminari
     const { date, services } = req.query;
     if (!date || !services) {
       res.status(400).json({
@@ -121,7 +86,6 @@ export const checkTimeAvailable = async (req: Request, res: Response) => {
       });
       return;
     }
-    //split + map per trasformare services in un array utilizzabile
     const paramIdServices = (services as string)
       .split(",")
       .map((service) => parseInt(service, 10));
@@ -136,10 +100,7 @@ export const checkTimeAvailable = async (req: Request, res: Response) => {
       paramIdServices,
     )) as [any[], []];
 
-    //console.log("Prima chiamata DB (Services) OK");
-
     if (paramIdServices.length !== dbServices.length) {
-      //Check eventuali id mancanti
       res
         .status(400)
         .json({ message: "Attenzione, uno o più servizi inesistenti" });
@@ -150,20 +111,7 @@ export const checkTimeAvailable = async (req: Request, res: Response) => {
       sumMinutesServices += service.Estimated_Duration_Minutes;
     }
 
-    ///LOGICA PRINCIPALE///
-    //Usare da qui in poi sumMinutesServices e date
-
-    /* pseudoCode:
-    Creare griglia orari {orario : orario, disponibile : bool} (mezz'ore)
-    Recuperare Worker massimi da DB
-    Recuperare array lavori {JOB(DATE_TIME), SUM (JOB_SERVICE(SERVICE(Estimated_Duration_Minutes))) WHERE JOB(DATE(DATE_TIME)) = date } 
-    Per ogni slot della griglia, controllare nell'array lavori se c'è almeno 1 worker disponibile per ogni slot necessario, segnare TRUE/FALSE nella griglia orari
-    res.status(200).json(griglia orari)
-
-    !Attenzione: manca gestione degli orari dei singoli dipendenti ed assenze (ferie/malattia)
-    */
-
-    // Preparazione: crea array timeSlots e trasforma gli orari in minuti per essere utilizzabili
+    //Calcolo timeslots
     let timeSlots = [];
     const [hoursStart, minutesStart] = WORKDAY_START.split(":").map((part) =>
       parseInt(part, 10),
@@ -198,9 +146,20 @@ export const checkTimeAvailable = async (req: Request, res: Response) => {
     )) as any;
     const maxWorkers: number = workersArray[0].totalWorkers;
 
-    //console.log("Seconda chiamata DB (Workers) OK");
+    //Blocca ore passate
+    const todayDate = new Date();
+    const todayString = `${todayDate.getFullYear()}-${String(todayDate.getMonth() + 1).padStart(2, "0")}-${String(todayDate.getDate()).padStart(2, "0")}`;
 
-    //Query lista lavori per ciclo for sotto
+    if (date === todayString) {
+      const nowMinutes = todayDate.getHours() * 60 + todayDate.getMinutes();
+      for (const slot of timeSlots) {
+        if (slot.timeSlotAsMinutes < nowMinutes) {
+          slot.busyWorkers = maxWorkers;
+        }
+      }
+    }
+
+    //Controllo disponibilità workers
     const [jobsArray] = (await connection.execute(
       `
       SELECT
@@ -215,16 +174,11 @@ export const checkTimeAvailable = async (req: Request, res: Response) => {
       [date],
     )) as any;
 
-    //console.log("Terza chiamata DB (Jobs) OK");
-
-    //Occupazione griglia orari
     for (const job of jobsArray) {
-      //Conversione a minuti per check
       const jobDate = new Date(job.Date_Time);
       const startJobMinutes = jobDate.getHours() * 60 + jobDate.getMinutes();
       const endJobMinutes = startJobMinutes + job.Total_Duration;
 
-      //Per ogni slot controlla se il job lo occupa, +1 busyWorkers se vero
       for (const slot of timeSlots) {
         if (
           slot.timeSlotAsMinutes >= startJobMinutes &&
@@ -236,25 +190,14 @@ export const checkTimeAvailable = async (req: Request, res: Response) => {
     }
 
     //Controllo disponibilità effettivo
-
-    /*
-    for (const slot of timeSlots),
-     per ogni slot controlla se tutti gli slot richiesti sono liberi,
-     se è vero non fare nulla (available=true di default)
-     se è falso available=false e break 
-    */
-
     let timeSlotsToFrontend = []; //{timeSlot,available}
-
     const timeSlotsNeeded = Math.ceil(sumMinutesServices / TIMESTEP_MINUTES); //nota: Math.ceil per evitare errori con TIMESTEP_MINUTES
 
     for (const slot of timeSlots) {
-      //per ogni slot
       const currentIndex = timeSlots.indexOf(slot);
 
       for (let i = 0; i < timeSlotsNeeded; i++) {
-        //per ogni slot necessario a partire dallo slot in controllo
-        const nextSlot = timeSlots[currentIndex + i]; //per controllo fuori orario
+        const nextSlot = timeSlots[currentIndex + i];
         if (!nextSlot || nextSlot.busyWorkers >= maxWorkers) {
           slot.available = false;
           break;
@@ -271,8 +214,6 @@ export const checkTimeAvailable = async (req: Request, res: Response) => {
   }
 };
 
-//nota, i service da salvare vengono passati tramite url
-// json {1,5,21,23}
 export const saveBooking = async (req: Request, res: Response) => {
   try {
     const user = validateCustomer(req, res);
@@ -289,29 +230,35 @@ export const saveBooking = async (req: Request, res: Response) => {
       return;
     }
 
-    //INSERT in JOB
-    const [newJob] = (await connection.execute(
-      `
+    try {
+      await connection.beginTransaction();
+      const [newJob] = (await connection.execute(
+        `
         INSERT INTO JOB
         (Model, Vehicle_Type, License_Plate, Date_Time, CUSTOMER_ID) VALUES
         (?,?,?,?,?)
         `,
-      [Model, Vehicle_Type, License_Plate, Date_Time, user.id],
-    )) as any;
-    const newJobId = newJob.insertId;
+        [Model, Vehicle_Type, License_Plate, Date_Time, user.id],
+      )) as any;
+      const newJobId = newJob.insertId;
 
-    //INSERT IN JOB_SERVICE
-    for (const service of ServicesArray) {
-      await connection.execute(
-        `
-        INSERT INTO JOB_SERVICE
-        (JOB_Job_ID, SERVICE_Service_ID) VALUES
-        (?,?)
-        `,
-        [newJobId, service],
-      );
+      for (const service of ServicesArray) {
+        await connection.execute(
+          `
+          INSERT INTO JOB_SERVICE
+          (JOB_Job_ID, SERVICE_Service_ID) VALUES
+          (?,?)
+          `,
+          [newJobId, service],
+        );
+      }
+
+      await connection.commit();
+      res.status(201).json({ message: "Prenotazione Confermata" });
+    } catch (error) {
+      await connection.rollback();
+      throw error;
     }
-    res.status(201).json({ message: "Prenotazione Confermata" });
   } catch (error) {
     errorHandler(req, res, error);
   }

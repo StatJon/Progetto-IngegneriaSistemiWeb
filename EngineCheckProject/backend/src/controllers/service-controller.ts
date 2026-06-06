@@ -75,6 +75,12 @@ export const servicesSelect = async (req: Request, res: Response) => {
       `,
       services,
     )) as any;
+
+    if (!Array.isArray(results) || results.length === 0) {
+      res.status(400).json({ message: "Errore: Servizi mancanti." });
+      return;
+    }
+
     res.status(200).json(results);
   } catch (error) {
     errorHandler(req, res, error);
