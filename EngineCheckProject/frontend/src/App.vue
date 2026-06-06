@@ -180,7 +180,7 @@ body {
   text-decoration: none;
   color: #333;
   font-weight: 500;
-  font-size: 14px;
+  font-size: 20px;
 }
 
 .nav-item.highlight {
