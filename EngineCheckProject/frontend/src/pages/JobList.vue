@@ -11,6 +11,21 @@ export default defineComponent({
       badgeNumber: '',
       jobs: [] as Job[],
       selectedJobId: null as Job | null,
+
+      sortKey: '' as string,
+      sortAsc: true,
+    }
+  },
+  computed: {
+    sortedJobs(): Job[] {
+      if (!this.sortKey) {
+        return this.jobs;
+      }
+      const key = this.sortKey as keyof Job;
+      return [...this.jobs].sort((a, b) => {
+        const result = String(a[key] ?? '').localeCompare(String(b[key] ?? ''), undefined, { numeric: true });
+        return this.sortAsc ? result : -result;
+      });
     }
   },
   async mounted() {
@@ -35,38 +50,59 @@ export default defineComponent({
     async setStatusJob(action: string) {
       this.errorMessage = '';
       try {
-      if (!this.selectedJobId) {
-        this.errorMessage = "Nessun lavoro selezionato"
-        return;
+        if (!this.selectedJobId) {
+          this.errorMessage = "Nessun lavoro selezionato"
+          return;
+        }
+        this.errorMessage = '';
+        let jobStatus = '';
+        switch (action) {
+          case 'start':
+            jobStatus = 'Working';
+            break;
+          case 'finish':
+            jobStatus = 'Completed';
+            break;
+          case 'suspend':
+            jobStatus = 'Assigned';
+            break;
+        }
+        await axios.post('/api/job/setStatusJobService', { Job_ID: this.selectedJobId.Job_ID, Service_ID: this.selectedJobId.Service_ID, Job_Status: jobStatus });
+        await this.getJobs();
+      } catch (error: any) {
+        this.errorMessage = error.response.data.message
       }
-      this.errorMessage = '';
-      let jobStatus = '';
-      switch (action) {
-        case 'start':
-          jobStatus = 'Working';
-          break;
-        case 'finish':
-          jobStatus = 'Completed';
-          break;
-        case 'suspend':
-          jobStatus = 'Assigned';
-          break;
-      }
-      await axios.post('/api/job/setStatusJobService', { Job_ID: this.selectedJobId.Job_ID, Service_ID: this.selectedJobId.Service_ID, Job_Status: jobStatus });
-      await this.getJobs();
-    }catch(error: any){
-      this.errorMessage = error.response.data.message
-    }
     },
     async logout() {
       try {
-      await axios.get('/api/auth/logout');
-      sessionStorage.clear()
-      this.$router.push('/login-employee');
-    }catch(error: any){
-      this.errorMessage = error.response.data.message
-    }
-  },
+        await axios.get('/api/auth/logout');
+        sessionStorage.clear()
+        this.$router.push('/login-employee');
+      } catch (error: any) {
+        this.errorMessage = error.response.data.message
+      }
+    },
+    helperFormatDate(dateString: string): string {
+      const date = new Date(dateString);
+      const yyyy = date.getFullYear();
+      const mm = String(date.getMonth() + 1).padStart(2, '0');
+      const dd = String(date.getDate()).padStart(2, '0');
+      const hh = String(date.getHours()).padStart(2, '0');
+      const min = String(date.getMinutes()).padStart(2, '0');
+      return `${yyyy}-${mm}-${dd} ${hh}:${min}`;
+    },
+    helperSortBy(key: string) {
+      if (this.sortKey === key) {
+        this.sortAsc = !this.sortAsc;
+      } else {
+        this.sortKey = key;
+        this.sortAsc = true;
+      }
+    },
+    helperSortArrow(key: string): string {
+      if (this.sortKey !== key) return '';
+      return this.sortAsc ? ' ▲' : ' ▼';
+    },
   }
 }
 )
@@ -113,31 +149,39 @@ export default defineComponent({
           <table class="jobs-table">
             <thead>
               <tr>
-                <th class="text-center">Selezione</th>
-                <th>ID Lavoro</th>
-                <th>Stato</th>
-                <th>Data-Ora Inizio previsto</th>
-                <th>Lavoro da effettuare</th>
-                <th>Tempo stimato</th>
-                <th>Targa Veicolo</th>
-                <th>Nome Veicolo</th>
-                <th>Telefono</th>
+                <th @click="helperSortBy('Job_ID')" style="cursor: pointer;">
+                  ID Lavoro{{ helperSortArrow('Job_ID') }}</th>
+                <th @click="helperSortBy('JobService_Status')" style="cursor: pointer;">
+                  Stato{{ helperSortArrow('JobService_Status') }}</th>
+                <th @click="helperSortBy('Date_Time')" style="cursor: pointer;">
+                  Data-Ora Inizio previsto{{ helperSortArrow('Date_Time') }}</th>
+                <th @click="helperSortBy('Title')" style="cursor: pointer;">
+                  Lavoro da effettuare{{ helperSortArrow('Title') }}</th>
+                <th @click="helperSortBy('Minutes')" style="cursor: pointer;">
+                  Tempo stimato{{ helperSortArrow('Minutes') }}</th>
+                <th @click="helperSortBy('License_Plate')" style="cursor: pointer;">
+                  Targa Veicolo{{ helperSortArrow('License_Plate') }}</th>
+                <th @click="helperSortBy('Model')" style="cursor: pointer;">
+                  Nome Veicolo{{ helperSortArrow('Model') }}</th>
+                <th @click="helperSortBy('CustomerPhone')" style="cursor: pointer;">
+                  Telefono{{ helperSortArrow('CustomerPhone') }}</th>
               </tr>
             </thead>
             <tbody>
-              <tr v-for="job in jobs" :key="`${job.Job_ID}-${job.Service_ID}`" :class="{ 'selected-row': selectedJobId === job }">
-                 <td class="text-center">
+              <tr v-for="job in sortedJobs" :key="`${job.Job_ID}-${job.Service_ID}`"
+                :class="{ 'selected-row': selectedJobId === job }">
+                <td class="text-center">
                   <input type="radio" name="jobSelect" :value="job" v-model="selectedJobId" class="custom-checkbox" />
                 </td>
                 <td>{{ job.Job_ID }}-{{ job.Service_ID }}</td>
                 <td>{{ job.JobService_Status }}</td>
-                <td>{{ job.Date_Time }}</td>
+                <td>{{ helperFormatDate(job.Date_Time) }}</td>
                 <td>{{ job.Title }}</td>
                 <td>{{ job.Minutes }}</td>
                 <td>{{ job.License_Plate }}</td>
                 <td>{{ job.Model }}</td>
                 <td>{{ job.CustomerPhone }}</td>
-               
+
               </tr>
             </tbody>
           </table>

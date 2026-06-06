@@ -11,6 +11,22 @@ export default defineComponent({
       errorMessage: '',
       employees: [] as Employee[],
       selectedEmployee: null as Employee | null,
+
+      sortKey: '' as string,
+      sortAsc: true,
+    }
+  },
+
+  computed: {
+    sortedEmployees(): Employee[] {
+      if (!this.sortKey) {
+        return this.employees;
+      }
+      const key = this.sortKey as keyof Employee;
+      return [...this.employees].sort((a, b) => {
+        const result = String(a[key] ?? '').localeCompare(String(b[key] ?? ''), undefined, { numeric: true });
+        return this.sortAsc ? result : -result;
+      });
     }
   },
 
@@ -57,6 +73,18 @@ export default defineComponent({
       await axios.get('/api/auth/logout');
       sessionStorage.clear()
       this.$router.push('/login-employee');
+    },
+    helperSortBy(key: string) {
+      if (this.sortKey === key) {
+        this.sortAsc = !this.sortAsc;
+      } else {
+        this.sortKey = key;
+        this.sortAsc = true;
+      }
+    },
+    helperSortArrow(key: string): string {
+      if (this.sortKey !== key) return '';
+      return this.sortAsc ? ' ▲' : ' ▼';
     },
   }
 }
@@ -105,16 +133,19 @@ export default defineComponent({
             <thead>
               <tr>
                 <th class="text-center">Selezione</th>
-                <th>Badge ID</th>
-                <th>Nome</th>
-                <th>Cognome</th>
+                <th @click="helperSortBy('ID_Badge_Number')" style="cursor: pointer;">
+                  Badge ID{{ helperSortArrow('ID_Badge_Number') }}</th>
+                <th @click="helperSortBy('First_Name')" style="cursor: pointer;">
+                  Nome{{ helperSortArrow('First_Name') }}</th>
+                <th @click="helperSortBy('Last_Name')" style="cursor: pointer;">
+                  Cognome{{ helperSortArrow('Last_Name') }}</th>
               </tr>
             </thead>
             <tbody>
-              <tr v-for="employee in employees" :key="employee.ID_Badge_Number"
+              <tr v-for="employee in sortedEmployees" :key="employee.ID_Badge_Number"
                 :class="{ 'selected-row': selectedEmployee === employee }">
                 <td>
-                  <input type="radio" :value="employee.ID_Badge_Number" v-model="selectedEmployee"
+                  <input type="radio" :value="employee" v-model="selectedEmployee"
                     class="custom-checkbox" />
                 </td>
                 <td>{{ employee.ID_Badge_Number }}</td>
@@ -132,7 +163,6 @@ export default defineComponent({
 </template>
 
 <style scoped>
-
 .page-container {
   background-color: #f0f6fc;
   min-height: 85vh;
