@@ -34,7 +34,11 @@ export default defineComponent({
         this.errorMessage = error.response.data.message;
       }
     },
+    async goBack() {
+      this.$router.back();
+    }
   }
+  
 }
 )
 
@@ -73,13 +77,10 @@ export default defineComponent({
         </div>
 
       </div>
-      <button class="btn-signin" @click="addEmployee">Aggiungi Dipendente </button>
+      <button class="btn-signin" @click="addEmployee">Aggiungi Dipendente</button>
+      <button class="btn-signin" @click="goBack">Torna a Dashboard</button>
     </main>
 
-    <footer class="footer">
-      <p>Hiba - Jonathan</p>
-      <p>2025/2026</p>
-    </footer>
   </div>
 </template>
 

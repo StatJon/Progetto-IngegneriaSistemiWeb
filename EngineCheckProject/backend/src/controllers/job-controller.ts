@@ -25,8 +25,8 @@ export const listAllJobs = async (req: Request, res: Response) => {
         s.Estimated_Duration_Minutes as Minutes,
         e.First_Name as Worker_Name,
         e.Last_Name as Worker_Last_Name,
-        c.Email as Customer_Email,
-        c.Phone as Customer_Phone
+        c.Email as CustomerEmail,
+        c.Phone as CustomerPhone
 
         FROM JOB AS j
 
