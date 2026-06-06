@@ -42,7 +42,7 @@ export default defineComponent({
             }
             this.$router.push({
                 path: '/booking-confirm',
-                query: { services: this.selectedServices.join(',') }
+                query: { services: this.selectedServices.join(','), vehicleType: this.vehicleFilter }
             });
         }
     },

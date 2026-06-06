@@ -8,67 +8,71 @@ export default defineComponent({
     const today = new Date();
     return {
       errorMessage: '',
-      serviceIds: [] as number[],
+
       serviceData: [] as Service[],
-      avMonth: [] as number[],
+
+      serviceIds: [] as number[],
+
+      vehicleType: '',
+      vehiclePlate: '',
+      vehicleModel: '',
+
       selectedYear: today.getFullYear(),
       selectedMonth: today.getMonth() + 1,
       selectedDay: 0,
-      currentYear: today.getFullYear(),
+      selectedTime: '',
 
+      currentYear: today.getFullYear(),
+      availableMonth: [] as number[],
       availableDays: [] as { day: number; available: boolean }[],
       availableTimes: [] as { timeSlot: string; available: boolean }[],
-
-      bookingForm: {
-        vehicleType: '',
-        vehiclePlate: '',
-        vehicleModel: '',
-        month: '',
-        year: '',
-        day: '',
-        timeSlot: ''
-      }
     };
   },
   async mounted() {
-    this.serviceIds = this.$route.query.services as any;
+    this.serviceIds = (this.$route.query.services as string).split(',').map(Number);
+    this.vehicleType = this.$route.query.vehicleType as any;
     this.getServices();
     await this.getMonths();
     await this.checkDay();
   },
   watch: {
     selectedYear() {
+      if (this.selectedYear !== this.currentYear) {
+        this.selectedMonth = 1;
+      } else {
+        this.selectedMonth = new Date().getMonth() + 1;
+      }
       this.getMonths();
       this.checkDay();
       this.checkTime();
-      console.log("hai cambiato l'anno");
+      //console.log("hai cambiato l'anno");
     },
     selectedMonth() {
       this.checkDay();
       this.checkTime();
-      console.log("hai cambiato il mese");
+      //console.log("hai cambiato il mese");
     },
     selectedDay() {
       this.checkTime();
-      console.log("hai cambiato il giorno ");
+      //console.log("hai cambiato il giorno ");
     }
   },
   methods: {
     async getServices() {
       this.errorMessage = '';
       try {
-        const response = await axios.get("/api/service/select", { params: { id: this.serviceIds } });
+        const response = await axios.get("/api/service/select", { params: { id: this.serviceIds.join(',') } });
         this.serviceData = response.data;
       } catch (error: any) {
         this.errorMessage = error.response.data.message
       }
     },
     async getMonths() {
-      this.avMonth = [];
+      this.availableMonth = [];
       this.errorMessage = '';
       try {
         for (let i = this.selectedMonth; i <= 12; i++) {
-          this.avMonth.push(i);
+          this.availableMonth.push(i);
         }
       } catch (error: any) {
         this.errorMessage = error.response.data.message
@@ -80,7 +84,7 @@ export default defineComponent({
       try {
         const response = await axios.get(`/api/booking/checkDayAvailable/${this.selectedYear}-${this.selectedMonth}`);
         this.availableDays = response.data.daysAvailable.filter((d: any) => d.available === true);
-        console.log(this.availableDays);
+        //console.log(this.availableDays);
       } catch (error: any) {
         this.errorMessage = error.response.data.message
       }
@@ -88,12 +92,11 @@ export default defineComponent({
     async checkTime() {
       // GET: ?date=aaaa-mm-gg&services=1,2,3,..., gli do questo in richiesta get, e ricevo JSON ({timeSlot : hh:mm, available : true/false})
       this.availableTimes = [];
-
       try {
         const response = await axios.get('/api/booking/checkTimeAvailable', {
           params: {
             date: `${this.selectedYear}-${this.selectedMonth}-${this.selectedDay}`,
-            services: this.serviceIds
+            services: this.serviceIds.join(',')
           }
         });
         this.availableTimes = response.data.filter((t: any) => t.available === true);
@@ -103,20 +106,33 @@ export default defineComponent({
     },
     async submit() {
       this.errorMessage = '';
+      if (!this.vehicleModel || !this.vehiclePlate) {
+        this.errorMessage = "Inserire modello e targa del veicolo";
+        return;
+      }
+      if (!this.selectedDay) {
+        this.errorMessage = "Selezionare un giorno";
+        return;
+      }
+      if (!this.selectedTime) {
+        this.errorMessage = "Selezionare un orario";
+        return;
+      }
       try {
-        const dataSet = `${this.selectedYear}-${String(this.selectedMonth).padStart(2, '0')}-${String(this.selectedDay).padStart(2, '0')} ${this.availableTimes}:00`
+        const dataSet = `${this.selectedYear}-${String(this.selectedMonth).padStart(2, '0')}-${String(this.selectedDay).padStart(2, '0')} ${this.selectedTime}:00`
 
         const response = await axios.get('/api/auth/whoamiCustomer');
         const customerId = response.data;
 
-        await axios.post('api/booking/saveBooking', {
-          Model: this.bookingForm.vehicleModel,
-          Vehicle_Type: this.bookingForm.vehicleType,
-          License_Plate: this.bookingForm.vehiclePlate,
-          Data_Time: dataSet,
+        await axios.post('/api/booking/saveBooking', {
+          Model: this.vehicleModel,
+          Vehicle_Type: this.vehicleType,
+          License_Plate: this.vehiclePlate,
+          Date_Time: dataSet,
           Customer_ID: customerId,
           ServicesArray: this.serviceIds
         });
+        this.$router.push('/booking-final-confirmation');
       } catch (error: any) {
         this.errorMessage = error.response.data.message
       }
@@ -165,17 +181,12 @@ export default defineComponent({
         <div class="booking-form-card">
 
           <div class="form-group">
-            <label>Tipo Veicolo</label>
-            <input type="text" v-model="bookingForm.vehicleType" placeholder="Es. Moto, Auto, SUV" />
+            <label>Modello veicolo</label>
+            <input type="text" v-model="vehicleModel" placeholder="Toyota Supra" />
           </div>
-
           <div class="form-group">
             <label>Targa veicolo</label>
-            <input type="text" v-model="bookingForm.vehiclePlate" placeholder="Inserisci targa" />
-          </div>
-          <div class="form-group">
-            <label>modello veicolo</label>
-            <input type="text" v-model="bookingForm.vehicleModel" placeholder="Inserisci modello" />
+            <input type="text" v-model="vehiclePlate" placeholder="AA 123 BB" />
           </div>
 
           <hr class="divider" />
@@ -189,27 +200,26 @@ export default defineComponent({
 
             <label>Mese</label>
             <select v-model="selectedMonth">
-              <option v-for="(month, index) in avMonth" :key="index" :value="month">{{ month }} </option>
-
+              <option v-for="(month, index) in availableMonth" :key="index" :value="month">{{ month }} </option>
             </select>
 
             <label>Giorno</label>
             <select v-model="selectedDay">
-              <option v-for="days in availableDays" :key="days.day" :value="days">{{ days.day }}</option>
-
+              <option v-for="days in availableDays" :key="days.day" :value="days.day">{{ days.day }}</option>
             </select>
 
           </div>
 
           <div class="time-selector">
             <label for="orari">Scegli una fascia oraria:</label>
-
-            <select name="fascia-oraria" id="orari">
-              <option v-for="timeSlot in availableTimes" :key="timeSlot.timeSlot">{{ timeSlot.timeSlot }}</option>
+            <select v-model="selectedTime" name="fascia-oraria" id="orari">
+              <option v-for="timeSlot in availableTimes" :key="timeSlot.timeSlot" :value="timeSlot.timeSlot">{{
+                timeSlot.timeSlot }}</option>
             </select>
 
           </div>
 
+          <p v-if="errorMessage" style="color: red; font-size: 13px;">{{ errorMessage }}</p>
 
           <button class="btn-submit" @click="submit">
             Conferma prenotazione ✔
