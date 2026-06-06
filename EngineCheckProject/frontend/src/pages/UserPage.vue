@@ -35,10 +35,17 @@ export default defineComponent({
         this.errorMessage = error.response.data.message
       }
     },
+    goToCarBooking() {
+      this.$router.push('/booking/car');
+    },
+    goToMotorcycleBooking() {
+      this.$router.push('/booking/motorcycle');
+    },
+
     async deleteBooking(jobId: number) {
       try {
         await axios.delete(`/api/customer/jobDelete/${jobId}`)
-        
+
         await this.getUserJobs();
 
       } catch (error: any) {
@@ -110,12 +117,24 @@ export default defineComponent({
 
       </div>
     </div>
-    
+
+<div style="display: flex; flex-direction: column; align-items: center; gap: 10px; margin-top: 30px;">
+  <button class="btn-confirm" @click="goToCarBooking">
+    <span class="material-symbols-outlined icon">directions_car</span>
+    Prenotazione per Auto
+  </button>
+  <button class="btn-confirm" @click="goToMotorcycleBooking">
+    <span class="material-symbols-outlined icon">two_wheeler</span>
+    Prenotazione per Moto
+  </button>
+</div>
+
     <div class="logout-container">
+
       <button class="btn-logout" @click="logout">
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
           stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-          style="margin-right:auto" >
+          style="margin-right:auto">
           <circle cx="12" cy="12" r="10"></circle>
           <line x1="15" y1="9" x2="9" y2="15"></line>
           <line x1="9" y1="9" x2="15" y2="15"></line>
@@ -126,4 +145,3 @@ export default defineComponent({
 
   </div>
 </template>
-
