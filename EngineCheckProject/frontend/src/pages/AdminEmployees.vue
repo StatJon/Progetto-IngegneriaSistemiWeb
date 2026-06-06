@@ -93,7 +93,7 @@ export default defineComponent({
             ← Passa a lavori
           </button>
 
-          <button class="btn-logout" @click="logout">
+          <button class="btn-logout-admin" @click="logout">
             ← Logout
           </button>
         </div>
@@ -131,7 +131,7 @@ export default defineComponent({
   </div>
 </template>
 
-<style scoped>
+<!-- <style scoped>
 
 .page-container {
   background-color: #f0f6fc;
@@ -340,4 +340,4 @@ export default defineComponent({
     min-height: auto;
   }
 }
-</style>
+</style> -->
