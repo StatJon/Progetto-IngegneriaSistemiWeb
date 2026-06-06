@@ -83,6 +83,19 @@ export default defineComponent({
           </a>
         </div>
 
+        
+        <input type="checkbox" id="nav-toggle" class="nav-toggle-input" />
+
+       
+        <label for="nav-toggle" class="hamburger" aria-label="Menu">
+          <span class="bar"></span>
+          <span class="bar"></span>
+          <span class="bar"></span>
+        </label>
+
+        
+        <label for="nav-toggle" class="nav-overlay"></label>
+
         <nav class="nav-links">
           <a href="/#dove-siamo" class="nav-item">
             <span class="material-symbols-outlined icon">location_on</span>
@@ -201,5 +214,92 @@ body {
 .fade-enter-from,
 .fade-leave-to {
   opacity: 0;
+}
+
+.nav-toggle-input {
+  display: none;
+}
+
+
+.hamburger {
+  display: none;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 28px;
+  height: 20px;
+  cursor: pointer;
+  z-index: 1001;
+}
+
+.hamburger .bar {
+  display: block;
+  width: 100%;
+  height: 2px;
+  background-color: currentColor;
+  border-radius: 2px;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.nav-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 999;
+}
+
+
+.nav-toggle-input:checked~.nav-overlay {
+  display: block;
+}
+
+.nav-toggle-input:checked~.nav-links {
+  right: 0;
+}
+
+.nav-toggle-input:checked~.hamburger .bar:nth-child(1) {
+  transform: translateY(9px) rotate(45deg);
+}
+
+.nav-toggle-input:checked~.hamburger .bar:nth-child(2) {
+  opacity: 0;
+}
+
+.nav-toggle-input:checked~.hamburger .bar:nth-child(3) {
+  transform: translateY(-9px) rotate(-45deg);
+}
+
+@media (max-width: 768px) {
+  .hamburger {
+    display: flex;
+  }
+
+  .nav-links {
+    position: fixed;
+    top: 0;
+    right: -100%;
+    width: 280px;
+    height: 100dvh;
+    background: white;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 80px 24px 32px;
+    gap: 8px;
+    z-index: 1000;
+    transition: right 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: -4px 0 24px rgba(0, 0, 0, 0.12);
+  }
+
+  .nav-overlay {
+    display: block;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.35s ease;
+  }
+
+  .nav-toggle-input:checked~.nav-overlay {
+    opacity: 1;
+    pointer-events: all;
+  }
 }
 </style>
