@@ -189,6 +189,7 @@ body {
   text-align: center;
   padding: 20px;
   margin-top: auto;
+  background-color: white ;
 
 }
 
