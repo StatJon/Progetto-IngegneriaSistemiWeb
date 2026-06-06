@@ -38,16 +38,16 @@ export default defineComponent({
       this.$router.back();
     }
   }
-  
+
 }
 )
 
 </script>
 
 <template>
-  <div class="page-container">
+  
     <main class="main-content">
-      <div class="Info-card">
+      <div class="register-card">
 
         <p v-if="errorMessage" style="color: red; font-size: 13px;">{{ errorMessage }}</p>
 
@@ -75,88 +75,12 @@ export default defineComponent({
             </optgroup>
           </select>
         </div>
+        <button class="btn-employee" @click="addEmployee">Aggiungi Dipendente</button>
+        <button class="btn-back" @click="goBack">Torna a Dashboard</button>
+
 
       </div>
-      <button class="btn-signin" @click="addEmployee">Aggiungi Dipendente</button>
-      <button class="btn-signin" @click="goBack">Torna a Dashboard</button>
     </main>
 
-  </div>
+
 </template>
-
-<style scoped>
-.form-group label {
-  display: block;
-  margin-bottom: 0.8rem;
- 
-  font-weight: 600;
-  color: #000000;
-
-  
-  letter-spacing: 0.5px;
-  
-  text-transform: uppercase;
-  
-  font-size: 0.85rem;
-  
-  width: 100%;
-  
-}
-
-.Info-card {
-  background: white;
-  padding: 2.5rem;
-  border-radius: 8px;
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-  width: 100%;
-  max-width: 500px;
- 
-  border: 1px solid #e2e8f0;
-}
-
-
-.page-container {
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background-color: #ffffff;
-}
-
-.main-content {
-  flex-grow: 1;
-  background-color: #f0f7ff;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 20px;
-}
-
-.form-group input {
-  width: 100%;
-  padding: 0.75rem;
-  border: 1px solid #cbd5e0;
-  border-radius: 6px;
-  box-sizing: border-box;
-}
-
-.btn-signin {
-
-  padding: 0.8rem;
-  background-color: #2d3748;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: 1rem;
-  transition: background 0.2s;
-}
-
-.footer {
-  text-align: center;
-  padding: 2rem;
-  background-color: #ffffff;
-  color: #718096;
-  font-size: 0.85rem;
-}
-</style>

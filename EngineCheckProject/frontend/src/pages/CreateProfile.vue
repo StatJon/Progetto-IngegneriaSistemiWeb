@@ -82,7 +82,7 @@ export default defineComponent({
 
       <p v-if="errorMessage" class="error-text">{{ errorMessage }}</p>
 
-      <button class="btn-create-user" @click="submitUserData">
+      <button class="btn-user-login" @click="submitUserData">
         {{ 'Crea Profilo' }}
       </button>
 
