@@ -73,7 +73,7 @@ export default defineComponent({
 
       <p v-if="errorMessage" class="error-text">{{ errorMessage }}</p>
 
-      <button class="btn-primary" @click="submitEmployeeLogin">
+      <button class="btn-employee" @click="submitEmployeeLogin">
         Accedi
       </button>
 
@@ -88,7 +88,7 @@ export default defineComponent({
   </div>
 </template>
 
-<style scoped>
+<!-- <style scoped>
 .main-container {
   display: flex;
   flex-direction: column;
@@ -199,4 +199,4 @@ export default defineComponent({
 .icon-arrow {
   font-size: 1.2em;
 }
-</style>
+</style> -->
