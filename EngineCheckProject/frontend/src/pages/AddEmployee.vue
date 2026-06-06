@@ -38,16 +38,16 @@ export default defineComponent({
       this.$router.back();
     }
   }
-  
+
 }
 )
 
 </script>
 
 <template>
-  <div class="page-container">
+  
     <main class="main-content">
-      <div class="Info-card">
+      <div class="register-card">
 
         <p v-if="errorMessage" style="color: red; font-size: 13px;">{{ errorMessage }}</p>
 
@@ -75,15 +75,16 @@ export default defineComponent({
             </optgroup>
           </select>
         </div>
+        <button class="btn-employee" @click="addEmployee">Aggiungi Dipendente</button>
+        <button class="btn-back" @click="goBack">Torna a Dashboard</button>
+
 
       </div>
-      <button class="btn-signin" @click="addEmployee">Aggiungi Dipendente</button>
-      <button class="btn-signin" @click="goBack">Torna a Dashboard</button>
     </main>
 
-  </div>
-</template>
 
+</template>
+<!-- 
 <style scoped>
 .form-group label {
   display: block;
@@ -159,4 +160,4 @@ export default defineComponent({
   color: #718096;
   font-size: 0.85rem;
 }
-</style>
+</style> -->

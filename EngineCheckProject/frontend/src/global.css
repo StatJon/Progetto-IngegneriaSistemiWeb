@@ -316,6 +316,8 @@ body {
   width: 100%;
   max-width: 400px;
   text-align: center;
+  margin: auto;
+
 }
 
 .form-group {
@@ -564,7 +566,8 @@ label {
 
 .btn-employee,
 .btn-user-login,
-.btn-create-user{
+.btn-create-user
+.btn-create-employee{
   width: 100%;
   background-color: var(--color-dark);
   border: 1px solid var(--color-border);
@@ -582,7 +585,8 @@ label {
 
 .btn-employee:hover,
 .btn-user-login:hover
-.btn-create-user:hover {
+.btn-create-user:hover 
+.btn-create-employee:hover{
   background-color: black;
   border-color: #8c959f;
 }
