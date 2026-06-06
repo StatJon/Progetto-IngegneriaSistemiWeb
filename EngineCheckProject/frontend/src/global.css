@@ -452,6 +452,7 @@ label {
   font-family: var(--font-family);
   cursor: pointer;
   transition: background-color 0.2s;
+  margin: auto;
 }
 
 .btn-blue:hover,
@@ -591,6 +592,7 @@ label {
   gap: var(--space-lg);
   width: 100%;
   max-width: 1200px;
+  margin: auto;
 }
 
 @media (max-width: 900px) {
