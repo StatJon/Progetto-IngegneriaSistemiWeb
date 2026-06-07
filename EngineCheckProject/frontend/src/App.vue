@@ -179,8 +179,8 @@ body {
 .nav-item {
   text-decoration: none;
   color: #333;
-  font-weight: 500;
-  font-size: 18px;
+  font-weight: 400;
+  font-size: 15px;
 }
 
 .nav-item.highlight {
