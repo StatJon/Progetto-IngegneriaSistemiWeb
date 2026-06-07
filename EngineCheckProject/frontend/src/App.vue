@@ -76,48 +76,46 @@ export default defineComponent({
   <div class="app-layout">
 
     <header class="site-header">
-      <div class="container navbar">
+      <div class="navbar">
         <div class="logo">
           <a href="/">
             <img src="./icoHome.png" alt="icona" class="logo-img">
           </a>
         </div>
 
-        
-        <input type="checkbox" id="nav-toggle" class="nav-toggle-input" />
+        <input type="checkbox" id="nav-toggle" ref="navToggle" class="nav-toggle-input" />
 
-       
         <label for="nav-toggle" class="hamburger" aria-label="Menu">
           <span class="bar"></span>
           <span class="bar"></span>
           <span class="bar"></span>
         </label>
 
-        
+
         <label for="nav-toggle" class="nav-overlay"></label>
 
         <nav class="nav-links">
-          <a href="/#dove-siamo" class="nav-item">
+          <a href="/#dove-siamo" class="nav-item" @click="($refs.navToggle as HTMLInputElement).checked = false">
             <span class="material-symbols-outlined icon">location_on</span>
             Dove siamo
           </a>
 
-          <a href="/#contatti" class="nav-item">
+          <a href="/#contatti" class="nav-item" @click="($refs.navToggle as HTMLInputElement).checked = false">
             <span class="material-symbols-outlined icon">call</span>
             Contatti
           </a>
 
-          <router-link to="/booking/car" class="nav-item">
+          <router-link to="/booking/car" class="nav-item" @click="($refs.navToggle as HTMLInputElement).checked = false">
             <span class="material-symbols-outlined icon">directions_car</span>
-            Prenotazione per Auto
+            Prenotazione Auto
           </router-link>
 
-          <router-link to="/booking/motorcycle" class="nav-item">
+          <router-link to="/booking/motorcycle" class="nav-item" @click="($refs.navToggle as HTMLInputElement).checked = false">
             <span class="material-symbols-outlined icon">two_wheeler</span>
-            Prenotazione per Moto
+            Prenotazione Moto
           </router-link>
 
-          <router-link :to="selectUserRoute()" class="nav-item highlight">
+          <router-link :to="selectUserRoute()" class="nav-item highlight" @click="($refs.navToggle as HTMLInputElement).checked = false">
             <span class="material-symbols-outlined icon">{{ navIcon }}</span>
             {{ navText }}
           </router-link>
@@ -153,17 +151,29 @@ body {
 
 
 .site-header {
+  display: flex;
+  justify-content: center;
+  width: 100%;
   background-color: white;
   border-bottom: 1px solid #ddd;
 }
 
+@media (max-width: 768px){
+  .site-header{
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+  }
+}
+
 .navbar {
+  padding-inline: 20px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 10px 40px;
+  width: 100%;
   max-width: 1200px;
-  margin: 0 auto;
+  min-height: 100px;
 }
 
 .logo-img {
@@ -172,7 +182,7 @@ body {
 
 .nav-links {
   display: flex;
-  gap: 20px;
+  gap: var(--space-lg);
   align-items: center;
 }
 
@@ -180,7 +190,14 @@ body {
   text-decoration: none;
   color: #333;
   font-weight: 400;
-  font-size: 15px;
+  font-size: var(--font-size-base);
+  white-space: nowrap;
+}
+
+@media(max-width: 768px) {
+  .nav-item {
+    font-size: var(--font-size-xl);
+  }
 }
 
 .nav-item.highlight {
@@ -271,12 +288,13 @@ body {
   .hamburger {
     display: flex;
   }
+
   @media (min-width: 901px) {
-  .btn-navbar {
-    padding: 6px 12px;
-    font-size: var(--font-size-sm);
+    .btn-navbar {
+      padding: 6px 12px;
+      font-size: var(--font-size-sm);
+    }
   }
-}
 
   .nav-links {
     position: fixed;
@@ -288,10 +306,17 @@ body {
     flex-direction: column;
     align-items: flex-start;
     padding: 80px 24px 32px;
-    gap: 8px;
+    gap: var(--space-md);
     z-index: 1000;
     transition: right 0.35s cubic-bezier(0.4, 0, 0.2, 1);
     box-shadow: -4px 0 24px rgba(0, 0, 0, 0.12);
+  }
+
+  @media (max-width: 768px) {
+    .nav-links {
+      gap: var(--space-lg);
+      width: 80%;
+    }
   }
 
   .nav-overlay {

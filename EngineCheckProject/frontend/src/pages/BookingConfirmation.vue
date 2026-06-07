@@ -190,7 +190,7 @@ export default defineComponent({
       </div>
 
       <div class="right-column">
-        <h2 class="section-title">Prenota l’appuntamento</h2>
+        <h2 class="section-title">Dettagli Appuntamento</h2>
 
         <div class="booking-form-card">
 

@@ -56,7 +56,8 @@ export default defineComponent({
 
 .spacer {
   flex-grow: 1;
-  font-size: 18px;
+  font-size: var(--font-size-lg);
+  text-align: center;
 }
 
 </style>

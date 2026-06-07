@@ -185,6 +185,7 @@ export default defineComponent({
             <span class="icon">⊗</span> Termina lavoro
           </button>
         </div>
+        <hr class="divider" />
         <div>
           <h3> Assegna Dipendente</h3>
           <label for="employee-select">Nome Dipendente</label>

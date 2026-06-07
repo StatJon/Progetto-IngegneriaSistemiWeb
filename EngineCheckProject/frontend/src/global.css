@@ -96,18 +96,19 @@ body {
 .dashboard-layout {
   display: flex;
   gap: var(--space-xl);
-  max-width: 82%;
   margin: 0 auto;
   align-items: flex-start;
 }
 
-@media (max-width: 900px) {
+@media (max-width: 768px) {
   .dashboard-layout {
     flex-direction: column;
   }
 }
 
 .sidebar-card {
+  position: sticky;
+  top: var(--space-lg);
   background-color: var(--color-surface);
   width: 300px;
   padding: var(--space-xl);
@@ -117,16 +118,13 @@ body {
   display: flex;
   flex-direction: column;
   min-height: 450px;
-  min-height: auto;
-  position: sticky;
-
 }
 
-@media (max-width: 900px) {
+@media (max-width: 768px) {
   .sidebar-card {
     width: 100%;
     min-height: auto;
-    position: sticky;
+    position: static;
 
   }
 
@@ -496,7 +494,7 @@ label {
 .btn-review:hover,
 .btn-logout-user:hover,
 .btn-logout-admin :hover {
-  background-color: var(--color-primary-hover);
+  background-color: var(--color-dark-hover);
 }
 
 .btn-blue {
@@ -586,17 +584,15 @@ label {
   transition: background-color 0.2s;
 }
 
-.btn-logout:hover {
-  background-color: var(--color-danger-hover);
-}
-
-.btn-logout-admin:hover {
-  background-color: var(--color-danger-hover);
+.btn-logout:hover,
+.btn-logout-admin:hover{
+  background-color: var(--color-dark-hover);
 }
 
 .btn-employee,
 .btn-user-login,
-.btn-create-user .btn-create-employee {
+.btn-create-user,
+.btn-create-employee {
   width: 100%;
   margin-bottom: 15px;
   background-color: var(--color-dark);
@@ -614,7 +610,9 @@ label {
 }
 
 .btn-employee:hover,
-.btn-user-login:hover .btn-create-user:hover .btn-create-employee:hover {
+.btn-user-login:hover,
+.btn-create-user:hover,
+.btn-create-employee:hover {
   background-color: black;
   border-color: #8c959f;
 }
@@ -642,6 +640,7 @@ label {
   border-bottom: 1px solid #dddddd;
   padding-bottom: 10px;
   color: var(--color-text);
+  text-align: center;
 }
 
 .services-grid {
@@ -653,7 +652,7 @@ label {
   margin: auto;
 }
 
-@media (max-width: 900px) {
+@media (max-width: 768px) {
   .services-grid {
     grid-template-columns: 1fr;
   }
@@ -719,7 +718,7 @@ label {
   align-items: flex-start;
 }
 
-@media (max-width: 800px) {
+@media (max-width: 768px) {
   .layout-grid {
     flex-direction: column;
   }
@@ -854,7 +853,7 @@ label {
 }
 
 .main-content {
-  padding-top: var(--space-2xl);
+  padding-top: var(--space-md);
 }
 
 .bookings-list {
@@ -881,6 +880,8 @@ label {
 .Calendar label,
 .time-selector label {
   display: block;
+  margin-inline: auto;
+  width: 70%;
   font-weight: 600;
   font-size: var(--font-size-base);
   margin-top: var(--space-md);
@@ -892,6 +893,8 @@ label {
 
 .Calendar select,
 .time-selector select {
+  display: block;
+  margin-inline: auto;
   width: 70%;
   padding: 10px var(--space-md);
   font-size: var(--font-size-base);
@@ -903,7 +906,7 @@ label {
   cursor: pointer;
   transition: border-color 0.2s, box-shadow 0.2s;
   margin-bottom: var(--space-sm);
-  text-align: center;
+  text-align: left;
 }
 
 .Calendar select:focus,
@@ -942,7 +945,7 @@ label {
 hr.divider {
   border: none;
   border-top: 1px solid var(--color-border-light);
-  margin: var(--space-xl) 0;
+  margin: var(--space-md) 0;
 }
 
 .error-message {

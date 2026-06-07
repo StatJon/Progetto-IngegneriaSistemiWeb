@@ -41,7 +41,10 @@ const routes: Array<RouteRecordRaw> = [
 
 const router = createRouter({
   history: createWebHistory(),
-  routes
+  routes,
+  scrollBehavior(){
+    return { top: 0 }
+  }
 })
 
 router.beforeEach(async (to, _, next) =>{
@@ -56,6 +59,7 @@ if (!to.meta.requiresAuth) {
     next('/login-user');
   }
 })
+
 
 createApp(App)
   .use(router)
