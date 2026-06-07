@@ -112,7 +112,7 @@ export default defineComponent({
   <div class="page-container">
     <div class="dashboard-layout">
 
-      <aside class="sidebar-card">
+      <aside style="position: sticky;" class="sidebar-card" >
         <div class="user-info">
           <h2 class="user-name">{{ employeeName }}</h2>
           <p class="user-badge">Numero Badge: {{ badgeNumber }}</p>
