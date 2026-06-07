@@ -125,7 +125,7 @@ export default defineComponent({
           <h3 class="actions-title">Azioni</h3>
 
           <button class="btn-action" @click="setStatusJob('start')">
-            <span class="icon">›</span> Inizia lavoro
+            <span class="icon">➔</span> Inizia lavoro
           </button>
 
           <button class="btn-action" @click="setStatusJob('finish')">

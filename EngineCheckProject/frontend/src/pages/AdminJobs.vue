@@ -176,13 +176,13 @@ export default defineComponent({
           <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p>
           <h3 class="actions-title">Azioni</h3>
           <button class="btn-action" @click="setStatusJob('unassign')">
-            <span class="icon">›</span> Rimuovi assegnazione lavoratore
+            <span class="icon">X</span> Rimuovi assegnazione lavoratore
           </button>
           <button class="btn-action" @click="setStatusJob('delete')">
-            <span class="icon">✓</span> Elimina lavoro
+            <span class="icon">⊗</span> Elimina lavoro
           </button>
           <button class="btn-action" @click="setStatusJob('finish')">
-            <span class="icon">⊗</span> Termina lavoro
+            <span class="icon">✓</span> Termina lavoro
           </button>
         </div>
         <hr class="divider" />

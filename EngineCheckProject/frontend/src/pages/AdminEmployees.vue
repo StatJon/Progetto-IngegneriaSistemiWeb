@@ -108,11 +108,11 @@ export default defineComponent({
           <h3 class="actions-title">Azioni</h3>
 
           <button class="btn-action" @click="goToAddEmployee">
-            <span class="icon">›</span> Aggiungi dipendente
+            <span class="icon">+</span> Aggiungi dipendente
           </button>
 
           <button class="btn-action" @click="removeEmployee">
-            <span class="icon">✓</span> Rimuovi dipendente
+            <span class="icon">X</span> Rimuovi dipendente
           </button>
         </div>
 
