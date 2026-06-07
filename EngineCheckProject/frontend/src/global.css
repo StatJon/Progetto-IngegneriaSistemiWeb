@@ -117,7 +117,8 @@ body {
   display: flex;
   flex-direction: column;
   min-height: 450px;
-
+  min-height: auto;
+  position: sticky;
 
 }
 
@@ -126,7 +127,7 @@ body {
     width: 100%;
     min-height: auto;
     position: sticky;
-    
+
   }
 
   .main-table-card {
@@ -715,14 +716,14 @@ label {
   .right-column {
     width: 100%;
     max-width: none;
-   
+
   }
 }
 
 .left-column {
   flex: 1;
   max-width: 300px;
- 
+
 }
 
 .right-column {
