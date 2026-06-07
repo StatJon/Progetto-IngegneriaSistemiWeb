@@ -1,55 +1,55 @@
 :root {
-  --color-bg:          #f0f6fc;
-  --color-surface:     #ffffff;
-  --color-border:      #d1d5da;
-  --color-border-light:#eeeeee;
+  --color-bg: #f0f6fc;
+  --color-surface: #ffffff;
+  --color-border: #d1d5da;
+  --color-border-light: #eeeeee;
 
-  --color-primary:     #0084ff;
-  --color-primary-hover:#006bcf;
-  --color-dark:        #24292f;
-  --color-dark-hover:  #000000;
+  --color-primary: #0084ff;
+  --color-primary-hover: #006bcf;
+  --color-dark: #24292f;
+  --color-dark-hover: #000000;
 
-  --color-danger:      #d9534f;
-  --color-danger-hover:#c9302c;
-  --color-error-text:  #cf222e;
-  --color-success-bg:  #d4edda;
-  --color-success-text:#155724;
-  --color-warning-bg:  #fff3cd;
-  --color-warning-text:#856404;
+  --color-danger: #d9534f;
+  --color-danger-hover: #c9302c;
+  --color-error-text: #cf222e;
+  --color-success-bg: #d4edda;
+  --color-success-text: #155724;
+  --color-warning-bg: #fff3cd;
+  --color-warning-text: #856404;
 
-  --color-text:        #333333;
-  --color-text-muted:  #666666;
-  --color-text-light:  #888888;
+  --color-text: #333333;
+  --color-text-muted: #666666;
+  --color-text-light: #888888;
   --color-placeholder: #bfbfbf;
 
-  --font-family:       'Segoe UI', system-ui, -apple-system, sans-serif;
-  --font-size-xs:      11px;
-  --font-size-sm:      13px;
-  --font-size-base:    14px;
-  --font-size-md:      16px;
-  --font-size-lg:      18px;
-  --font-size-xl:      22px;
-  --font-size-2xl:     28px;
-  --font-size-3xl:     32px;
-  --font-size-4xl:     36px;
+  --font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  --font-size-xs: 11px;
+  --font-size-sm: 13px;
+  --font-size-base: 14px;
+  --font-size-md: 16px;
+  --font-size-lg: 18px;
+  --font-size-xl: 22px;
+  --font-size-2xl: 28px;
+  --font-size-3xl: 32px;
+  --font-size-4xl: 36px;
 
-  --space-xs:   4px;
-  --space-sm:   8px;
-  --space-md:   12px;
-  --space-lg:   20px;
-  --space-xl:   30px;
-  --space-2xl:  40px;
-  --space-3xl:  60px;
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 12px;
+  --space-lg: 20px;
+  --space-xl: 30px;
+  --space-2xl: 40px;
+  --space-3xl: 60px;
 
-  --radius-sm:  4px;
-  --radius-md:  6px;
-  --radius-lg:  8px;
-  --radius-xl:  12px;
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+  --radius-xl: 12px;
   --radius-2xl: 24px;
-  --shadow-sm:  0 1px 3px rgba(0,0,0,.05);
-  --shadow-md:  0 2px 10px rgba(0,0,0,.05);
-  --shadow-lg:  0 4px 15px rgba(0,0,0,.08);
-  --shadow-card:0 4px 12px rgba(0,0,0,.05);
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, .05);
+  --shadow-md: 0 2px 10px rgba(0, 0, 0, .05);
+  --shadow-lg: 0 4px 15px rgba(0, 0, 0, .08);
+  --shadow-card: 0 4px 12px rgba(0, 0, 0, .05);
 }
 
 *,
@@ -67,6 +67,7 @@ body {
   background-color: var(--color-bg);
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
+  
 }
 
 .page-container {
@@ -77,7 +78,7 @@ body {
 }
 
 .page-container--center {
-  display: flex;
+  display: block;
   flex-direction: column;
   align-items: center;
 }
@@ -95,7 +96,7 @@ body {
 .dashboard-layout {
   display: flex;
   gap: var(--space-xl);
-  max-width: 1200px;
+  max-width: 82%;
   margin: 0 auto;
   align-items: flex-start;
 }
@@ -118,7 +119,6 @@ body {
   min-height: 450px;
   position: sticky;
   
-
 }
 
 @media (max-width: 900px) {
@@ -176,9 +176,9 @@ body {
   background-color: white;
   padding: 0;
   border-radius: 8px;
-  overflow: hidden;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-  
+  min-width: 0;
+
 }
 
 .table-responsive {
@@ -215,7 +215,7 @@ body {
 .jobs-table tbody tr:hover,
 .data-table tbody tr:hover {
   background-color: #f8fbff;
-  
+
 }
 
 .selected-row {
@@ -248,7 +248,7 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  box-shadow: 0 2px 10px rgba(0,0,0,.02);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, .02);
   flex-wrap: wrap;
   gap: var(--space-lg);
 }
@@ -271,6 +271,7 @@ body {
     flex-direction: column;
     align-items: flex-start;
   }
+
   .card-actions {
     width: 100%;
     display: flex;
@@ -294,7 +295,7 @@ body {
 
 .service-card:hover {
   border-color: var(--color-primary);
-  box-shadow: 0 4px 10px rgba(0,132,255,.1);
+  box-shadow: 0 4px 10px rgba(0, 132, 255, .1);
 }
 
 .service-card.selected {
@@ -366,7 +367,7 @@ label {
 .form-group textarea:focus,
 .input-group:focus {
   border-color: var(--color-primary);
-  box-shadow: 0 0 0 3px rgba(0,132,255,.12);
+  box-shadow: 0 0 0 3px rgba(0, 132, 255, .12);
 }
 
 .form-group textarea {
@@ -416,7 +417,7 @@ label {
 .btn-primary {
   width: 300px;
   padding: var(--space-md);
-  background-color: var( --color-primary);
+  background-color: var(--color-primary);
   color: white;
   font-weight: 600;
   font-family: var(--font-family);
@@ -491,12 +492,12 @@ label {
 }
 
 .btn-submit {
-  width:300px;
+  width: 300px;
   padding: 15px;
   font-size: var(--font-size-md);
   margin: auto;
   display: flex;
-   display: block;
+  display: block;
   margin: 0 auto;
 }
 
@@ -549,7 +550,8 @@ label {
   cursor: pointer;
   transition: background-color 0.2s;
 }
-.btn-logout-admin{
+
+.btn-logout-admin {
   width: 100%;
   background-color: var(--color-danger);
   color: white;
@@ -566,14 +568,14 @@ label {
 .btn-logout:hover {
   background-color: var(--color-danger-hover);
 }
+
 .btn-logout-admin:hover {
   background-color: var(--color-danger-hover);
 }
 
 .btn-employee,
 .btn-user-login,
-.btn-create-user
-.btn-create-employee{
+.btn-create-user .btn-create-employee {
   width: 100%;
   background-color: var(--color-dark);
   border: 1px solid var(--color-border);
@@ -590,9 +592,7 @@ label {
 }
 
 .btn-employee:hover,
-.btn-user-login:hover
-.btn-create-user:hover 
-.btn-create-employee:hover{
+.btn-user-login:hover .btn-create-user:hover .btn-create-employee:hover {
   background-color: black;
   border-color: #8c959f;
 }
@@ -681,7 +681,7 @@ label {
   font-size: var(--font-size-sm);
   font-weight: 500;
   margin-top: auto;
-  background-color: white ;
+  background-color: white;
 }
 
 .action-bar {
@@ -701,6 +701,7 @@ label {
   .layout-grid {
     flex-direction: column;
   }
+
   .left-column,
   .right-column {
     width: 100%;
@@ -867,7 +868,7 @@ label {
   margin-bottom: 4px;
   color: #555555;
   margin-left: auto;
-  
+
 }
 
 .Calendar select,
@@ -888,7 +889,7 @@ label {
 .Calendar select:focus,
 .time-selector select:focus {
   border-color: var(--color-primary);
-  box-shadow: 0 0 0 3px rgba(0,132,255,.12);
+  box-shadow: 0 0 0 3px rgba(0, 132, 255, .12);
 }
 
 .time-selector {
@@ -914,7 +915,7 @@ label {
   font-size: var(--font-size-xs);
   font-weight: bold;
   color: #444444;
-  
+
 
 }
 
