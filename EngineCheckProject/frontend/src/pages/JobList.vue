@@ -112,7 +112,7 @@ export default defineComponent({
   <div class="page-container">
     <div class="dashboard-layout">
 
-      <aside style="position: sticky;" class="sidebar-card" >
+      <aside style="position: sticky;" class="sidebar-card">
         <div class="user-info">
           <h2 class="user-name">{{ employeeName }}</h2>
           <p class="user-badge">Numero Badge: {{ badgeNumber }}</p>
@@ -121,7 +121,7 @@ export default defineComponent({
         <hr class="divider" />
 
         <div class="actions-section">
-          <p v-if="errorMessage" style="color: red; font-size: 13px;">{{ errorMessage }}</p>
+          <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p>
           <h3 class="actions-title">Azioni</h3>
 
           <button class="btn-action" @click="setStatusJob('start')">
@@ -172,7 +172,8 @@ export default defineComponent({
               <tr v-for="job in sortedJobs" :key="`${job.Job_ID}-${job.Service_ID}`"
                 :class="{ 'selected-row': selectedJobId === job }">
                 <td class="text-center">
-                  <input type="radio" name="jobSelect" :value="job" v-model="selectedJobId" class="custom-checkbox" />
+                  <input type="radio" name="jobSelect" :value="job" v-model="selectedJobId" class="custom-checkbox"
+                    :aria-label="`Seleziona lavoro ${job.Job_ID}-${job.Service_ID}`" />
                 </td>
                 <td>{{ job.Job_ID }}-{{ job.Service_ID }}</td>
                 <td>{{ job.JobService_Status }}</td>
@@ -192,4 +193,3 @@ export default defineComponent({
     </div>
   </div>
 </template>
-

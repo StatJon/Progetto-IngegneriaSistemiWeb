@@ -195,30 +195,30 @@ export default defineComponent({
         <div class="booking-form-card">
 
           <div class="form-group">
-            <label>Modello veicolo</label>
-            <input type="text" v-model="vehicleModel" placeholder="Toyota Supra" />
+            <label for="vehicleModel">Modello veicolo</label>
+            <input type="text" id="vehicleModel" v-model="vehicleModel" placeholder="Toyota Supra" />
           </div>
           <div class="form-group">
-            <label>Targa veicolo</label>
-            <input type="text" v-model="vehiclePlate" placeholder="AA 123 BB" />
+            <label for="vehiclePlate">Targa veicolo</label>
+            <input type="text" id="vehiclePlate" v-model="vehiclePlate" placeholder="AA 123 BB" />
           </div>
 
           <hr class="divider" />
 
           <div class="time-selector select">
-            <label>Anno</label>
-            <select v-model="selectedYear">
+            <label for="selectYear">Anno</label>
+            <select id="selectYear" v-model="selectedYear">
               <option :value="currentYear">{{ currentYear }}</option>
               <option :value="currentYear + 1">{{ currentYear + 1 }}</option>
             </select>
 
-            <label>Mese</label>
-            <select v-model="selectedMonth">
+            <label for="selectMonth">Mese</label>
+            <select id="selectMonth" v-model="selectedMonth">
               <option v-for="(month, index) in availableMonth" :key="index" :value="month">{{ month }} </option>
             </select>
 
-            <label>Giorno</label>
-            <select v-model="selectedDay">
+            <label for="selectDay">Giorno</label>
+            <select id="selectDay" v-model="selectedDay">
               <option v-for="days in availableDays" :key="days.day" :value="days.day">{{ days.day }}</option>
             </select>
 
@@ -233,7 +233,7 @@ export default defineComponent({
 
           </div>
 
-          <p v-if="errorMessage" style="color: red; font-size: 13px;">{{ errorMessage }}</p>
+          <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p>
 
           <button class="btn-submit" @click="submit">
             Conferma prenotazione ✔

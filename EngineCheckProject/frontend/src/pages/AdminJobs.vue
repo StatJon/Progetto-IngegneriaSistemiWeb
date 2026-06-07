@@ -173,7 +173,7 @@ export default defineComponent({
         </div>
         <hr class="divider" />
         <div class="actions-section">
-          <p v-if="errorMessage" style="color: red; font-size: 13px;">{{ errorMessage }}</p>
+          <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p>
           <h3 class="actions-title">Azioni</h3>
           <button class="btn-action" @click="setStatusJob('unassign')">
             <span class="icon">›</span> Rimuovi assegnazione lavoratore
@@ -187,8 +187,8 @@ export default defineComponent({
         </div>
         <div>
           <h3> Assegna Dipendente</h3>
-          <label>Nome Dipendente</label>
-          <select v-model="selectedEmployee" class="input-group">
+          <label for="employee-select">Nome Dipendente</label>
+          <select id="employee-select" v-model="selectedEmployee" class="input-group">
             <option v-for="employee in employees" :key="employee.ID_Badge_Number" :value="employee">
               {{ employee.First_Name }} {{ employee.Last_Name }}
             </option>
@@ -236,7 +236,8 @@ export default defineComponent({
               <tr v-for="job in sortedJobs" :key="`${job.Job_ID}-${job.Service_ID}`"
                 :class="{ 'selected-row': selectedJobId === job }">
                 <td class="text-center">
-                  <input type="radio" name="jobSelect" :value="job" v-model="selectedJobId" class="custom-checkbox" />
+                  <input type="radio" name="jobSelect" :value="job" v-model="selectedJobId" class="custom-checkbox"
+                    :aria-label="`Seleziona lavoro ${job.Job_ID}-${job.Service_ID}`" />
                 </td>
                 <td>{{ job.Job_ID }}-{{ job.Service_ID }}</td>
                 <td>{{ job.JobService_Status }}</td>
@@ -255,5 +256,3 @@ export default defineComponent({
     </div>
   </div>
 </template>
-
- 

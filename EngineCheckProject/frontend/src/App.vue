@@ -196,8 +196,6 @@ body {
 
 
 .site-footer {
-
-  color: rgb(141, 141, 141);
   text-align: center;
   padding: 20px;
   margin-top: auto;

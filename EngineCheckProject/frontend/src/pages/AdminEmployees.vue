@@ -104,7 +104,7 @@ export default defineComponent({
         <hr class="divider" />
 
         <div class="actions-section">
-          <p v-if="errorMessage" style="color: red; font-size: 13px;">{{ errorMessage }}</p>
+          <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p>
           <h3 class="actions-title">Azioni</h3>
 
           <button class="btn-action" @click="goToAddEmployee">
@@ -146,7 +146,7 @@ export default defineComponent({
                 :class="{ 'selected-row': selectedEmployee === employee }">
                 <td>
                   <input type="radio" :value="employee" v-model="selectedEmployee"
-                    class="custom-checkbox" />
+                    :aria-label="`Seleziona ${employee.First_Name} ${employee.Last_Name}`" class="custom-checkbox" />
                 </td>
                 <td>{{ employee.ID_Badge_Number }}</td>
                 <td>{{ employee.First_Name }}</td>
@@ -161,4 +161,3 @@ export default defineComponent({
     </div>
   </div>
 </template>
-

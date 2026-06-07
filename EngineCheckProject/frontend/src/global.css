@@ -4,12 +4,12 @@
   --color-border: #d1d5da;
   --color-border-light: #eeeeee;
 
-  --color-primary: #0084ff;
+  --color-primary: #0069d9;
   --color-primary-hover: #006bcf;
   --color-dark: #24292f;
   --color-dark-hover: #000000;
 
-  --color-danger: #d9534f;
+  --color-danger: #c9302c;
   --color-danger-hover: #c9302c;
   --color-error-text: #cf222e;
   --color-success-bg: #d4edda;
@@ -810,12 +810,6 @@ label {
   padding: 0%;
 }
 
-.error-text {
-  color: var(--color-error-text);
-  font-size: var(--font-size-sm);
-  margin-bottom: var(--space-md);
-}
-
 .error-inline {
   color: red;
   font-size: var(--font-size-sm);
@@ -935,4 +929,11 @@ hr.divider {
   border: none;
   border-top: 1px solid var(--color-border-light);
   margin: var(--space-xl) 0;
+}
+
+.error-message {
+  color: var(--color-error-text);
+  font-size: var(--font-size-md);
+  text-align: center;
+  margin-bottom: var(--space-md);
 }

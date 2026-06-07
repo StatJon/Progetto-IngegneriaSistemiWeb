@@ -120,7 +120,7 @@ export default defineComponent({
             </div>
         </div>
 
-        <p v-if="errorMessage" style="color: red; font-size: 13px;">{{ errorMessage }}</p>
+        <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p>
 
         <div class="action-bar">
             <button class="btn-confirm" @click="confirmSelection">

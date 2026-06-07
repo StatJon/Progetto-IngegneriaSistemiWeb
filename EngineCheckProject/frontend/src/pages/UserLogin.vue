@@ -60,7 +60,7 @@ export default defineComponent({
         <input id="password" type="password" v-model="password" @keyup.enter="submitLogin" placeholder="password" />
       </div>
 
-      <p v-if="errorMessage" class="error-text">{{ errorMessage }}</p>
+      <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p>
 
       <button class="btn-user-login" @click="submitLogin">Accedi</button>
 

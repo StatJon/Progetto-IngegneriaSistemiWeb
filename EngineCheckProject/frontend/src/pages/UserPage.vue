@@ -86,16 +86,16 @@ export default defineComponent({
 
     <div class="bookings-list">
 
-      <div v-if="errorMessage" style="text-align: center; color: #666; font-size: 18px; margin-top: auto;width: 100%;">
+      <div v-if="errorMessage" class="error-message">
         {{ errorMessage }}
       </div>
 
       <div v-for="booking in bookings" :key="booking.Job_ID" class="booking-card">
 
         <div class="card-info">
-          <h3 class="booking-header">
+          <h2 class="booking-header">
             {{ helperFormatDate(booking.Date_Time) }} | {{ booking.Model }} ({{ booking.License_Plate }})
-          </h3>
+          </h2>
           <p class="booking-details">
             {{ booking.Services }}
           </p>

@@ -49,7 +49,7 @@ export default defineComponent({
     <main class="main-content">
       <div class="register-card">
 
-        <p v-if="errorMessage" style="color: red; font-size: 13px;">{{ errorMessage }}</p>
+        <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p>
 
         <div class="form-group">
           <label>Nome del dipendente</label>
