@@ -67,12 +67,14 @@ export default defineComponent({
       <button class="btn-secondary" @click="goToCreateProfile">
         Crea Account
       </button>
+      
     </div>
-
-    <div class="employee-section">
-      <button class="btn-employee" @click="goToEmployeeLogin">
+    <div class="employee-section" style="margin-top: 0px;">
+      <button class="btn-employee"style="margin-bottom: 10px;" @click="goToEmployeeLogin">
         ➜ Log In dipendente
       </button>
     </div>
+
+    
   </div>
 </template>

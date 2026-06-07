@@ -67,7 +67,7 @@ body {
   background-color: var(--color-bg);
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
-  
+
 }
 
 .page-container {
@@ -117,16 +117,19 @@ body {
   display: flex;
   flex-direction: column;
   min-height: 450px;
-  position: sticky;
-  
+
+
 }
 
 @media (max-width: 900px) {
   .sidebar-card {
     width: 100%;
     min-height: auto;
+    position: sticky;
+    
   }
-    .main-table-card {
+
+  .main-table-card {
     width: 100%;
     max-width: calc(100vw - 40px);
   }
@@ -327,8 +330,8 @@ body {
   width: 100%;
   max-width: 400px;
   text-align: center;
-  margin: auto;
-  position: sticky;
+  margin-bottom: 30px;
+
 
 }
 
@@ -582,6 +585,7 @@ label {
 .btn-user-login,
 .btn-create-user .btn-create-employee {
   width: 100%;
+  margin-bottom: 15px;
   background-color: var(--color-dark);
   border: 1px solid var(--color-border);
   color: white;
@@ -799,9 +803,9 @@ label {
   border-bottom: none;
 }
 
-.employee-section,
-.user-login-section {
-  margin-top: var(--space-xl);
+.employee-section .user-login-section {
+  margin: auto;
+  padding: 0%;
 }
 
 .error-text {
