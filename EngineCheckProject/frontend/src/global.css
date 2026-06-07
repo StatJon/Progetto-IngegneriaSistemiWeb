@@ -728,6 +728,7 @@ label {
   .right-column {
     width: 100%;
     max-width: none;
+    margin: auto;
 
   }
 }
