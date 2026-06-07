@@ -121,7 +121,7 @@ export default defineComponent({
 <div style="display: flex; flex-direction: column; align-items: center; gap: 10px; margin-top: 30px;">
   <button class="btn-confirm" @click="goToCarBooking">
     <span class="material-symbols-outlined icon">directions_car</span>
-    Prenotazione per Auto
+    Prenotazione per Auto 
   </button>
   <button class="btn-confirm" @click="goToMotorcycleBooking">
     <span class="material-symbols-outlined icon">two_wheeler</span>

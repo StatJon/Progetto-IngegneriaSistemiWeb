@@ -546,7 +546,7 @@ label {
 }
 
 .btn-logout {
-  width: 10%;
+  width: 220px;
   background-color: var(--color-danger);
   color: white;
   border: none;
