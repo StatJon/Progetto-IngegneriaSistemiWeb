@@ -180,7 +180,7 @@ body {
   text-decoration: none;
   color: #333;
   font-weight: 500;
-  font-size: 20px;
+  font-size: 18px;
 }
 
 .nav-item.highlight {
@@ -273,6 +273,12 @@ body {
   .hamburger {
     display: flex;
   }
+  @media (min-width: 901px) {
+  .btn-navbar {
+    padding: 6px 12px;
+    font-size: var(--font-size-sm);
+  }
+}
 
   .nav-links {
     position: fixed;
